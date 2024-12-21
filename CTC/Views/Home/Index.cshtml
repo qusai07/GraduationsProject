@@ -1,0 +1,606 @@
+﻿@model CTC.Models.Combination
+
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@inject Microsoft.AspNetCore.Identity.UserManager<CTC.Models.User> Usermanager;
+@inject Microsoft.AspNetCore.Identity.SignInManager<CTC.Models.User> signInManager;
+<link href="https://cdn.jsdelivr.net/npm/glightbox@3.0.0/dist/css/glightbox.min.css" rel="stylesheet">
+<style>
+    /* Adjust size of client logos */
+    .client-img {
+        width: 100%;
+        height: auto;
+        max-width: 180px; /* Adjust the maximum width of the image */
+        transition: transform 0.3s ease-in-out;
+    }
+
+    /* Hover effect to enlarge image */
+    .client-logo-wrapper:hover .client-img {
+        transform: scale(1.1); /* Make the image slightly bigger on hover */
+    }
+
+    /* Style for the client name */
+    .client-name {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 10px;
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+    /* Center the modal vertically and horizontally */
+    .modal-dialog-centered {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; /* Make sure modal is vertically centered */
+    }
+
+    .modal-dialog {
+        max-width: 500px; /* Adjust modal size */
+    }
+</style>
+<main class="main">
+    <!-- Header  -->
+    <section id="hero" class="hero section">
+        <div class="hero-bg">
+            <img src="assets/img/hero-bg-light.webp" alt="">
+        </div>
+        <div class="container text-center">
+            <div class="d-flex flex-column justify-content-center align-items-center">
+                <h1 data-aos="fade-up">Welcome to <span>CTC</span></h1>
+                <p data-aos="fade-up" data-aos-delay="100">
+                    Empowering Innovation Through Tech || Join us to enrich your knowledge, explore and have fun!
+                    <br>
+                </p>
+
+                <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
+                    <a href="#about" class="btn-get-started">Get Started</a>
+                    @if (Model.VideoHome.VideoUrl != null)
+                    {
+                        <a href="@Model.VideoHome.VideoUrl" class="glightbox btn-watch-video d-flex align-items-center">
+                            <i class="bi bi-play-circle"></i><span>Watch Video</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="" class="glightbox btn-watch-video d-flex align-items-center">
+                            <i class="bi bi-play-circle"></i><span>Coming Soon</span>
+                        </a>
+                    }
+                </div>
+                @if (signInManager.IsSignedIn(User))
+                {
+                    var user = await userManager.GetUserAsync(User);
+                    if (await userManager.IsInRoleAsync(user, "MediaManager"))
+                    {
+                        <div class="mt-4">
+                            <a asp-action="EditVideoHome" asp-controller="MediaController" class="btn btn-outline-secondary">Edit Video</a>
+                        </div>
+                    }
+                }
+                <hr>
+                <img src="~/assets/img/logo-png.png" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
+            </div>
+        </div>
+    </section>
+    <section id="featured-services" class="featured-services section light-background">
+        <div class="container">
+            <div class="row gy-4">
+
+                <div class="col-xl-4 col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-item d-flex">
+                        <div class="icon flex-shrink-0"><i class="bi bi-briefcase"></i></div>
+                        <div>
+                            <h4 class="title"><a asp-action="Join" asp-controller="Home" class="stretched-link">Join Member</a></h4>
+                            <p class="description">Join us participate in exciting projects, and advance your skills in the ever-evolving field of technology!</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Service Item -->
+                <div class="col-xl-4 col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-item d-flex">
+                        <div class="icon flex-shrink-0"><i class="bi bi-card-checklist"></i></div>
+                        <div>
+                            <h4 class="title"><a asp-action="VolunteerWork" asp-controller="Home" class="stretched-link">Volunteering</a></h4>
+                            <p class="description">
+                                Become a part of the Computing Technology Club today and unlock a world of innovation, learning, and collaboration.
+                            </p>
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+                <div class="col-xl-4 col-lg-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-item d-flex">
+                        <div class="icon flex-shrink-0"><i class="bi bi-bar-chart"></i></div>
+                        <div>
+                            <h4 class="title"><a asp-action="AdminstrationDepartment"asp-controller="Home" class="stretched-link">Administration Department</a></h4>
+                            <p class="description">Join the Administration Department and help drive our success. Be part of a team that values efficiency and innovation—your skills can make a real impact!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Header  -->
+    <!-- Who We Are Section -->
+    <section id="about" class="about section">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
+                    <p class="who-we-are">Who We Are</p>
+                    <h3>@Model.WhoWeAre.Header</h3>
+                    <p class="fst-italic">@Model.WhoWeAre.Content</p>
+                    <ul>
+                        <li><i class="bi bi-check-circle"></i> <span>@Model.WhoWeAre.CountStudent</span></li>
+                        <li>
+                            <i class="bi bi-check-circle"></i>
+                            <span>@Model.WhoWeAre.Footer</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
+                    @if (signInManager.IsSignedIn(User))
+                    {
+                        var user = await userManager.GetUserAsync(User);
+                        if (await userManager.IsInRoleAsync(user, "MediaManager"))
+                        {
+                            <a asp-action="EditWhoWeAre" asp-controller="Media" class="btn btn-outline-secondary">
+                                <span>Edit</span>
+                            </a>
+                        }
+                    }
+                </div>
+                <div class="col-lg-6 about-images" data-aos="fade-up" data-aos-delay="200">
+                    <div class="row gy-4">
+                        <div class="col-lg-12">
+                            <img src="@Model.WhoWeAre.ImageUrl" class="img-fluid" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Who We Are Section -->
+    <!-- Sponser Section -->
+
+    <section id="clients" class="clients section bg-light py-5">
+
+        <div class="container" data-aos="fade-up">
+
+            <!-- Section Header -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-12 text-center">
+                    <h2 class="section-title">Our Sponsors</h2>
+                </div>
+            </div>
+
+            <!-- Client Logos Section -->
+            <div class="row gy-4 justify-content-center">
+
+                @foreach (var sponser in Model.sponsers)
+                {
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-6 client-logo">
+                        <div class="client-logo-wrapper" data-bs-toggle="modal" data-bs-target="#clientModal@Model.sponsers.IndexOf(sponser)">
+                            <div class="client-name">@sponser.Name</div>
+                            <img src="@sponser.ImageUrl" class="img-fluid client-img" alt="@sponser.Name">
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal structure for Client 1 -->
+
+    @foreach (var sponser in Model.sponsers)
+    {
+        <div class="modal fade" id="clientModal@Model.sponsers.IndexOf(sponser)" tabindex="-1" aria-labelledby="clientModalLabel@Model.sponsers.IndexOf(sponser)" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="clientModalLabel@Model.sponsers.IndexOf(sponser)">@sponser.Name</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@sponser.Description</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    <!-- Repeat for other clients similarly -->
+    <!-- /Sponser Section -->
+    <!-- Features Section -->
+    <section id="features" class="features section">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Features</h2>
+            <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+            <div class="row justify-content-between">
+                <!-- Left Side: Tabs -->
+                <div class="col-lg-5 d-flex align-items-center">
+                    <ul class="nav nav-tabs" data-aos="fade-up" data-aos-delay="100">
+                        @if (Model.FeatureApp != null && Model.FeatureApp.Any())
+                        {
+                            @foreach (var feature in Model.FeatureApp)
+                            {
+                                var isActive = feature.Header == Model.FeatureApp.First().Header; // Make first item active
+                                <li class="nav-item">
+                                    <a class="nav-link @(isActive ? "active" : "")"
+                                       data-bs-toggle="tab"
+                                       data-bs-target="#features-tab-@feature.Header.Replace(" ", "-").ToLower()">
+                                        <i class="bi bi-binoculars"></i>
+                                        <div>
+                                            <h4 class="d-none d-lg-block">@feature.Header</h4>
+                                            <p>@feature.Content</p>
+                                        </div>
+                                    </a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <p>No features available.</p>
+                        }
+                    </ul><!-- End Tab Nav -->
+                </div>
+
+                <!-- Right Side: Tab Content -->
+                <div class="col-lg-6">
+                    <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+                        @if (Model.FeatureApp != null && Model.FeatureApp.Any())
+                        {
+                            @foreach (var feature in Model.FeatureApp)
+                            {
+                                var isActive = feature.Header == Model.FeatureApp.First().Header; // Make first item active
+                                <div class="tab-pane fade @(isActive ? "active show" : "")" id="features-tab-@feature.Header.Replace(" ", "-").ToLower()">
+                                    <img src="@feature.ImageUrl" alt="@feature.Header" class="img-fluid">
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>No feature content available.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /Features Section -->
+    <!-- Services Section -->
+    <section id="services" class="services section light-background">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Services</h2>
+            <p>
+                Here are some the services offered by the Computing Technology Club (CTC):
+            </p>
+        </div><!-- End Section Title -->
+
+        <div class="container">
+
+            <div class="row g-5">
+
+
+
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-item item-cyan position-relative">
+                        <i class="bi bi-activity icon"></i>
+                        <div>
+                            <h3>Faculty members</h3>
+                            <p>
+                                Meet our dedicated faculty members who bring expertise, passion, and commitment to shaping the future of our students.
+                            </p>
+                            <a asp-action="Facultymembers" asp-controller="Home" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-item item-orange position-relative">
+                        <i class="bi bi-broadcast icon"></i>
+                        <div>
+                            <h3>
+                                Academic Summary
+                            </h3>
+                            <p>
+                                An overview of our academic programs, achievements, and initiatives that drive excellence in education and student success.
+                            </p>
+                            <a asp-action="SummaryMaterial" asp-controller="Home" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-item item-teal position-relative">
+                        <i class="bi bi-easel icon"></i>
+                        <div>
+                            <h3>
+                                Calculate GPA
+                            </h3>
+                            <p>Easily calculate your Grade Point Average (GPA) to track academic progress and stay on top of your academic goals.</p>
+                            <a asp-action="CalculateGPA" asp-controller="Home" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-item item-red position-relative">
+                        <i class="bi bi-bounding-box-circles icon"></i>
+                        <div>
+                            <h3>Volunteering Work</h3>
+                            <p>Explore opportunities to give back to the community, gain valuable experience, and make a positive impact through volunteering.</p>                            <a href="#" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                            <a asp-action="VolunteerWork" asp-controller="Home" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-item item-indigo position-relative">
+                        <i class="bi bi-calendar4-week icon"></i>
+                        <div>
+                            <h3>Bachelor Programs</h3>
+                            <p>Discover a range of bachelor programs designed to equip you with the knowledge and skills needed to succeed in your chosen career.</p>                            <a href="#" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                            <a asp-action="BachelorPrograms" asp-controller="Home" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="600">
+                    <div class="service-item item-pink position-relative">
+                        <i class="bi bi-chat-square-text icon"></i>
+                        <div>
+                            <h3> Events</h3>
+                            <p>Stay updated with the latest events and activities designed to enrich your academic journey and campus life.</p>                            <a href="#" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+                            <a asp-action="Events" asp-controller="Home" class="read-more stretched-link">Learn More <i class="bi bi-arrow-right"></i></a>
+
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- /Services Section -->
+    <!-- Ea Sport Section -->
+    <section id="more-features" class="more-features section">
+        <div class="container">
+            <div class="row justify-content-around gy-4">
+                <div class="col-lg-6 d-flex flex-column justify-content-center order-2 order-lg-1" data-aos="fade-up" data-aos-delay="100">
+                    <h3>@Model.esports.HeaderEsports</h3>
+                    <p>@Model.esports.ContentEsports</p>
+                    <div class="row">
+                        @for (int i = 0; i < Model.esports.Games.Count; i++)
+                        {
+                            <div class="col-lg-6 icon-box d-flex">
+                                <i class="bi bi-easel flex-shrink-0"></i>
+                                <div>
+                                    <h4>@Model.esports.Games[i]</h4>
+                                    <p>@Model.esports.ContentGames[i]</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="features-image col-lg-5 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="200">
+                    <img src="assets/img/features-3.jpg" alt="">
+                    <img src="@Model.esports.ImageFile" alt="">
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+    <!-- /Ea Sport Section -->
+    <!-- Founders Section -->
+    <section id="testimonials" class="testimonials section light-background">
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Founders</h2>
+            <p>
+                Welcome to the Heart of CTC – Meet the Visionaries<br>
+                Explore the inspiring stories of our founders who laid the foundation for CTC.
+            </p>
+        </div>
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <div class="swiper init-swiper">
+                <script type="application/json" class="swiper-config">
+                    {
+                        "loop": true,
+                        "speed": 600,
+                        "autoplay": {
+                            "delay": 5000
+                        },
+                        "slidesPerView": "auto",
+                        "pagination": {
+                            "el": ".swiper-pagination",
+                            "type": "bullets",
+                            "clickable": true
+                        },
+                        "breakpoints": {
+                            "320": {
+                                "slidesPerView": 1,
+                                "spaceBetween": 40
+                            },
+                            "1200": {
+                                "slidesPerView": 3,
+                                "spaceBetween": 1
+                            }
+                        }
+                    }
+                </script>
+                <div class="swiper-wrapper">
+                    @if (Model.Founders != null && Model.Founders.Any())
+                    {
+                        @foreach (var founder in Model.Founders)
+                        {
+                            <div class="swiper-slide">
+                                <div class="testimonial-item">
+                                    <div>
+                                        <p>@founder.position</p>
+                                    </div>
+                                    <p>@founder.Description</p>
+                                    <div class="profile mt-auto">
+                                        @if (!string.IsNullOrEmpty(founder.ImageUrl))
+                                        {
+                                            <img src="@founder.ImageUrl" class="testimonial-img" alt="@founder.Name">
+                                        }
+                                        else
+                                        {
+                                            <img src="assets/img/default-image.jpg" class="testimonial-img" alt="@founder.Name">
+                                        }
+                                        <h3>@founder.Name</h3>
+                                        <h4>@founder.Prefx</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="swiper-slide">
+                            <p>No founders available.</p>
+                        </div>
+                    }
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </section>
+    <!-- /Founders Section -->
+    <!-- Contact Section -->
+    <section id="contact" class="contact section">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>Contact</h2>
+            <p>Get in Touch with Us: We’re here to help and answer any questions you may have. Reach out to us today!</p>
+        </div><!-- End Section Title -->
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <div class="row gy-4">
+
+                <div class="col-lg-6">
+                    <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
+                        <i class="bi bi-geo-alt"></i>
+                        <h3>Address</h3>
+                        <p>@Model.CtcData.City , @Model.CtcData.PostalCode</p>
+                    </div>
+                </div><!-- End Info Item -->
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
+                        <i class="bi bi-telephone"></i>
+                        <h3>Call Us</h3>
+                        <p>@Model.CtcData.PhoneNumber</p>
+                    </div>
+                </div><!-- End Info Item -->
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
+                        <i class="bi bi-envelope"></i>
+                        <h3>Email Us</h3>
+                        <p>@Model.CtcData.Email</p>
+                    </div>
+                </div><!-- End Info Item -->
+
+            </div>
+            <div class="row gy-4 mt-1">
+                <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d13460.656951933555!2d35.9912257!3d32.4950392!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151b89381a3b428f%3A0xfd149214da321b7d!2sJordan%20University%20of%20Science%20%26%20Technology%20(JUST)!5e0!3m2!1sen!2sjo!4v1724430407018!5m2!1sen!2sjo" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <!-- End Google Maps -->
+                <div class="col-lg-6">
+                    <form asp-action="Index" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="400">
+                        <div class="row gy-4">
+                            <div class="col-md-6">
+                                <label asp-for="@Model.ContactMessage.Name" class="control-label"></label>
+                                <input asp-for="@Model.ContactMessage.Name" class="form-control" placeholder="Your Name" />
+                                <span asp-validation-for="@Model.ContactMessage.Name" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="@Model.ContactMessage.Email" class="control-label"></label>
+                                <input asp-for="@Model.ContactMessage.Email" class="form-control" placeholder="Your Email" />
+                                <span asp-validation-for="@Model.ContactMessage.Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label asp-for="@Model.ContactMessage.Subject" class="control-label"></label>
+                                <input asp-for="@Model.ContactMessage.Subject" class="form-control" placeholder="Subject" />
+                                <span asp-validation-for="@Model.ContactMessage.Subject" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label asp-for="@Model.ContactMessage.Message" class="control-label"></label>
+                                <textarea asp-for="@Model.ContactMessage.Message" class="form-control" placeholder="Message"></textarea>
+                                <span asp-validation-for="@Model.ContactMessage.Message" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-12 text-center">
+                                @if (TempData["MessageSent"] != null)
+                                {
+                                    <div class="sent-message">@TempData["MessageSent"]</div>
+                                }
+                                else
+                                {
+                                    <div class="loading" style="display:none;">Loading</div>
+                                }
+
+                                <input type="submit" value="Send Message" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+    <!-- /Contact Section -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+</main>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/glightbox@3.0.0/dist/js/glightbox.min.js"></script>
+
+
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const lightbox = GLightbox({
+            selector: '.glightbox',  // Make sure the class is applied to the correct element
+            width: '80%',
+            height: '80%',
+            zoomable: false,
+            draggable: true,
+            autoplayVideos: true,
+            closeOnOutsideClick: true,
+            fullscreen: false // Disable fullscreen
+        });
+    });
+</script>
+<!-- code Certificates animation -->
+<script src="~/assets/vendor/glightbox/js/glightbox.min.js"></script>
+<script src="~/assets/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="~/assets/js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--End Certificates animation -->

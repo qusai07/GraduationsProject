@@ -1,0 +1,133 @@
+﻿@model CTC.Models.MediaModels.Esports
+
+@{
+    ViewData["Title"] = "Edit Esports Information";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+
+<main id="main" class="main">
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="d-flex justify-content-center align-items-start mt-4">
+                        <h2>Edit Esports Information</h2>
+                    </div>
+                    <div class="card-body">
+                        <!-- Edit Form Section -->
+                        <form asp-action="EditEsportInfo" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label asp-for="HeaderEsports" class="form-label">Header Esports</label>
+                                <input asp-for="HeaderEsports" class="form-control" />
+                                <span asp-validation-for="HeaderEsports" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ContentEsports" class="form-label">Content Esports</label>
+                                <textarea asp-for="ContentEsports" class="form-control" rows="5" required>@Model.ContentEsports</textarea>
+                                <span asp-validation-for="ContentEsports" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="mb-3" asp-for="ImageFile">Upload Image</label>
+                                <input type="file" id="ImageFile" name="ImageFile" class="form-control" />
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <div>
+                                        <img src="@Model.ImageUrl" class="mb-3" alt="Current Image" width="150" />
+                                        <p>Current Image</p>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Games">Games</label>
+                                <ul id="GamesList" class="list-group">
+                                    @for (int i = 0; i < Model.Games.Count; i++)
+                                    {
+                                        <li class="list-group-item">
+                                            <input type="text" name="Games[@i]" class="form-control" value="@Model.Games[i]" />
+                                            <textarea name="ContentGames[@i]" class="form-control mt-2" rows="3">@Model.ContentGames[i]</textarea>
+                                        </li>
+                                    }
+                                </ul>
+
+                                <button type="button" class="btn btn-outline-secondary mt-2" id="add-game-btn">Add Game</button>
+                            </div>
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn btn-success">Save Changes</button>
+                            </div>
+                        </form>
+
+                        <!-- Separate section for deleting games -->
+                        <h3>Delete Games</h3>
+                        <ul id="DeleteGamesList" class="list-group mt-4">
+                            @for (int i = 0; i < Model.Games.Count; i++)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @Model.Games[i]
+                                    <form asp-action="DeleteGame" method="post" class="d-inline-block" onsubmit="return confirm('Are you sure you want to delete this game?');">
+                                        <input type="hidden" name="esportId" value="@Model.Id" />
+                                        <input type="hidden" name="gameIndex" value="@i" />
+                                        <button type="submit" class="btn btn-danger mt-2">Remove</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+@section Scripts {
+    <script>
+        // Add new game dynamically
+        document.getElementById('add-game-btn').addEventListener('click', function () {
+            var gamesList = document.getElementById('GamesList');
+            var newGameIndex = gamesList.getElementsByClassName('list-group-item').length;
+
+            var newGameItem = document.createElement('li');
+            newGameItem.classList.add('list-group-item');
+            newGameItem.innerHTML = `
+                    <input type="text" name="Games[${newGameIndex}]" class="form-control" placeholder="Game Name" required />
+                    <textarea name="ContentGames[${newGameIndex}]" class="form-control mt-2" rows="3" placeholder="Game Content" required></textarea>
+                `;
+            gamesList.appendChild(newGameItem);
+        });
+
+        // Handle remove game button (AJAX - for delete games)
+        document.addEventListener('click', function (event) {
+            if (event.target && event.target.classList.contains('remove-game-btn')) {
+                var index = event.target.getAttribute('data-index');
+                var esportId = event.target.getAttribute('data-esport-id');
+
+                // Send AJAX request to delete the game
+                fetch('/Esports/DeleteGame', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() // CSRF token
+                    },
+                    body: JSON.stringify({ esportId: esportId, gameIndex: index }) // Send the data
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Remove the game item from the DOM after successful deletion
+                            var gameItem = event.target.closest('.list-group-item');
+                            gameItem.remove();
+                        } else {
+                            alert('Error deleting game.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('There was an issue deleting the game.');
+                    });
+            }
+        });
+    </script>
+}

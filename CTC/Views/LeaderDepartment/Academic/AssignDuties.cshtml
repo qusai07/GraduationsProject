@@ -1,0 +1,47 @@
+﻿@model CTC.ViewModels.Academic.AssignDutiesViewModel
+@{
+    ViewData["Title"] = "Assign Duties ";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+<h2>@ViewData["Title"]</h2>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Send Duties To Member</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="HomeAdmin" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@ViewData["Title"]</h5>
+                        <form asp-action="AssignDuties" method="post">
+                            <div class="mb-3">
+                                <label for="DutyDescription" class="form-label">Duty Description</label>
+                                <textarea asp-for="DutyDescription" class="form-control" rows="4"></textarea>
+                                <span asp-validation-for="DutyDescription" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="SelectedUsers" class="form-label">Assign to Specific Members (Optional)</label>
+                                <select asp-for="SelectedUsers" class="form-control" multiple="multiple" asp-items="Model.Users"></select>
+                                <span asp-validation-for="SelectedUsers" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Assign Duties</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+

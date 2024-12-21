@@ -1,0 +1,165 @@
+﻿@model CTC.Models.Leader.Appointment
+@{
+    ViewData["Title"] = "";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Manage Appointments</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a>Duties</a></li>
+                <li class="breadcrumb-item active">Appointments</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <!-- Waiting Appointments (Lonely Row) -->
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Waiting List</h5>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Waiting != null && Model.Waiting.Any())
+                                {
+                                    foreach (var appointment in Model.Waiting)
+                                    {
+                                        <tr>
+                                            <td>@appointment.Name</td>
+                                            <td>
+                                                <!-- Date and Time input for manually selecting the appointment date -->
+                                                <form asp-action="BookAppointment" method="post" style="display:inline-block;">
+                                                    <input type="hidden" name="id" value="@appointment.AppointmentId" />
+
+                                                    <!-- Date and Time Picker -->
+                                                    <div class="mb-2">
+                                                        <label for="appointmentDate" class="form-label">Appointment Date</label>
+                                                        <input type="datetime-local" name="appointmentDate" class="form-control" required />
+                                                    </div>
+
+                                                    <!-- Meeting Link Input -->
+                                                    <div class="mb-2">
+                                                        <label for="LinkMeeting" class="form-label">Meeting Link</label>
+                                                        <input type="text" name="LinkMeeting" class="form-control" placeholder="Enter meeting link" required />
+                                                    </div>
+
+                                                    <!-- Book Button -->
+                                                    <button type="submit" class="btn btn-success btn-sm mt-2">Book Appointment</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                <!-- You can add any other information or actions related to the meeting link here if needed -->
+                                                <span>@appointment.LinkMeeting</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">No waiting appointments.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Other Appointments (Scheduled and Pending) -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Scheduled Appointments</h5>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Appointment Date</th>
+                                    <th>Status</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Accepted != null && Model.Accepted.Any())
+                                    {
+                                        foreach (var appointment in Model.Accepted)
+                                        {
+                                            <tr>
+                                                <td>@appointment.Name</td>
+                                                <td>@appointment.AppointmentDate?.ToString("g")</td>
+                                                <td>@appointment.Status</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3" class="text-center">No scheduled appointments.</td>
+                                        </tr>
+                                    }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Interviews</h5>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Interview Time</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Pending != null && Model.Pending.Any())
+                                {
+                                    foreach (var appointment in Model.Pending)
+                                    {
+                                        <tr>
+                                            <td>@appointment.Name</td>
+                                            <td>@appointment.AppointmentDate</td>
+                                            <td>
+                                                <!-- Accept and Reject Buttons -->
+                                                <form asp-action="MarkAsBooked" method="post" style="display:inline;">
+                                                    <input type="hidden" name="id" value="@appointment.AppointmentId" />
+                                                    <button type="submit" name="action" value="Accept" class="btn btn-success btn-sm mt-2">Accept</button>
+                                                    <button type="submit" name="action" value="Reject" class="btn btn-danger btn-sm mt-2">Reject</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="3" class="text-center">No pending interviews.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>

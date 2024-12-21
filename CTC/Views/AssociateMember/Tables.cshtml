@@ -1,0 +1,41 @@
+﻿@model IEnumerable<CTC.Models.Volunteer.VolunteerParticipants>
+@{
+    ViewData["Title"] = "Tables";
+
+    Layout = "~/Views/Shared/_LayoutAssociateMember.cshtml";
+
+}
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">Your Volunteer Events</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            You haven't participated in any volunteer events yet.
+        </div>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Event Date</th>
+                    <th scope="col">Status</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var participation in Model)
+                {
+                    <tr>
+                        <td>@participation.ParticipationDate.ToString("yyyy-MM-dd")</td>
+                        <td>@participation.Status</td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

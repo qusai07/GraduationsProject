@@ -1,0 +1,36 @@
+﻿@model IEnumerable<CTC.Models.Admin.Achievement>
+@{
+    ViewData["Title"] = "Achievements";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Achievements Section -->
+<section id="achievements" class="achievements section">
+
+    <div class="container">
+
+        <div class="row justify-content-around gy-4">
+
+            <!-- Achievements List -->
+            @foreach (var achievement in Model)
+            {
+                <div class="col-lg-6 d-flex flex-column justify-content-center" data-aos="fade-up" data-aos-delay="100">
+                    <div class="icon-box d-flex mb-4">
+                        <!-- Achievement Image -->
+                        <img src="@achievement.ImageUrl" alt="@achievement.Title" class="img-fluid me-3" style="max-width: 100px; max-height: 100px;" />
+
+                        <!-- Achievement Details -->
+                        <div>
+                            <h4>@achievement.Title</h4>
+                            <p>@achievement.Description</p>
+                            <p><strong>Date:</strong> @achievement.Date.ToString("MMMM dd, yyyy")</p>
+                        </div>
+                    </div>
+                </div><!-- End Achievement Item -->
+            }
+
+        </div>
+
+    </div>
+
+</section><!-- /Achievements Section -->

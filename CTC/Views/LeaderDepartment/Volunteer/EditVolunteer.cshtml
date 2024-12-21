@@ -1,0 +1,85 @@
+﻿@model CTC.Models.Volunteer.Volunteering
+
+@{
+    ViewData["Title"] = "Edit Volunteer Work";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+
+<h1>Edit Volunteer Work</h1>
+<div class="container py-4" style="margin-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="EditVolunteer" method="post" enctype="multipart/form-data">
+                        <div class="card-header">
+                            <h2>Edit Volunteer Details</h2>
+                        </div>
+
+                        <!-- Hidden Field for ID -->
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Organization -->
+                        <div class="mb-3">
+                            <label asp-for="Organization" class="form-label">Organization</label>
+                            <input type="text" asp-for="Organization" class="form-control" placeholder="Enter organization name" />
+                            <span asp-validation-for="Organization" class="text-danger"></span>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="mb-3">
+                            <label asp-for="Date" class="form-label">Date</label>
+                            <input type="date" asp-for="Date" class="form-control" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="mb-3">
+                            <label asp-for="Location" class="form-label">Location</label>
+                            <input type="text" asp-for="Location" class="form-control" placeholder="Enter location" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <!-- Type -->
+                        <div class="mb-3">
+                            <label asp-for="Type" class="form-label">Type</label>
+                            <input type="text" asp-for="Type" class="form-control" placeholder="Enter type of volunteer work" />
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter detailed description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Image File Upload -->
+                        <div class="mb-3">
+                            <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                            <input type="file" asp-for="ImageFile" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+
+                        <!-- Display Current Image if Exists -->
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <div class="mb-3">
+                                <label>Current Image</label>
+                                <div>
+                                    <img src="@Model.ImageUrl" alt="Current Image" class="img-thumbnail" style="max-height: 150px; max-width: 150px;" />
+                                </div>
+                            </div>
+                        }
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-outline-secondary">Save Changes</button>
+                            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

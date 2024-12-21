@@ -1,0 +1,128 @@
+﻿@model IEnumerable<CTC.Models.Event.AttendanceAtEveryEvent> 
+
+@{
+    ViewData["Title"] = "Attendance Events Tables";
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>
+            Attendance Events Tables
+        </h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a >Tables</a></li>
+                <li class="breadcrumb-item active">
+                    Attendance Events Tables
+                </li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Attendance At Event</h5>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Attendance Name</th>
+                                        <th>Event Name</th>
+                                        <th>Event ID</th>
+
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var user in Model)
+                                        {
+                                            <tr>
+                                                <td>@user.AttendanceId</td>
+                                                <td>@user.Student</td>
+                                                <td>@user.Event.Name</td>
+                                                <td>@user.EventId</td>
+
+
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="11" class="text-center text-muted">No Attendance at the moment.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div> <!-- End responsive table -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Handle the Accept form submission with AJAX
+    $(document).on('submit', '.accept-form', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var userId = form.find('input[name="id"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    form.closest('tr').fadeOut(); // Remove the row from the table on success
+                } else {
+                    alert('Failed to accept the user.');
+                }
+            },
+            error: function () {
+                alert('Error while accepting the user.');
+            }
+        });
+    });
+
+    // Handle the Reject form submission with AJAX
+    $(document).on('submit', '.reject-form', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var userId = form.find('input[name="id"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    form.closest('tr').fadeOut(); // Remove the row from the table on success
+                } else {
+                    alert('Failed to reject the user.');
+                }
+            },
+            error: function () {
+                alert('Error while rejecting the user.');
+            }
+        });
+    });
+</script>

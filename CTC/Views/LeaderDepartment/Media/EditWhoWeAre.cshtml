@@ -1,0 +1,85 @@
+﻿@model CTC.Models.MediaModels.WhoWeAre
+@{
+    ViewData["Title"] = "Edit Who We Are";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Edit Who We Are</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="HomeAdmin" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Who We Are Information</h5>
+                        <p><strong>Header:</strong> @Model?.Header</p>
+                        <p><strong>Content:</strong> @Model?.Content</p>
+                        <p><strong>Count Student:</strong> @Model?.CountStudent</p>
+                        <p><strong>Footer:</strong> @Model?.Footer</p>
+                        <p>
+                            <strong>Current Image:</strong>
+                            @if (Model.ImageFile != null)
+                            {
+                                <img src="@Model.ImageUrl" class="img-fluid" alt="">
+
+                            }
+                            else
+                            {
+                                <span>No image available</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="EditWhoWeAre" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label asp-for="Header" class="form-label">Header</label>
+                                <input asp-for="Header" class="form-control" placeholder="Enter Header" />
+                                <span asp-validation-for="Header" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Content" class="form-label">Content</label>
+                                <textarea asp-for="Content" class="form-control" placeholder="Enter Content"></textarea>
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CountStudent" class="form-label">Count Student</label>
+                                <input asp-for="CountStudent" class="form-control" placeholder="Enter CountStudent" />
+                                <span asp-validation-for="CountStudent" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Footer" class="form-label">Footer</label>
+                                <input asp-for="Footer" class="form-control" placeholder="Enter Footer" />
+                                <span asp-validation-for="Footer" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                                <input asp-for="ImageFile" type="file" class="form-control" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <button type="submit" class="btn btn-outline-secondary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

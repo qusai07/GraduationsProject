@@ -1,0 +1,176 @@
+﻿@model CTC.ViewModels.MemberShip.JoinerViewModel
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>General Tables</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/Home/Index">Home</a></li>
+                <li class="breadcrumb-item">Tables</li>
+                <li class="breadcrumb-item active">General</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg">
+
+                <!-- Accepted Students -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Accepted Students</h5>
+
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>University ID</th>
+                                        <th>University Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Gender</th>
+                                        <th>Department</th>
+                                        <th>Date of Birth</th>
+                                        <th>LinkedIn</th>
+                                        <th>Facebook</th>
+                                        <th>Your Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.AcceptedUsers)
+                                    {
+                                        <tr>
+                                            <td>@user.Id</td>
+                                            <td>@user.FirstName</td>
+                                            <td>@user.LastName</td>
+                                            <td>@user.UniversityID</td>
+                                            <td>@user.UniversityEmail</td>
+                                            <td>@user.Phone</td>
+                                            <td>@user.Address</td>
+                                            <td>@user.Gender</td>
+                                            <td>@user.Department</td>
+                                            <td>@user.DateOfBirth.ToString("dd MMM yyyy")</td>
+                                            <td>@user.LinkedIn</td>
+                                            <td>@user.Facebook</td>
+                                            <td>@user.YourMessage</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Accepted Students -->
+                <!-- Rejected Students -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Rejected Students</h5>
+
+                        <div class="table-responsive">
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>University ID</th>
+                                        <th>University Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Gender</th>
+                                        <th>Department</th>
+                                        <th>Date of Birth</th>
+                                        <th>LinkedIn</th>
+                                        <th>Facebook</th>
+                                        <th>Your Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.RejectedUsers)
+                                    {
+                                        <tr>
+                                            <td>@user.Id</td>
+                                            <td>@user.FirstName</td>
+                                            <td>@user.LastName</td>
+                                            <td>@user.UniversityID</td>
+                                            <td>@user.UniversityEmail</td>
+                                            <td>@user.Phone</td>
+                                            <td>@user.Address</td>
+                                            <td>@user.Gender</td>
+                                            <td>@user.Department</td>
+                                            <td>@user.DateOfBirth.ToString("dd MMM yyyy")</td>
+                                            <td>@user.LinkedIn</td>
+                                            <td>@user.Facebook</td>
+                                            <td>@user.YourMessage</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Rejected Students -->
+                <!-- Pending Students -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Students</h5>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>University ID</th>
+                                        <th>University Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Gender</th>
+                                        <th>Department</th>
+                                        <th>Date of Birth</th>
+                                        <th>LinkedIn</th>
+                                        <th>Facebook</th>
+                                        <th>Your Message</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var user in Model.PendingUsers)
+                                    {
+                                        <tr>
+                                            <td>@user.Id</td>
+                                            <td>@user.FirstName</td>
+                                            <td>@user.LastName</td>
+                                            <td>@user.UniversityID</td>
+                                            <td>@user.UniversityEmail</td>
+                                            <td>@user.Phone</td>
+                                            <td>@user.Address</td>
+                                            <td>@user.Gender</td>
+                                            <td>@user.Department</td>
+                                            <td>@user.DateOfBirth.ToString("dd MMM yyyy")</td>
+                                            <td>@user.LinkedIn</td>
+                                            <td>@user.Facebook</td>
+                                            <td>@user.YourMessage</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Pending Students -->
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->

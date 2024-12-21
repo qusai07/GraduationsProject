@@ -1,0 +1,38 @@
+﻿@model IEnumerable<CTC.Models.Event.EventsCTC>
+@using CTC.Repository.Enum
+@{
+    ViewData["Title"] = "Events";
+    Layout = "~/Views/Shared/_LayoutAssociateMember.cshtml";
+}
+<div class="container mt-5">
+    <h2 class="mb-4">Available Events Opportunities</h2>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@item.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text"><strong>Date:</strong> @item.EventDate.ToString("yyyy-MM-dd")</p>
+                        <p class="card-text"><strong>Location:</strong> @item.Location</p>
+                        <p class="card-text"><strong>Type:</strong> @item.EventType</p>
+                        <p class="card-text"><strong>Description:</strong>@item.Description</p>
+                        <form asp-action="SubscribeToEvent" asp-controller="AssociateMember" method="post">
+                            <input type="hidden" name="eventId" value="@item.Id" />
+                            <button type="submit" class="btn btn-primary">
+                                Subscribe
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            No volunteer opportunities available at the moment.
+        </div>
+    }
+</div>

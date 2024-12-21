@@ -1,0 +1,5 @@
+﻿@using CTC.Models
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject Microsoft.AspNetCore.Identity.UserManager<User> userManager
+@inject Microsoft.AspNetCore.Identity.SignInManager<User> signInManager
+@inject Microsoft.AspNetCore.Identity.RoleManager<Microsoft.AspNetCore.Identity.IdentityRole<int>> roleManager

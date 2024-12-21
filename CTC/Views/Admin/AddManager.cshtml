@@ -1,0 +1,60 @@
+﻿@model CTC.ViewModels.Admin.AddManager
+@{
+    ViewData["Title"] = "Add Manager";
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+}
+<h1>Add New Manager</h1>
+<div class="container py-4" style="margin-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="AddManager" method="post">
+                        <div class="card-header">
+                            <h2>Add New Manager</h2>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="UserName" class="form-label"></label>
+                            <input asp-for="UserName" class="form-control" placeholder="Enter manager's name" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" placeholder="Enter Full Name" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="Enter manager's email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumebr" class="form-label"></label>
+                            <input asp-for="PhoneNumebr" class="form-control" placeholder="Enter manager's phone number" />
+                            <span asp-validation-for="PhoneNumebr" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="TypeOfUser" class="form-label">Role</label>
+                            <select name="TypeOfUser" class="form-select">
+                                <option value="LeaderMember">Leader Member</option>
+                                <option value="AcademicManager">Academic Manager</option>
+                                <option value="VolunteerManager">Volunteer Manager</option>
+                                <option value="ActivitiesManager">Activities Manager</option>
+                                <option value="MediaManager">Media Manager</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-outline-secondary">Add Manager</button>
+                            <a asp-action="Dash" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

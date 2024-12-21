@@ -1,0 +1,75 @@
+﻿@model IEnumerable<CTC.Models.Event.EventsCTC>
+@{
+    ViewData["Title"] = "Events";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/Event.css" rel="stylesheet" />
+
+<section class="light">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Events</h2>
+        <h4>Click On Any Event To More Information About It</h4>
+    </div>
+    <div class="container py-4">
+        @if (Model.Any())
+        {
+            foreach (var events in Model)
+            {
+                // Truncate the event description to 100 characters (or any other number you prefer)
+                var truncatedDescription = events.Description.Length > 100 ? events.Description.Substring(0, 100) + "..." : events.Description;
+
+                <article class="postcard dark blue" data-bs-toggle="modal" data-bs-target="#eventModal-@events.Id">
+                    <div class="postcard__img_wrapper">
+                        <img src="@events.ImageUrl" class="postcard__img" alt="Event Image" />
+                    </div>
+                    <div class="postcard__text">
+                        <h1 class="postcard__title blue">
+                            <a href="#">@events.Name</a>
+                        </h1>
+                        <div class="postcard__subtitle small">
+                            <time datetime="@events.EventDate.ToString("yyyy-MM-dd HH:mm:ss")">
+                                <i class="fas fa-calendar-alt mr-2"></i>@events.EventDate.ToString("MMM dd, yyyy")
+                            </time>
+                        </div>
+                        <div class="postcard__bar"></div>
+                        <div class="postcard__preview-txt">About Event: @truncatedDescription</div>
+                        <ul class="postcard__tagbox">
+                            <li class="tag__item"><i class="fas fa-tag mr-2"></i>@events.EventType</li>
+                            <li class="tag__item"><i class="fas fa-clock mr-2"></i>Duration: @events.EventDate</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <!-- Modal for full event description -->
+                <div class="modal fade" id="eventModal-@events.Id" tabindex="-1" aria-labelledby="eventModalLabel-@events.Id" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="eventModalLabel-@events.Id">@events.Name</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <h5>Event Description:</h5>
+                                <p>@events.Description</p>
+                                <p><strong>Event Date:</strong> @events.EventDate.ToString("MMM dd, yyyy")</p>
+                                <p><strong>Location:</strong> @events.Location</p>
+                                <p><strong>Event Type:</strong> @events.EventType</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <h1 class="h1 text-center" id="pageHeaderTitle">All Events</h1>
+            <p class="text-center">No events available for this category.</p>
+        }
+    </div>
+</section>
+
+<!-- Add the necessary Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>

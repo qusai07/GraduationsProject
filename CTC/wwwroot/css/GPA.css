@@ -1,0 +1,131 @@
+﻿/*Table.css*/
+html {
+    scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+#courses {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 80%;
+}
+
+    #courses td,
+    #courses th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        overflow: hidden;
+    }
+
+    #courses tr {
+        background-color: #f2f2f2;
+    }
+
+    #courses th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #04aa6d;
+        color: white;
+    }
+
+select {
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+    border: solid grey 1px;
+    padding: 10px;
+    margin: -5px -20px -5px -5px;
+    width: 100%;
+}
+
+#gpa {
+    font-weight: bold;
+    border: 1.5px solid #c7c6c6 !important;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+html {
+    scroll-behavior: smooth;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+#courses {
+    font-family: Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 80%;
+}
+
+    #courses td,
+    #courses th {
+        border: 1px solid #ddd;
+        padding: 8px;
+        overflow: hidden;
+    }
+
+    #courses tr {
+        background-color: white;
+    }
+
+    #courses th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+        background-color: #388da8;
+        color: white;
+    }
+
+select {
+    display: inline-block;
+    vertical-align: top;
+    overflow: hidden;
+    border: solid grey 1px;
+    padding: 10px;
+    margin: -5px -20px -5px -5px;
+    width: 100%;
+}
+
+#gpa {
+    font-weight: bold;
+    border: 1.5px solid #c7c6c6 !important;
+}
+
+.center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*button.css*/
+
+.btn-gradient-1 {
+    border-width: 4px;
+    border-style: solid;
+    border-image: linear-gradient(to right, darkblue, darkorchid) 1;
+}
+
+/* demo stuff */
+.parent {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 10%;
+    align-items: center;
+    min-height: 9vh;
+}
+
+.btn-gradient-1 {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    color: darkblue;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}

@@ -1,0 +1,279 @@
+﻿@model IEnumerable<CTC.ViewModels.MemberShip.JoinerViewModel>
+
+@{
+    ViewData["Title"] = "Join Requests";
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+}
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Join Requests</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a>Tables</a></li>
+                <li class="breadcrumb-item active">Join Requests</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Student request to join Ctc</h5>
+                        <p>The following students have requested to join the CTC. Please review the requests and take action as needed.</p>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>University ID</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Gender</th>
+                                        <th>Actions</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var user in Model)
+                                            @if (user.Status == "Pending")
+
+                                            {
+                                                <tr>
+                                                    <td>@user.Id</td>
+                                                    <td>@user.FirstName</td>
+                                                    <td>@user.LastName</td>
+                                                    <td>@user.UniversityID</td>
+                                                    <td>@user.UniversityEmail</td>
+                                                    <td>@user.Phone</td>
+                                                    <td>@user.Address</td>
+                                                    <td>@user.Gender</td>
+                                                    <td>@user.Status</td>
+                                                    <td>
+                                                        <form asp-action="SendToLeader" method="post" class="accept-form" style="display:inline;">
+                                                        <input type="hidden" name="id" value="@user.Id" />
+                                                        <button type="submit" class="btn btn-success btn-sm">Send To Interview</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                                }
+                                            }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="11" class="text-center text-muted">No pending join requests at the moment.</td>
+                                        </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @if (TempData["Message"] != null)
+                    {
+                        var messageType = TempData["MessageType"]?.ToString() == "success" ? "alert-success" : "alert-danger";
+                        <div class="alert @messageType" role="alert">
+                            @TempData["Message"]
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">This student has successfully passed the interview.</h5>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>University ID</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Gender</th>
+                                        <th>Actions</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var user in Model)
+                                            @if (user.Status == "Accepted")
+                                            {
+                                                <tr>
+                                                    <td>@user.Id</td>
+                                                    <td>@user.FirstName</td>
+                                                    <td>@user.LastName</td>
+                                                    <td>@user.UniversityID</td>
+                                                    <td>@user.UniversityEmail</td>
+                                                    <td>@user.Phone</td>
+                                                    <td>@user.Address</td>
+                                                    <td>@user.Gender</td>
+                                                    <td>@user.Status</td>
+                                                    <td>
+                                                        <form asp-action="AcceptRequest" method="post" class="accept-form" style="display:inline;">
+                                                        <input type="hidden" name="id" value="@user.Id" />
+                                                        <button type="submit" class="btn btn-success btn-sm">Accept</button>
+                                                        </form>
+                                                        <form asp-action="RejectRequest" method="post" class="reject-form" style="display:inline;">
+                                                        <input type="hidden" name="id" value="@user.Id" />
+                                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="11" class="text-center text-muted">No pending join requests at the moment.</td>
+                                            </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div> <!-- End responsive table -->
+                    </div>
+                    @if (TempData["Message"] != null)
+                    {
+                        var messageType = TempData["MessageType"]?.ToString() == "success" ? "alert-success" : "alert-danger";
+                        <div class="alert @messageType" role="alert">
+                            @TempData["Message"]
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Rejected joiners after interview</h5>
+                        <p>These students did not pass the interview successfully.</p>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>University ID</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>Gender</th>
+                                        <th>Actions</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var user in Model)
+                                            @if (user.Status == "Rejected")
+                                            {
+                                                <tr>
+                                                    <td>@user.FirstName</td>
+                                                    <td>@user.LastName</td>
+                                                    <td>@user.UniversityID</td>
+                                                    <td>@user.UniversityEmail</td>
+                                                    <td>@user.Phone</td>
+                                                    <td>@user.Address</td>
+                                                    <td>@user.Gender</td>
+                                                    <td>@user.Status</td>
+                                                    <td>
+
+
+
+                                                        <form asp-action="Delete" method="post" class="accept-form" style="display:inline;">
+                                                            <input type="hidden" name="id" value="@user.Id" />
+                                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                                        </form>
+
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="11" class="text-center text-muted">No pending join requests at the moment.</td>
+                                            </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div> <!-- End responsive table -->
+                    </div>
+                    @if (TempData["Message"] != null)
+                    {
+                        var messageType = TempData["MessageType"]?.ToString() == "success" ? "alert-success" : "alert-danger";
+                        <div class="alert @messageType" role="alert">
+                            @TempData["Message"]
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).on('submit', '.accept-form, .reject-form', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+
+        $.ajax({
+            type: "POST",
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    form.closest('tr').fadeOut(); // Remove the row from the table on success
+                } else {
+                    alert(response.message || 'Failed to process the request.');
+                }
+            },
+            error: function () {
+                alert('Error while processing the request.');
+            }
+        });
+    });
+    success: function (response) {
+        console.log(response); // Log response to see the output from the server
+        if (response.success) {
+            form.closest('tr').fadeOut(); // Remove the row from the table on success
+        } else {
+            alert(response.message || 'Failed to process the request.');
+        }
+    }
+
+</script>

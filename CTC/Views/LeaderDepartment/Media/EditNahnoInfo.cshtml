@@ -1,0 +1,93 @@
+﻿@model CTC.Models.MediaModels.Nahno
+@{
+    ViewData["Title"] = "Edit Nahno Information";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Edit Nahno Information</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="HomeAdmin" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Nahno Information</h5>
+                        <p><strong>Content:</strong> @Model?.Content</p>
+                        <p><strong>Subject One:</strong> @Model?.subjectone</p>
+                        <p><strong>Subject Two:</strong> @Model?.subjecttwo</p>
+                        <p><strong>Subject Three:</strong> @Model?.subjectThree</p>
+                        <p><strong>Subject Three:</strong> @Model?.Link</p>
+                        <p>
+                            <strong>Current Image:</strong>
+                            @if (Model.ImageFile != null)
+                            {
+                                <a href="@Model?.ImageFile" target="_blank">View Image</a>
+                                <img src="@Model.ImageUrl" class="img-fluid" alt="">
+
+                            }
+                            else
+                            {
+                                <span>No image available</span>
+                            }
+                        </p>
+
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <form asp-action="EditNahnoInfo" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label asp-for="Content" class="form-label">Content</label>
+                                <textarea asp-for="Content" class="form-control"></textarea>
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="subjectone" class="form-label">Subject One</label>
+                                <input asp-for="subjectone" class="form-control" />
+                                <span asp-validation-for="subjectone" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="subjecttwo" class="form-label">Subject Two</label>
+                                <input asp-for="subjecttwo" class="form-control" />
+                                <span asp-validation-for="subjecttwo" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="subjectThree" class="form-label">Subject Three</label>
+                                <input asp-for="subjectThree" class="form-control" />
+                                <span asp-validation-for="subjectThree" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Link" class="form-label">Link</label>
+                                <input asp-for="Link" class="form-control" />
+                                <span asp-validation-for="Link" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                                <input asp-for="ImageFile" type="file" class="form-control" />
+                                <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-secondary">Save Changes</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+

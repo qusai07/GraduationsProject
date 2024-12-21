@@ -1,0 +1,105 @@
+﻿@model List<CTC.Models.User>
+@inject Microsoft.AspNetCore.Identity.UserManager<CTC.Models.User> UserManager 
+
+@{
+    ViewData["Title"] = "All Events";
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+}
+<h2>User Management</h2>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Users</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a>Home</a></li>
+                <li class="breadcrumb-item">Requests</li>
+                <li class="breadcrumb-item active">Join Requests</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Join Requests</h5>
+                        <p>The following students have requested to join the CTC. Please review the requests and take action as needed.</p>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Type</th> 
+                                        <th>Department</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var user in Model)
+                                        {
+                                            <tr>
+                                                <td>@user.FullName</td>
+                                                <td>@user.Email</td>
+                                                <td>@user.PhoneNumber</td>
+                                                <td>
+                                                    <!-- Retrieve and display user roles -->
+                                                    @foreach (var role in await userManager.GetRolesAsync(user))
+                                                    {
+                                                        <span class="badge bg-primary">@role</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (!(await userManager.IsInRoleAsync(user, "Admin")))
+                                                    {
+                                                        <!-- Dropdown for selecting role -->
+                                                    <form method="post" asp-action="ChangeUserRole" asp-controller="Admin" asp-route-id="@user.Id">
+                                                        <select name="selectedRole" class="form-control">
+                                                            <option value="LeaderMember">Leader Member</option>
+                                                            <option value="AcademicManager">Academic Manager</option>
+                                                            <option value="VolunteerManager">Volunteer Manager</option>
+                                                            <option value="ActivitiesManager">Activities Manager</option>
+                                                            <option value="MediaManager">Media Manager</option>
+
+                                                            <option value="User">Associate Member</option>
+
+                                                        </select>
+                                                <td>
+                                                    <button type="submit" class="btn btn-primary">Change Role</button>
+                                                    <button type="submit" asp-action="DeleteUserConfirmed" asp-controller="Admin" asp-route-id="@user.Id" class="btn btn-danger">Delete User</button>
+
+                                                </td>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span>Admin Role - No actions allowed</span>
+
+                                                }
+                                                    </td>
+                                                </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="4">No users available.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>

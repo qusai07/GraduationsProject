@@ -1,0 +1,59 @@
+﻿@model CTC.Models.Admin.Founders
+@{
+    ViewData["Title"] = "Edit Founder";
+
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+
+}
+
+<h1>Add New Manager</h1>
+<div class="container py-4" style="margin-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+           
+            <div class="card shadow-sm">
+                <div class="container section-title" data-aos="fade-up">
+                    <h2>Edit Founder</h2>
+                    <p>Edit the details of the founder.</p>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditFounder" asp-controller="Admin" method="post" enctype="multipart/form-data">
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Name</label>
+                            <input type="text" asp-for="Name" class="form-control" value="@Model.Name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Prefx" class="form-label">Prefx</label>
+                            <input type="text" asp-for="Prefx" class="form-control" value="@Model.Prefx" />
+                            <span asp-validation-for="Prefx" class="text-danger"></span>
+                        </div>  <div class="mb-3">
+                            <label asp-for="position" class="form-label">Position</label>
+                            <input type="text" asp-for="position" class="form-control" value="@Model.position" />
+                            <span asp-validation-for="position" class="text-danger"></span>
+                        </div>  <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <input type="text" asp-for="Description" class="form-control" value="@Model.Description" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                      
+                        <div class="mb-3">
+                            <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                            <input asp-for="ImageFile" class="form-control" type="file" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <p>Current Image:</p>
+                                <img src="@Model.ImageUrl" alt="Current Image" style="width: 100px; height: 100px; object-fit: cover;" />
+                            }
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <a asp-action="TableOfFounders" class="btn btn-secondary">Back to List</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

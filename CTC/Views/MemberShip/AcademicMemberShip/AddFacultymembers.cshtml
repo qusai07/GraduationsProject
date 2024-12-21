@@ -1,0 +1,51 @@
+﻿@model CTC.ViewModels.Academic.FacultymembersViewModel
+@{
+    ViewData["Title"] = "Add Faculty Members";
+    Layout = "~/Views/Shared/_LayoutMemberShip.cshtml";
+}
+<h2>Add Faculty Members</h2>
+<div class="container py-4" style=" margin-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <h1 class="text-center mt-4">Add Faculty Members</h1>
+                <div class="card-body">
+                    <form asp-action="AddFacultymembers" asp-controller="AcademicMemberShip" method="post" enctype="multipart/form-data">
+
+                        <div class="mb-3">
+                            <label asp-for="Name">Dr. Name</label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="department">Select Department</label>
+                            <select asp-for="department" asp-items="Model.DepartmentList" class="form-control"></select>
+                            <span asp-validation-for="department" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Email">Dr. Email</label>
+                            <input asp-for="Email" class="form-control"></input>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="prefx">Prefx</label>
+                            <input asp-for="prefx" class="form-control"></input>
+                            <span asp-validation-for="prefx" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="MemberName">Enter Your Name</label>
+                            <input asp-for="MemberName" class="form-control"></input>
+                            <span asp-validation-for="MemberName" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-outline-secondary">Add Faculty Members</button>
+                            <a asp-action="FacultyMembers" asp-controller="AcademicMemberShip" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,133 @@
+﻿@using CTC.ViewModels.Academic
+@model IEnumerable<FacultymembersViewModel>
+@{
+    ViewData["Title"] = "Faculty Member Request";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Faculty Member</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Home" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">Faculty Member Table</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">All Faculty Member </h5>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Prefx</th>
+                                        <th>Name</th>
+                                        <th>Department</th>
+                                        <th>Email</th>
+                                        <th>Member Request</th>
+                                        <th>Action</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var summary in Model)
+                                        {
+                                            <tr>
+                                                <td>@summary.prefx</td>
+                                                <td>@summary.Name</td>
+                                                <td>@summary.department</td>
+                                                <td>@summary.Email</td>
+                                                <td>@summary.MemberName</td>
+
+                                                <td>
+                                                    <form method="post" asp-action="ApproveFacultyRequest" class="accept-form" style="display:inline;" asp-route-Id="@summary.Id">
+                                                        <input type="hidden" name="id" value="@summary.Id" />
+
+                                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                                    </form>
+                                                    <form method="post" asp-action="RejectFacultyRequest" class="reject-form" style="display:inline;" asp-route-Id="@summary.Id">
+                                                        <input type="hidden" name="id" value="@summary.Id" />
+
+                                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                <tr>
+                                    <td colspan="6" class="text-center">No Faculty Member available.</td>
+                                </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div> <!-- End responsive table -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Handle the Accept form submission with AJAX
+    $(document).on('submit', '.accept-form', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var userId = form.find('input[name="id"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    form.closest('tr').fadeOut(); // Remove the row from the table on success
+                } else {
+                    alert('Failed to accept the user.');
+                }
+            },
+            error: function () {
+                alert('Error while accepting the user.');
+            }
+        });
+    });
+
+    // Handle the Reject form submission with AJAX
+    $(document).on('submit', '.reject-form', function (e) {
+        e.preventDefault();
+
+        var form = $(this);
+        var userId = form.find('input[name="id"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function (response) {
+                if (response.success) {
+                    form.closest('tr').fadeOut(); // Remove the row from the table on success
+                } else {
+                    alert('Failed to reject the user.');
+                }
+            },
+            error: function () {
+                alert('Error while rejecting the user.');
+            }
+        });
+    });
+</script>

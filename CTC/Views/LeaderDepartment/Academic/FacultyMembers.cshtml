@@ -1,0 +1,86 @@
+﻿@using CTC.ViewModels.Academic
+@model IEnumerable<FacultymembersViewModel>
+@{
+    ViewData["Title"] = "Faculty Member";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Faculty Member</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="HomeAdmin" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">Faculty Member Table</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">All @ViewData["Title"] </h5>
+                        <form method="get" asp-action="SummaryMaterial" class="row g-3">
+                            <div class="col-md-4">
+                                <select class="form-select" id="departmentFilter" name="selectedDepartment" aria-label="Default select example">
+                                    <option value="">All Departments</option>
+                                    @foreach (var department in Enum.GetValues(typeof(CTC.Repository.Enum.Department)))
+                                    {
+                                        <option value="@department.ToString()" asp-action="FacultyMembers" asp-controller="Home" asp-route-selectedDepartment="@department.ToString()">@department</option>
+                                    }
+                                </select>
+                            </div>
+                        </form>
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Prefx</th>
+                                        <th>Name</th>
+                                        <th>Department</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        @foreach (var summary in Model)
+                                        {
+                                            <tr>
+                                                <td>@summary.prefx</td>
+                                                <td>@summary.Name</td>
+                                                <td>@summary.department</td>
+                                                <td>@summary.Email</td>
+                                                <td class="text-center">
+                                                    <a asp-action="DeleteFacultyMember" asp-controller="Academic" asp-route-id="@summary.Id" class="btn btn-outline-danger ">
+                                                        Delete @summary.prefx
+                                                    </a>
+                                                </td>
+                                            </tr>
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="6" class="text-center">No Faculty Member available.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+

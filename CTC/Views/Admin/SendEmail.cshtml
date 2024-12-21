@@ -1,0 +1,52 @@
+﻿@model CTC.ViewModels.Admin.ContactViewModel
+
+@{
+    ViewData["Title"] = "Send Email";
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+}
+
+<h1>Send Email</h1>
+<div class="container py-4" style="margin-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="SendEmail" method="post">
+                        <div class="card-header">
+                            <h2>Contact Form</h2>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- To Email -->
+                        <div class="mb-3">
+                            <label asp-for="ToEmail" class="form-label">To</label>
+                            <input asp-for="ToEmail" class="form-control" placeholder="Enter recipient's email" />
+                            <span asp-validation-for="ToEmail" class="text-danger"></span>
+                        </div>
+
+                        <!-- Subject -->
+                        <div class="mb-3">
+                            <label asp-for="Subject" class="form-label">Subject</label>
+                            <input asp-for="Subject" class="form-control" placeholder="Enter email subject" />
+                            <span asp-validation-for="Subject" class="text-danger"></span>
+                        </div>
+
+                        <!-- Message -->
+                        <div class="mb-3">
+                            <label asp-for="Message" class="form-label">Message</label>
+                            <textarea asp-for="Message" class="form-control" rows="5" placeholder="Enter your message"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-outline-secondary">Send Email</button>
+                            <a asp-action="Dash" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

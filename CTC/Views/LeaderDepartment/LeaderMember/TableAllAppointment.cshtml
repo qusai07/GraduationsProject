@@ -1,0 +1,93 @@
+﻿@model List<CTC.Models.Leader.Appointment>
+@{
+    ViewData["Title"] = "Table All Appointment";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+
+
+
+<h2>Appointment Management</h2>
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Appointments</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">Tables</li>
+                <li class="breadcrumb-item active">All Appointments</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">All Scheduled Appointments</h5>
+                        <p>The following table displays all appointments, including their status and related details.</p>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Joiner Name</th>
+                                        <th>Status</th>
+                                        <th>Created At</th>
+                                        <th>Appointment Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var appointment in Model)
+                                        {
+                                            <tr>
+                                                <td>@appointment.Joiner?.FirstName @appointment.Joiner.LastName</td>
+                                                <td>
+                                                    <span class="badge
+                                                        @(appointment.Status == "Waiting" ? "bg-warning" :
+                                                        appointment.Status == "Pending" ? "bg-primary" :
+                                                        "bg-success")">
+                                                        @appointment.Status
+                                                    </span>
+                                                </td>
+                                                <td>@appointment.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                                <td>
+                                                    @if (appointment.AppointmentDate.HasValue)
+                                                    {
+                                                        @appointment.AppointmentDate.Value.ToString("yyyy-MM-dd")
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">Not Set</span>
+                                                    }
+                                                </td>
+                                                <td>
+
+                                                    <form method="post" asp-action="Delete" style="display:inline;">
+                                                        <input type="hidden" name="id" value="@appointment.AppointmentId" />
+                                                        <button type="submit" class="btn btn-danger btn-sm" title="Delete">
+                                                            Delete
+                                                        </button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="6" class="text-center">No appointments found.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div><!-- End Table -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main><!-- End #main -->

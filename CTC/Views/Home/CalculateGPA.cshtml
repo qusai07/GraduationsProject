@@ -1,0 +1,218 @@
+﻿@{
+    ViewData["Title"] = "GPA Calculate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    /* Ensure the body takes the full height of the viewport */
+    /* Ensure that the entire page takes up at least 100% of the viewport height */
+   
+
+    /* Container for the main content */
+    .container {
+        min-height: 29.6vh; /* Make the container take up the full height of the viewport */
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* Push the footer to the bottom */
+   
+
+
+</style>
+<link href="~/css/GPA.css" rel="stylesheet" />
+
+<form method="post" asp-action="CalculateGPA">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col">
+                <table class="center" id="courses">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Course Hours</th>
+                            <th>Grades</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coursesBody">
+                        <!-- Dynamic course rows will be added here -->
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>Total Course Hours</td>
+                            <td colspan="2" id="tch">0</td>
+                        </tr>
+                        <tr>
+                            <td>Your GPA is</td>
+                            <td style="font-weight:bold;" colspan="2" id="gpa">0.00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Add Course Section - Inline Layout -->
+        <div class="add-course-section mt-3">
+            <div class="row g-5 align-items-center">
+                <div class="col-md-3">
+                    <input type="text" id="newCourse" class="form-control" placeholder="Course Name" required />
+                </div>
+                <div class="col-md-3">
+                    <select id="newCreditHours" class="form-control" required>
+                        <option value="" selected>Select Hours</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="newGrade" class="form-control" required>
+                        <option value="" selected>Select Grade</option>
+                        <option value="A+">(4.20) A+</option>
+                        <option value="A">(4.00) A</option>
+                        <option value="A-">(3.75) A-</option>
+                        <option value="B+">(3.50) B+</option>
+                        <option value="B">(3.25) B</option>
+                        <option value="B-">(3.00) B-</option>
+                        <option value="C+">(2.75) C+</option>
+                        <option value="C">(2.50) C</option>
+                        <option value="C-">(2.25) C-</option>
+                        <option value="D+">(2.00) D+</option>
+                        <option value="D">(1.75) D</option>
+                        <option value="D-">(1.00) D-</option>
+                        <option value="F">(0.50) F</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex">
+                    <button type="button" onclick="addCourse();" class="btn btn-outline-secondary me-2">Add Course</button>
+                    <button type="button" onclick="calculateGpa();" class="btn btn-outline-secondary">Calculate GPA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="width: 50%;margin:2rem;color: crimson;">
+        <div id="error"></div>
+        <ul id="errorsList"></ul>
+    </div>
+</form>
+
+<script>
+    var coursesList = []; // Array to store added courses
+    var totalCreditHours = 0; // Variable to track total credit hours
+    const maxCreditHours = 21; // Maximum allowed total credit hours
+
+    // Function to add a new course to the courses list
+    function addCourse() {
+        var courseName = document.getElementById("newCourse").value;
+        var creditHours = parseInt(document.getElementById("newCreditHours").value);
+        var grade = document.getElementById("newGrade").value;
+        var error = document.getElementById("error");
+
+        // Validate input
+        if (!courseName || isNaN(creditHours) || !grade) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        // Check if adding this course exceeds the total 21-hour limit
+        if (totalCreditHours + creditHours > maxCreditHours) {
+            error.innerHTML = `You cannot exceed the maximum of ${maxCreditHours} course hours.`;
+            return;
+        }
+
+        // Add the new course to the coursesList
+        coursesList.push({ name: courseName, creditHours: creditHours, grade: grade });
+
+        // Add course to the table
+        var coursesBody = document.getElementById("coursesBody");
+        var newRow = document.createElement("tr");
+        newRow.innerHTML = `<td>${courseName}</td><td>${creditHours}</td><td>${grade}</td>`;
+        coursesBody.appendChild(newRow);
+
+        // Update total credit hours and display
+        totalCreditHours += creditHours;
+        document.getElementById("tch").innerHTML = totalCreditHours;
+
+        // Clear input fields
+        document.getElementById("newCourse").value = "";
+        document.getElementById("newCreditHours").value = "";
+        document.getElementById("newGrade").value = "";
+    }
+
+    // Function to calculate GPA
+    function calculateGpa() {
+        var gpa = document.getElementById("gpa");
+        var error = document.getElementById("error");
+        error.innerHTML = "";
+        var errorsList = document.getElementById("errorsList");
+        errorsList.innerHTML = "";
+
+        var totalPoints = 0;
+        var errors = [];
+
+        // Loop through coursesList to calculate total points
+        for (var i in coursesList) {
+            var course = coursesList[i];
+            var gradePoints = findGradePoints(course.grade);
+
+            if (gradePoints === 0) {
+                errors.push(course.name);
+            } else {
+                totalPoints += gradePoints * course.creditHours;
+            }
+        }
+
+        // Handle errors for missing grades
+        if (errors.length > 0) {
+            error.innerHTML = "Please provide valid grades for the following courses:<br>";
+            errors.forEach(course => {
+                var listItem = document.createElement("li");
+                listItem.textContent = course;
+                errorsList.appendChild(listItem);
+            });
+            return;
+        }
+
+        // Calculate and display GPA
+        if (totalCreditHours > 0) {
+            gpa.innerHTML = (totalPoints / totalCreditHours).toFixed(2);
+        } else {
+            gpa.innerHTML = "0.00";
+        }
+    }
+
+    // Function to convert letter grades to grade points
+    function findGradePoints(grade) {
+        switch (grade) {
+            case "A+":
+                return 4.2;
+            case "A":
+                return 4;
+            case "A-":
+                return 3.75;
+            case "B+":
+                return 3.5;
+            case "B":
+                return 3.25;
+            case "B-":
+                return 3;
+            case "C+":
+                return 2.75;
+            case "C":
+                return 2.5;
+            case "C-":
+                return 2.25;
+            case "D+":
+                return 2;
+            case "D":
+                return 1.75;
+            case "D-":
+                return 1.5;
+            case "F":
+                return 0.5;
+            default:
+                return 0; // Invalid grade
+        }
+    }
+</script>

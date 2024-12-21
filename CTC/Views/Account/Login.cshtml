@@ -1,0 +1,51 @@
+﻿@model CTC.ViewModels.LoginModel;
+
+@{
+    ViewBag.Title = "User Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+
+    <section class="ftco-section" id="login" style=" margin-top: 50px; ">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center mb-5">
+                    <h2 class="heading-section">Login </h2>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="~/assets/img/logo-png.png" 
+                    class="img-fluid" alt="Sample image">
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                    <form asp-action="Login" asp-controller="Account" method="post">
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <label class="form-label" asp-for="UserName">UserName</label>
+                            <input type="text" asp-for="UserName" class="form-control form-control-lg" placeholder="Enter a valid UserName" />
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                        <div data-mdb-input-init class="form-outline mb-3">
+                            <label class="form-label" asp-for="Password">Password</label>
+                            <input type="password" asp-for="Password" class="form-control form-control-lg" placeholder="Enter password" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <a href="#!" class="text-body">Forgot password?</a>
+                        </div>
+
+                        <div class="text-center text-lg-start mt-4 pt-2">
+                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
+                                style="padding-left: 2.5rem; padding-right: 2.5rem; background-color: #388da8; --bs-btn-border-color: #c6d9f3; ">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

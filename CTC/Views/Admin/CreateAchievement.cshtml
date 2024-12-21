@@ -1,0 +1,59 @@
+﻿@model CTC.Models.Admin.Achievement
+
+@{
+    ViewData["Title"] = "Create Achievement";
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+}
+
+<h1>Add New Achievement</h1>
+<div class="container py-4" style="margin-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-action="CreateAchievement" method="post" enctype="multipart/form-data">
+                        <div class="card-header">
+                            <h2>Create Achievement</h2>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <!-- Title -->
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label">Title</label>
+                            <input asp-for="Title" class="form-control" placeholder="Enter achievement title" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+
+                        <!-- Date -->
+                        <div class="mb-3">
+                            <label asp-for="Date" class="form-label">Date</label>
+                            <input asp-for="Date" class="form-control" type="date" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label asp-for="Description" class="form-label">Description</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" placeholder="Enter a detailed description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <!-- Image File Upload -->
+                        <div class="mb-3">
+                            <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                            <input asp-for="ImageFile" class="form-control" type="file" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-outline-secondary">Add Achievement</button>
+                            <a asp-action="Dash" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

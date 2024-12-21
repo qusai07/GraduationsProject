@@ -1,0 +1,83 @@
+﻿@model CTC.ViewModels.Admin.ContactViewModel
+@*<form asp-action="SendEmail" method="post">
+
+        <section class="ftco-section" id="SendEmail">
+            <div class="container">
+
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-6 text-center mb-5">
+                        <form method="post">
+                            <div class="form-group">
+                                <label asp-for="ToEmail"></label>
+                                <input asp-for="ToEmail" class="form-control" />
+                                <span asp-validation-for="ToEmail" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Subject"></label>
+                                <input asp-for="Subject" class="form-control" />
+                                <span asp-validation-for="Subject" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Message"></label>
+                                <textarea asp-for="Message" class="form-control"></textarea>
+                                <span asp-validation-for="Message" class="text-danger"></span>
+                            </div>
+
+                            <div class="text-center text-lg-start mt-4 pt-2">
+                                <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </form>*@
+
+
+<link href="~/css/login.css" rel="stylesheet" />
+<form asp-action="SendEmail" method="post">
+    <section class="ftco-section" id="SendMail">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center mb-5">
+                    <h2 class="heading-section">Login </h2>
+                </div>
+            </div>
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-md-9 col-lg-6 col-xl-5">
+                    <img src="~/assets/img/logo-png.png"
+                         class="img-fluid" alt="Sample image">
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                    <form method="post">
+                        <div data-mdb-input-init class="form-outline mb-4">
+                            <label asp-for="ToEmail"></label>
+                            <input asp-for="ToEmail" class="form-control" />
+                            <span asp-validation-for="ToEmail" class="text-danger"></span>
+                        </div>
+                        <div data-mdb-input-init class="form-outline mb-3">
+                            <label asp-for="Subject"></label>
+                            <input asp-for="Subject" class="form-control" />
+                            <span asp-validation-for="Subject" class="text-danger"></span>
+
+                        </div>
+                        <div data-mdb-input-init class="form-outline mb-3">
+
+                            <label asp-for="Message"></label>
+                            <textarea asp-for="Message" class="form-control"></textarea>
+                            <span asp-validation-for="Message" class="text-danger"></span>
+                        </div>
+                        <div class="text-center text-lg-start mt-4 pt-2">
+                            <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
+                                    style="padding-left: 2.5rem; padding-right: 2.5rem; background-color: #388da8; --bs-btn-border-color: #c6d9f3; ">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>

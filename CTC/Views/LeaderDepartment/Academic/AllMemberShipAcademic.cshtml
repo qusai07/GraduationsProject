@@ -1,0 +1,73 @@
+﻿@model IEnumerable<CTC.Models.User>
+    <!-- Adjust the namespace if needed -->
+@{
+    ViewData["Title"] = "All Academic Members";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Material Summaries</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Home" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">Table Material</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Pending Join Requests</h5>
+                        <p>The following students have requested to join the CTC. Please review the requests and take action as needed.</p>
+
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Phone Number</th>
+                                        <th>Actions</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+
+                                    {
+                                        @foreach (var member in Model)
+                                        {
+                                            <tr>
+                                                <td>@member.UserName</td>
+                                                <td>@member.Email</td>
+                                                <td>@member.PhoneNumber</td>
+                                                <td>
+                                                    <!-- Add action buttons if needed -->
+                                                    <a asp-action="Details" asp-route-id="@member.Id" class="btn btn-info">View</a>
+                                                    <a asp-action="Delete" asp-route-id="@member.Id" class="btn btn-danger">Delete</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="6" class="text-center">No Member available.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div> <!-- End responsive table -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>

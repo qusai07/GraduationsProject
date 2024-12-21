@@ -1,0 +1,49 @@
+﻿@using System.ComponentModel.DataAnnotations
+@model IEnumerable<CTC.Models.Academic.BachelorPrograms>
+@{
+    ViewData["Title"] = "Bachelor Programs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Services Section -->
+<section id="services" class="services section light-background">
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Programs</h2>
+        <p>Choose your major</p>
+    </div>
+    <div class="container">
+        <div class="row g-5">
+            @foreach (var department in Model)
+            {
+                // Use the Display attribute to get the department name, otherwise fallback to the name property
+                var displayName = department.GetType()
+                                            .GetProperty("Name")
+                                            ?.GetCustomAttributes(typeof(DisplayAttribute), false)
+                                            .Cast<DisplayAttribute>()
+                                            .FirstOrDefault()?
+                                            .Name ?? department.Name;
+
+                var pdfFileName = $"{department.Name.ToLower().Replace(" ", "-")}.pdf"; // Create PDF filename from the program name
+                var pdfFilePath = Url.Content("~/PDF/" + pdfFileName); // Get the URL for the PDF file
+
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-item item-cyan position-relative">
+                        <i class="bi bi-arrow-right-square icon"></i>
+                        <div>
+                            <h3>@displayName</h3> <!-- Display program name -->
+                            <p>
+                                Learn about the @displayName department—our workshops offer practical experience in the latest technologies.
+                            </p>
+                            <!-- Link to view PDF -->
+                            <a href="@department.PdfUrl" target="_blank" class="read-more stretched-link">
+
+                                Learn More <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div><!-- End Service Item -->
+            }
+        </div>
+    </div>
+</section>
+<!-- /Services Section -->

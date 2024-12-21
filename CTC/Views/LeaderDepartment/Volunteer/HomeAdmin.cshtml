@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Home Admin";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>DashBoard</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a>Home</a></li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section dashboard">
+        <div class="row">
+            <!-- Left side columns -->
+
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-xxl-6 col-md-4">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Volunteer Events</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-book"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>@ViewBag.VolunteeCount</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xxl-6 col-md-4">
+                        <div class="card info-card revenue-card">
+                            <div class="card-body">
+                                <h5 class="card-title">Volunteer Participations</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-people"></i>
+                                    </div>
+                                    <div class="ps-3">
+                                        <h6>@ViewBag.VolunterParticipationCount</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->

@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CTC.Models.Admin.ContactMessage>
+@{
+    ViewData["Title"] = "Contact Message";
+
+    Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
+
+}
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Contact Message Tables</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item">Tables</li>
+                <li class="breadcrumb-item active">Contact Message</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Messages</h5>
+                        <p>Inbox CTC</p>
+                        <table class="table datatable">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Subject</th>
+                                    <th>Message</th>
+                                    <th>Sent At</th>
+                                    <th>Action</th>
+                                    <!-- Optionally add action columns for details, delete, etc. -->
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Any())
+                                {
+                                    foreach (var message in Model)
+                                    {
+                                        <tr>
+                                            <td>@message.Name</td>
+                                            <td>@message.Email</td>
+                                            <td>@message.Subject</td>
+                                            <td>@message.Message</td>
+                                            <td>@message.SentAt.ToString("g")</td>
+                                            <td>
+                                                <!-- Pass the message details using asp-route-* -->
+                                                <form asp-action="ReplyMessage" asp-controller="Admin" method="get">
+                                                    <input type="hidden" name="toEmail" value="@message.Email" />
+                                                    <input type="hidden" name="subject" value="@("RE: " + message.Subject)" />
+                                                    <button type="submit" class="btn btn-primary">Reply</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center">No messages available.</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <!-- End Table with stripped rows -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->

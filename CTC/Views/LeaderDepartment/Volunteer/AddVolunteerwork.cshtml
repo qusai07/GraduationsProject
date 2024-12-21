@@ -1,0 +1,64 @@
+﻿@model CTC.Models.Volunteer.Volunteering
+
+@{
+    ViewData["Title"] = "Add New Volunteering";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+
+
+<div class="container py-4" style=" margin-top: 50px;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <h1 class="text-center mt-4">Add New Volunteering</h1>
+                <div class="card-body">
+                    <form asp-action="AddVolunteerwork" asp-controller="VolunteerManager" method="post" enctype="multipart/form-data">
+                        <div class="form-group mb-3">
+                            <label asp-for="Organization" class="form-label"></label>
+                            <input asp-for="Organization" class="form-control" placeholder="Enter organization name" />
+                            <span asp-validation-for="Organization" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Date" class="form-label"></label>
+                            <input asp-for="Date" class="form-control" type="date" />
+                            <span asp-validation-for="Date" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Description" class="form-label"></label>
+                            <textarea asp-for="Description" class="form-control" placeholder="Enter description" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Location" class="form-label"></label>
+                            <input asp-for="Location" class="form-control" placeholder="Enter location" />
+                            <span asp-validation-for="Location" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Type" class="form-label"></label>
+                            <input asp-for="Type" class="form-control" placeholder="Enter type of volunteering" />
+                            <span asp-validation-for="Type" class="text-danger"></span>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="MaxParticipants">Max Participants</label>
+                            <input type="number" class="form-control" id="MaxParticipants" name="MaxParticipants" required />
+                        </div>
+                        <div class="form-group mb-4">
+                            <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                            <input asp-for="ImageFile" type="file" class="form-control" />
+                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                            <a asp-action="AddVolunteerwork" asp-controller="VolunteerManager" class="btn btn-outline-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

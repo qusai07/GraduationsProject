@@ -1,0 +1,60 @@
+﻿@using CTC.ViewModels.Academic
+@model IEnumerable<MaterialSummaryViewModel>
+@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .card {
+        margin-bottom: 1.5rem; /* Adjust as needed */
+    }
+</style>
+<section id="services" class="services section light-background">
+
+    <!-- Section Title -->
+    <div class="container section-title" data-aos="fade-up">
+        <h2>Academic Materials Summary</h2>
+        <h4>Filter by Department:</h4>
+    </div>
+
+    <div class="container mt-0" style="margin-top:90px">
+        <div class="mb-4">
+
+            <form asp-action="SummaryMaterial" asp-controller="Home" method="get" class="mb-4">
+                <div class="form-group">
+                    <select class="form-select" id="departmentFilter" name="selectedDepartment" aria-label="Default select example">
+                        <option value="">All Departments</option>
+                        @foreach (var department in Enum.GetValues(typeof(CTC.Repository.Enum.Department)))
+                        {
+                            <option value="@department.ToString()" asp-action="SummaryMaterial" asp-controller="Home" asp-route-selectedDepartment="@department.ToString()">@department</option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Filter</button>
+            </form>
+
+            <!-- Material Summary Cards -->
+            <div class="container">
+                <div class="row g-4">
+                    <!-- g-4 adds a gap of 1.5rem between columns -->
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">@item.MaterialName</h5>
+                                    <p class="card-text"><strong>Description:</strong> @item.MaterialDescription</p>
+                                    <p class="card-text"><strong>Department:</strong> @item.materialsDepartment</p>
+                                    <p class="card-text"><strong>Upload Date:</strong> @item.UploadDate.ToString("MMMM dd, yyyy")</p>
+                                    <a asp-action="Download" asp-controller="Home" asp-route-id="@item.Id" class="btn btn-secondary">Download File</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+
+</section>

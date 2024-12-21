@@ -1,0 +1,74 @@
+﻿@model CTC.ViewModels.MemberShip.JoinerViewModel
+@{
+    ViewData["Title"] = "Join CTC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main id="main" class="main">
+    <div class="pagetitle text-center my-4">
+        <h1>Join the CTC</h1>
+        <nav>
+            <ol class="breadcrumb justify-content-center">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active">Join</li>
+            </ol>
+        </nav>
+    </div>
+
+    <section class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+        <div class="card shadow-sm p-4" style="max-width: 600px; width: 100%;">
+            <div class="card-body">
+                <h5 class="card-title text-center mb-4">Enter Your Information</h5>
+                <form asp-action="join" asp-controller="Home" id="wizard" method="post">
+                    <div class="mb-3">
+                        <input class="form-control" type="text" asp-for="FirstName" placeholder="First Name">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" asp-for="LastName" class="form-control" placeholder="Last Name">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" asp-for="UniversityID" class="form-control" placeholder="University ID">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" asp-for="UniversityEmail" class="form-control" placeholder="University Email">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" asp-for="Phone" class="form-control" placeholder="Phone">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" asp-for="Address" class="form-control" placeholder="Address">
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="Gender" asp-items="Model.GenderList" class="form-control">
+                            <option value="" disabled selected>Gender</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <select asp-for="Department" asp-items="Model.DepartmentList" class="form-control">
+                            <option value="" disabled selected>Department</option>
+                        </select>
+                        <span asp-validation-for="Department" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="appointmentDate" class="form-label">Date of Birth</label>
+                        <input type="date" asp-for="DateOfBirth" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <input class="form-control" type="text" asp-for="LinkedIn" placeholder="LinkedIn Profile">
+                    </div>
+                    <div class="mb-3">
+                        <input type="text" asp-for="Facebook" class="form-control" placeholder="Facebook Profile">
+                    </div>
+                    <div class="mb-3">
+                        <textarea asp-for="YourMessage" class="form-control" placeholder="Your Message" rows="3"></textarea>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-outline-secondary w-100">Join</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>

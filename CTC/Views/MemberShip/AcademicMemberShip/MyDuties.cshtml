@@ -1,0 +1,54 @@
+﻿@model IEnumerable<CTC.Models.Academic.Duty>
+<h2>My Assigned Duties</h2>
+@{
+    ViewData["Title"] = "Faculty Member";
+    Layout = "~/Views/Shared/_LayoutMemberShip.cshtml";
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>@ViewData["Title"]</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a>Tables</a></li>
+                <li class="breadcrumb-item active">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">All Faculty Member </h5>
+                        <!-- Make table responsive -->
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>Description</th>
+                                        <th>Assigned Date</th>
+                                        <th>Deadline</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var duty in Model)
+                                    {
+                                        <tr>
+                                            <td>@duty.Description</td>
+                                            <td>@duty.AssignedDate.ToString("MM/dd/yyyy")</td>
+                                            <td>@duty.Deadline?.ToString("MM/dd/yyyy")</td>
+                                            <td>@duty.Status</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+

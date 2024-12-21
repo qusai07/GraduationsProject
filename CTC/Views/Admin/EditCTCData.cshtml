@@ -1,0 +1,107 @@
+﻿@model CTC.Models.Admin.CtcData
+@{
+    ViewData["Title"] = "Edit Ctc Data Information";
+    Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
+}
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Edit Nahno Information</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="HomeAdmin" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">CTC Information</h5>
+                        <p><strong>Email:</strong> @Model?.Email</p>
+                        <p><strong>City :</strong> @Model?.City</p>
+                        <p><strong>Country :</strong> @Model?.Country</p>
+                        <p><strong>Address :</strong> @Model?.Address</p>
+                        <p><strong>FaceBook :</strong> @Model?.FaceBook</p>
+                        <p><strong>Instagram :</strong> @Model?.Instagram</p>
+
+                        <p><strong>LinedIn :</strong> @Model?.LinedIn</p>
+                        <p><strong>PostalCode :</strong> @Model?.PostalCode</p>
+                        <p><strong>PhoneNumber :</strong> @Model?.PhoneNumber</p>
+                        <p><strong>Nahno :</strong> @Model?.Nahno</p>
+
+
+
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-body ">
+                        <form asp-action="EditCTCData" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label">Email</label>
+                                <textarea asp-for="Email" class="form-control"></textarea>
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="City" class="form-label">City</label>
+                                <input asp-for="City" class="form-control" />
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Country" class="form-label">Country</label>
+                                <input asp-for="Country" class="form-control" />
+                                <span asp-validation-for="Country" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">Address</label>
+                                <input asp-for="Address" class="form-control" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="FaceBook" class="form-label">FaceBook</label>
+                                <input asp-for="FaceBook" class="form-control" />
+                                <span asp-validation-for="FaceBook" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Instagram" class="form-label">Instagram</label>
+                                <input asp-for="Instagram" class="form-control" />
+                                <span asp-validation-for="Instagram" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="LinedIn" class="form-label">LinedIn</label>
+                                <input asp-for="LinedIn" class="form-control" />
+                                <span asp-validation-for="LinedIn" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="PostalCode" class="form-label">PostalCode</label>
+                                <input asp-for="PostalCode" class="form-control" />
+                                <span asp-validation-for="PostalCode" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">PhoneNumber</label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Nahno" class="form-label">Nahno</label>
+                                <input asp-for="Nahno" class="form-control" />
+                                <span asp-validation-for="Nahno" class="text-danger"></span>
+                            </div>
+
+                            <button type="submit" class="btn btn-outline-secondary">Save Changes</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
