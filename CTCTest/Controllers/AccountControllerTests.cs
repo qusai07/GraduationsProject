@@ -1,17 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CTC.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CTC.Data;
-using CTC.Models;
-using Microsoft.AspNetCore.Hosting;
+﻿using CTC.Models;
+using CTCTest.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -19,34 +10,13 @@ using System.Security.Principal;
 namespace CTC.Controllers.Tests
 {
     [TestClass()]
-    public class AccountControllerTests
+    public class AccountControllerTests : TestBase
     {
-        private Mock<UserManager<User>> _mockUserManager;
-        private Mock<SignInManager<User>> _mockSignInManager;
-        private Mock<RoleManager<IdentityRole<int>>> _mockRoleManager;
-        private Mock<IWebHostEnvironment> _mockEnvironment;
-        private Mock<CtcDbContext> _mockDbContext;
         private AccountController _controller;
-
         [TestInitialize]
         public void Setup()
         {
-            // Setup mock dependencies
-            var userStoreMock = new Mock<IUserStore<User>>();
-            _mockUserManager = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-            _mockSignInManager = new Mock<SignInManager<User>>(
-                _mockUserManager.Object,
-                Mock.Of<IHttpContextAccessor>(),
-                Mock.Of<IUserClaimsPrincipalFactory<User>>(),
-                null, null, null, null
-            );
-            _mockRoleManager = new Mock<RoleManager<IdentityRole<int>>>(
-                Mock.Of<IRoleStore<IdentityRole<int>>>(), null, null, null, null
-            );
-            _mockEnvironment = new Mock<IWebHostEnvironment>();
-            _mockDbContext = new Mock<CtcDbContext>(new DbContextOptions<CtcDbContext>());
-
-            // Initialize controller
+            base.BaseSetup();
             _controller = new AccountController(
                 _mockEnvironment.Object,
                 _mockUserManager.Object,
@@ -54,6 +24,7 @@ namespace CTC.Controllers.Tests
                 _mockRoleManager.Object,
                 _mockDbContext.Object
             );
+            SetupControllerContext(_controller);
         }
 
         [TestMethod]

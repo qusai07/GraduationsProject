@@ -43,13 +43,6 @@ namespace CTC.Controllers
         public async Task <IActionResult> Tables()
         {
             var user = await _usermanger.GetUserAsync(User);
-
-            if (user == null)
-            {
-                TempData["Message"] = "User not found.";
-                return RedirectToAction("Index", "Home");
-            }
-
             var volunteerParticipations = await _volunteerRepository.GetVolunteerParticipationsByVolunteerIdAsync(user.Id);
 
             return View(volunteerParticipations);
