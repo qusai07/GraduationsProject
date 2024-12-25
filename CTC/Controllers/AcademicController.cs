@@ -180,33 +180,69 @@ namespace CTC.Controllers
              viewModel = MapToViewModel(pendingRequests);
             return View("~/Views/LeaderDepartment/Academic/ReviewFacultyRequests.cshtml", viewModel);
         }
-        public async Task<IActionResult> ApproveFacultyRequest(int Id)
+        public async Task<IActionResult> ApproveFacultyRequest(int id)
         {
-            var request = await _academicRepository.GetPendingFacultyRequestById(Id);
-            if (request != null)
+            try
             {
+                var request = await _academicRepository.GetPendingFacultyRequestById(id);
+
+                if (request == null)
+                {
+                    return Json(new Dictionary<string, object>
+            {
+                { "success", false },
+                { "message", "Request not found" }
+            });
+                }
+
                 request.Approved = true;
                 await _academicRepository.UpdateFacultyMemberAsync(request);
-                return Json(new { success = true });
-            }                
-           
 
-            return Json(new { success = false });
-
-        }
-        public async Task<IActionResult> ApproveMaterialRequest(int Id)
+                return Json(new Dictionary<string, object>
         {
-            var request = await _academicRepository.GetPendingMaterialRequestById(Id);
-            if (request != null)
-            {
-                request.Approved = true;
-                await _academicRepository.UpdateMaterialAsync(request);
-                return Json(new { success = true });
+            { "success", true },
+            { "message", "Request approved successfully" }
+        });
             }
+            catch (Exception ex)
+            {
+                return Json(new Dictionary<string, object>
+        {
+            { "success", false },
+            { "message", "An error occurred while processing the request" }
+        });
+            }
+        }
+        public async Task<IActionResult> ApproveMaterialRequest(int id)
+        {
+            try
+            {
+                var request = await _academicRepository.GetPendingMaterialRequestById(id);
+                if (request != null)
+                {
+                    request.Approved = true;
+                    await _academicRepository.UpdateMaterialAsync(request);
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Material request approved successfully"
+                    });
+                }
 
-
-            return Json(new { success = false });
-
+                return Json(new
+                {
+                    success = false,
+                    message = "Material request not found"
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "An error occurred while processing the request"
+                });
+            }
         }
         [HttpPost]
         public async Task<IActionResult> RejectFacultyRequest(int Id)
@@ -382,27 +418,6 @@ namespace CTC.Controllers
 
             return RedirectToAction("AddBachelorPrograms");
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     }
 

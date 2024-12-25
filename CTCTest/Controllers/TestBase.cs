@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 namespace CTCTest.Controllers
 {
     public abstract class TestBase
@@ -50,14 +52,7 @@ namespace CTCTest.Controllers
             _mockDbContext = new Mock<CtcDbContext>(new DbContextOptions<CtcDbContext>());
         }
 
-        protected Mock<UserManager<User>> MockUserManager()
-        {
-            var store = new Mock<IUserStore<User>>();
-            var mgr = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            mgr.Object.UserValidators.Add(new UserValidator<User>());
-            mgr.Object.PasswordValidators.Add(new PasswordValidator<User>());
-            return mgr;
-        }
+     
 
         protected void SetupControllerContext(Controller controller)
         {
@@ -78,6 +73,43 @@ namespace CTCTest.Controllers
                 Mock.Of<ITempDataProvider>()
             );
         }
-    
-}
+        protected static Mock<UserManager<User>> MockUserManager()
+        {
+            var store = new Mock<IUserStore<User>>();
+            var options = new Mock<IOptions<IdentityOptions>>();
+            var idOptions = new IdentityOptions();
+            options.Setup(o => o.Value).Returns(idOptions);
+            var userValidators = new List<IUserValidator<User>>();
+            var validator = new Mock<IUserValidator<User>>();
+            userValidators.Add(validator.Object);
+            var pwdValidators = new List<PasswordValidator<User>>();
+            pwdValidators.Add(new PasswordValidator<User>());
+            var userManager = new Mock<UserManager<User>>(
+                store.Object,
+                options.Object,
+                new PasswordHasher<User>(),
+                userValidators,
+                pwdValidators,
+                new UpperInvariantLookupNormalizer(),
+                new IdentityErrorDescriber(),
+                null,
+                new Mock<ILogger<UserManager<User>>>().Object);
+
+            return userManager;
+        }
+        protected virtual Mock<SignInManager<User>> MockSignInManager()
+        {
+            var contextAccessor = new Mock<IHttpContextAccessor>();
+            var claimsFactory = new Mock<IUserClaimsPrincipalFactory<User>>();
+            return new Mock<SignInManager<User>>(_mockUserManager.Object, contextAccessor.Object, claimsFactory.Object, null, null, null, null);
+        }
+
+        protected virtual Mock<RoleManager<IdentityRole<int>>> MockRoleManager()
+        {
+            var store = new Mock<IRoleStore<IdentityRole<int>>>();
+            var roles = new List<IRoleValidator<IdentityRole<int>>>();
+            return new Mock<RoleManager<IdentityRole<int>>>(store.Object, roles, new UpperInvariantLookupNormalizer(), new IdentityErrorDescriber(), null);
+        }
+
+    }
 }

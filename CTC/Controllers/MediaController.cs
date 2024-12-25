@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using CTC.Models.MediaModels;
 using CTC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
-using MimeKit;
 using CTC.Extensions;
-using Microsoft.Identity.Client.Extensions.Msal;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using System.Reflection.Metadata;
-using Org.BouncyCastle.Bcpg.Sig;
+
 
 namespace CTC.Controllers
 {
@@ -43,44 +38,55 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> EditVideoHome(Videohome model)
         {
-            if (ModelState.IsValid)
+            // Always validate the file first if it exists
+            if (model.VideoFile != null && model.VideoFile.Length > 0)
             {
-                if (model.VideoFile != null && model.VideoFile.Length > 0)
+                string[] allowedExtensions = { ".mp4", ".avi", ".mov" };
+                string fileExtension = Path.GetExtension(model.VideoFile.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(fileExtension))
                 {
-                    string[] allowedExtensions = { ".mp4", ".avi", ".mov" };
-                    string fileExtension = Path.GetExtension(model.VideoFile.FileName).ToLower();
+                    ModelState.AddModelError("VideoFile", "Invalid video file format. Allowed formats: .mp4, .avi, .mov");
+                    return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml", model);
+                }
 
-                    if (!allowedExtensions.Contains(fileExtension))
-                    {
-                        ModelState.AddModelError("VideoFile", "Invalid video file format. Allowed formats: .mp4, .avi, .mov");
-                        return View(model); // Return with validation error
-                    }
-
+                try
+                {
                     model.VideoUrl = FileExtensions.ConvertVideoToString(model.VideoFile, _webHostEnvironment);
                 }
-
-                // Save to database
-                var existingVideo = await _ctcDbContext.videohome.FirstOrDefaultAsync();
-                if (existingVideo == null)
+                catch (Exception ex)
                 {
-                    _ctcDbContext.videohome.Add(model);
+                    ModelState.AddModelError("VideoFile", "Error processing video file: " + ex.Message);
+                    return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml", model);
                 }
-                else
-                {
-                    existingVideo.VideoUrl = model.VideoUrl;
-                }
-                await _ctcDbContext.SaveChangesAsync();
-                return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml");
-
             }
 
-            return View(model);
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var existingVideo = await _ctcDbContext.videohome.FirstOrDefaultAsync();
+                    if (existingVideo == null)
+                    {
+                        _ctcDbContext.videohome.Add(model);
+                    }
+                    else
+                    {
+                        existingVideo.VideoUrl = model.VideoUrl;
+                    }
+                    await _ctcDbContext.SaveChangesAsync();
+                    return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml", model);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error saving to database: " + ex.Message);
+                }
+            }
 
-          //  Replace the local file-saving logic in FileExtensions.SaveVideoToStorage with calls to a cloud service(e.g., Azure Blob Storage or AWS S3).
-
+            // If we get here, something went wrong
+            return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml", model);
         }
 
-      
         public async Task<IActionResult> EditWhoWeAre()
         {
 
@@ -105,39 +111,45 @@ namespace CTC.Controllers
         {
             if (ModelState.IsValid)
             {
-                var whoWeAre = await _ctcDbContext.whoWeAre.FirstOrDefaultAsync();             
-                string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
+                try
+                {
+                    var whoWeAre = await _ctcDbContext.whoWeAre.FirstOrDefaultAsync();
 
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
-                { 
+                    if (model.ImageFile != null && model.ImageFile.Length > 0)
+                    {
+                        string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
+                        model.ImageUrl = "/Pic/" + uniqueFileName;
+                    }
+
                     if (whoWeAre == null)
-                {
-                    // Add a new record if not found
-                    _ctcDbContext.whoWeAre.Add(model);
-                }
-               
+                    {
+                        // Add new record
+                        await _ctcDbContext.whoWeAre.AddAsync(model);
+                    }
                     else
-                {
-                    // Update existing record
-                    whoWeAre.Content = model.Content;
-                    whoWeAre.Header = model.Header;
-                    whoWeAre.CountStudent = model.CountStudent;
-                    whoWeAre.ImageUrl = model.ImageUrl = "/Pic/" + uniqueFileName;
+                    {
+                        // Update existing record
+                        whoWeAre.Header = model.Header;
+                        whoWeAre.Content = model.Content;
+                        whoWeAre.CountStudent = model.CountStudent;
+                        whoWeAre.Footer = model.Footer;
+                        if (!string.IsNullOrEmpty(model.ImageUrl))
+                        {
+                            whoWeAre.ImageUrl = model.ImageUrl;
+                        }
+                    }
 
+                    await _ctcDbContext.SaveChangesAsync();
+                    return View("~/Views/LeaderDepartment/Media/EditWhoWeAre.cshtml", model);
                 }
-
-                }
-                else
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "Please upload an image.");
+                    ModelState.AddModelError("", $"Error saving data: {ex.Message}");
                 }
-               
-                await _ctcDbContext.SaveChangesAsync();
             }
 
             return View("~/Views/LeaderDepartment/Media/EditWhoWeAre.cshtml", model);
         }
-
         public async Task<IActionResult> EditNahnoInfo()
         {
             var nahno = await _ctcDbContext.nahno.FirstOrDefaultAsync();
@@ -159,17 +171,18 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> EditNahnoInfo(Nahno model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model.ImageFile != null && model.ImageFile.Length > 0)
             {
-
-                var nahno = await _ctcDbContext.nahno.FirstOrDefaultAsync();
-                string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
-                if (model.ImageFile != null && model.ImageFile.Length > 0)
+                try
                 {
+                    string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
+                    var nahno = await _ctcDbContext.nahno.FirstOrDefaultAsync();
+
                     if (nahno == null)
                     {
                         // Add a new record if not found
-                        _ctcDbContext.nahno.Add(model);
+                        model.ImageUrl = "/Pic/" + uniqueFileName;
+                        await _ctcDbContext.nahno.AddAsync(model);
                     }
                     else
                     {
@@ -178,14 +191,20 @@ namespace CTC.Controllers
                         nahno.subjectone = model.subjectone;
                         nahno.subjecttwo = model.subjecttwo;
                         nahno.subjectThree = model.subjectThree;
-                        nahno.ImageUrl = model.ImageUrl = "/Pic/" + uniqueFileName;
+                        nahno.Link = model.Link;
+                        nahno.ImageUrl = "/Pic/" + uniqueFileName;
                     }
-                    await _ctcDbContext.SaveChangesAsync();
-                }        
-                return View("~/Views/LeaderDepartment/Media/EditNahnoInfo.cshtml",model);
 
+                    await _ctcDbContext.SaveChangesAsync();
+                    return View("~/Views/LeaderDepartment/Media/EditNahnoInfo.cshtml", model);
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", $"Error saving data: {ex.Message}");
+                }
             }
-            return View("~/Views/LeaderDepartment/Media/EditNahnoInfo.cshtml");
+
+            return View("~/Views/LeaderDepartment/Media/EditNahnoInfo.cshtml", model);
         }
 
         public async Task<IActionResult> EditFeatureInfo()
