@@ -3,43 +3,37 @@
     Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
 
 }
-
-
-
-
 <form>
     <main id="main" class="main">
         <div class="pagetitle">
             <h3>Select Event to Generate QR Code</h3>
             <nav>
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a>Pages</a></li>
                     <li class="breadcrumb-item">QR Code</li>
                 </ol>
             </nav>
-        </div><!-- End Page Title -->
-
+        </div>
         <section class="section">
             <div class="row">
                 <div class="col-lg-12">
-
                     <div class="container">
-
                         <div class="row d-flex justify-content-center align-items-center h-100">
-
                             <form asp-action="SelectEventForQrCode" method="get">
                                 <div class="form-group">
                                     <label for="eventId">Select Event</label>
                                     <select id="eventId" name="eventId" class="form-control">
-                                        <option value="">Select an event</option> <!-- Optional default value -->
+                                        <option value="">Select an event</option>
                                         @foreach (var evt in Model)
                                         {
                                             <option value="@evt.Id">@evt.Name - @evt.EventDate.ToString("yyyy-MM-dd")</option>
                                         }
                                     </select>
                                 </div>
-                                <button type="submit" class="btn btn-primary" asp-action="GenerateEventQrCode" asp-controller="Admin">Generate QR Code</button>
 
+                                <!-- Add mb-3 or mt-3 class for margin -->
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary" asp-action="GenerateEventQrCode" asp-controller="Admin">Generate QR Code</button>
+                                </div>
                             </form>
                         </div>
                     </div>

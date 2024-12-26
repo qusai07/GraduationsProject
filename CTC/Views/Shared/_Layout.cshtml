@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -46,17 +48,44 @@
                 </ul>
                 <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
             </nav>
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                    <a class="btn-getstarted dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Account
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @if (User.Identity.IsAuthenticated && signInManager.IsSignedIn(User))
+                        {
+                            var user = await userManager.GetUserAsync(User);
+                            var roleRoutes = new Dictionary<string, (string action, string controller)>
+                {
+        { "Admin", ("Dash", "Admin") },
+        { "LeaderMember", ("HomeLeader", "LeaderMember") },
+        { "AcademicManager", ("HomeAdmin", "Academic") },
+        { "MediaManager", ("Index", "MediaManager") },
+        { "AssociateMemberShip", ("Home", "AssociateMember") },
+        { "AcademicMemberShip", ("MemberAcademic", "AcademicMemberShip") },
+        { "VolunteerManager", ("HomeAdmin", "VolunteerManager") }
+    };
 
-            @if (User.Identity.IsAuthenticated)
-            {
-                <!-- If the user is authenticated (logged in), show the Sign Out button -->
-                <a class="btn-getstarted" asp-action="signout" asp-controller="Account">Sign Out</a>
-            }
-            else
-            {
-                <!-- If the user is not authenticated (not logged in), show the Login button -->
-                <a class="btn-getstarted" asp-action="Login" asp-controller="Account">Login</a>
-            }
+                            foreach (var role in roleRoutes.Keys)
+                            {
+                                if (await userManager.IsInRoleAsync(user, role))
+                                {
+                                    var (action, controller) = roleRoutes[role];
+                                    <li><a class="dropdown-item" asp-action="@action" asp-controller="@controller">Go To Dashboard</a></li>
+                                    break; // Exit after finding first matching role
+                                }
+                            }
+                            <li><a class="dropdown-item" asp-action="signout" asp-controller="Account">Logout</a></li>
+                        }
+                        else
+                        {
+                            <li><a class="dropdown-item" asp-action="Login" asp-controller="Account">Login</a></li>
+                        }
+                    </ul>
+                </li>
+            </ul>
         </div>
     </header>
 

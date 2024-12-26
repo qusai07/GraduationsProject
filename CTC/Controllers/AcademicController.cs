@@ -5,38 +5,24 @@ using CTC.Models.Academic;
 using CTC.Repository.Enum;
 using CTC.Repository.IRepository;
 using CTC.ViewModels.Academic;
-using CTC.ViewModels.MemberShip;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Plugins;
-using System.Reflection;
-
 namespace CTC.Controllers
 {
     [Authorize(Roles = "AcademicManager")]
-    public class AcademicController : Controller
+    public class AcademicController : BaseController
     {
-        private readonly IWebHostEnvironment _environment;
+
+
         private readonly IAcademicRepository _academicRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly CtcDbContext _ctcDbContext;
-        private readonly UserManager<User> _usermanger;
 
-        public AcademicController(IWebHostEnvironment environment, UserManager<User> userManager, IAcademicRepository academicRepository, CtcDbContext ctcDbContext, IUserRepository userRepository)
+        public AcademicController(IWebHostEnvironment environment,CtcDbContext ctcDbContext,UserManager<User> userManager,IUserRepository userRepository,IAcademicRepository academicRepository): base(environment, ctcDbContext, userManager, userRepository)
         {
-            _environment = environment;
             _academicRepository = academicRepository;
-            _userRepository = userRepository;
-            _ctcDbContext = ctcDbContext;
-            _usermanger = userManager;
-
-        
-        
         }
         public override async void OnActionExecuting(ActionExecutingContext filterContext)
         {
@@ -130,7 +116,7 @@ namespace CTC.Controllers
             {
                 return NotFound();
             }
-            var filePath = Path.Combine(_environment.WebRootPath, material.PdfUrl.TrimStart('/'));
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, material.PdfUrl.TrimStart('/'));
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath); // Delete the file
@@ -392,7 +378,7 @@ namespace CTC.Controllers
                 if (model.pdfFile != null && model.pdfFile.Length > 0)
                 {
                     // Call ConvertFileToString to save the file and get its URL
-                    model.PdfUrl = FileExtensions.ConvertFileToString(model.pdfFile, _environment);
+                    model.PdfUrl = FileExtensions.ConvertFileToString(model.pdfFile, _webHostEnvironment);
                 }
 
                 // Save the Bachelor Program to the database

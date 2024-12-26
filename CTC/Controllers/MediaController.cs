@@ -4,23 +4,23 @@ using CTC.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using CTC.Extensions;
+using CTC.Models;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace CTC.Controllers
 {
     [Authorize(Roles = "MediaManager")]
-    public class MediaController : Controller
+    public class MediaController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly CtcDbContext _ctcDbContext; // Assuming you're using Entity Framework Core
-        private readonly IWebHostEnvironment _webHostEnvironment;
-        public MediaController(ILogger<HomeController> logger, CtcDbContext context, IWebHostEnvironment webHostEnvironment)
+        public MediaController(
+         IWebHostEnvironment environment,
+         CtcDbContext ctcDbContext,
+         UserManager<User> userManager,
+         ILogger<HomeController> logger)
+         : base(environment, ctcDbContext, userManager, logger: logger)
         {
-            _ctcDbContext = context;
-            _webHostEnvironment = webHostEnvironment;
-        }
-
-        // Media Dashboard
+        }  // Media Dashboard
         public IActionResult Index()
         {
 

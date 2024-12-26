@@ -45,8 +45,8 @@ namespace CTC.Data
 //Delete any thing after 30 days
 //Image Home with ctcData
 //ctcData footer page
-//we should write it for CTC App
-//[Route("api/[controller]")]
+//Forget Password With confirm Email Otp
+
 
 
 

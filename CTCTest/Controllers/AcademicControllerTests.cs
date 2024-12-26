@@ -7,7 +7,6 @@ using CTC.ViewModels.Academic;
 using CTCTest.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-
 [TestClass]
 public class AcademicControllerTests : TestBase
 {
@@ -16,24 +15,27 @@ public class AcademicControllerTests : TestBase
     private Mock<IUserRepository> _mockUserRepository;
 
     [TestInitialize]
-    public  void Setup()
+    public void Setup()  // Remove override since BaseSetup is different method
     {
-        base.BaseSetup();
+        BaseSetup();    // Call the base class initialization
 
         _mockAcademicRepository = new Mock<IAcademicRepository>();
         _mockUserRepository = new Mock<IUserRepository>();
 
         _controller = new AcademicController(
-            _mockEnvironment.Object,
-            _mockUserManager.Object,
-            _mockAcademicRepository.Object,
-            _dbContext,
-            _mockUserRepository.Object
-        );
+       _mockEnvironment.Object,         // IWebHostEnvironment
+       _dbContext,                      // CtcDbContext
+       _mockUserManager.Object,         // UserManager<User>
+       _mockUserRepository.Object,      // IUserRepository
+       _mockAcademicRepository.Object   // IAcademicRepository
+   );
+
+
 
         SetupControllerContext(_controller);
     }
-    [TestMethod]
+
+[TestMethod]
     public async Task HomeAdmin_ReturnsViewWithCorrectCounts()
     {
         // Arrange

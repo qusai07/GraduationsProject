@@ -14,16 +14,17 @@ using Microsoft.EntityFrameworkCore;
 namespace CTC.Controllers
 {
     [Authorize(Roles = "VolunteerManager")]
-    public class VolunteerManagerController : Controller
+    public class VolunteerManagerController : BaseController
     {
         private readonly IVolunteerRepository _volunteerRepository;
-        private readonly UserManager<User> usermanger;
-        private readonly CtcDbContext _ctcDbContext; 
-        private readonly IWebHostEnvironment _environment;
-        public VolunteerManagerController(CtcDbContext context, IWebHostEnvironment webHostEnvironment ,IVolunteerRepository volunteerRepository)
+
+        public VolunteerManagerController(
+            IWebHostEnvironment environment,
+            CtcDbContext ctcDbContext,
+            UserManager<User> userManager,
+            IVolunteerRepository volunteerRepository)
+            : base(environment, ctcDbContext, userManager)
         {
-            _ctcDbContext = context;
-            _environment=webHostEnvironment;
             _volunteerRepository = volunteerRepository;
         }
 
@@ -47,7 +48,7 @@ namespace CTC.Controllers
         {
             if (ModelState.IsValid)
             {
-                string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _environment);
+                string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
 
                 var newVoluntering = new Volunteering()
                 {
@@ -117,7 +118,7 @@ namespace CTC.Controllers
                     // If an old image exists, delete it
                     if (!string.IsNullOrEmpty(updatevolunteering.ImageUrl))
                     {
-                        string oldFilePath = Path.Combine(_environment.WebRootPath, "Pic", updatevolunteering.ImageUrl);
+                        string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Pic", updatevolunteering.ImageUrl);
                         if (System.IO.File.Exists(oldFilePath))
                         {
                             System.IO.File.Delete(oldFilePath); // Delete the old image
@@ -125,7 +126,7 @@ namespace CTC.Controllers
                     }
 
                     // Save the new image
-                    string uniqueFileName = FileExtensions.ConvertImageToString(updatevolunteering.ImageFile, _environment);
+                    string uniqueFileName = FileExtensions.ConvertImageToString(updatevolunteering.ImageFile, _webHostEnvironment);
                     updatevolunteering.ImageUrl = $"/Pic/{uniqueFileName}"; // Update the ImageUrl with the new image's path
                 }
                 await _volunteerRepository.UpdateVolunteer(updatevolunteering);

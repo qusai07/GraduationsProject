@@ -21,6 +21,9 @@ namespace CTCTest.Controllers
         protected CtcDbContext _dbContext;
         protected Mock<CtcDbContext> _mockDbContext;
 
+
+      
+
         [TestInitialize]
         public virtual void BaseSetup()
         {
@@ -52,7 +55,7 @@ namespace CTCTest.Controllers
             _mockDbContext = new Mock<CtcDbContext>(new DbContextOptions<CtcDbContext>());
         }
 
-     
+
 
         protected void SetupControllerContext(Controller controller)
         {

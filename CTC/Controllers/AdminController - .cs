@@ -19,43 +19,45 @@ namespace CTC.Controllers
 
 {
     [Authorize(Roles = "Admin")]
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
-        private readonly UserManager<User> usermanger;
-        private readonly SignInManager<User> signInManager;
-        private readonly IUserRepository _userRepository;
+        private readonly SignInManager<User> _signInManager;
         private readonly IServiceProvider _provider;
-        private readonly CtcDbContext _ctcDbContext;
         private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly IJoinerRepository _joinerRepository;
-        private readonly IMailService _mailService;
-        private readonly INotificationRepository _notificationRepository;
-        private readonly IEventCtcRepository _eventCtcRepository;
-        private readonly IWebHostEnvironment _environment;
-        public AdminController(IWebHostEnvironment environment, UserManager<User> userManager, SignInManager<User> signInManager, IUserRepository userRepository, IJoinerRepository joinerRepository, IEventCtcRepository eventCtcRepository, INotificationRepository notificationRepository, IServiceProvider serviceProvider, CtcDbContext ctcDbContext, RoleManager<IdentityRole<int>> roleManager, IMailService mailService)
+
+        public AdminController(
+            IWebHostEnvironment environment,
+            CtcDbContext ctcDbContext,
+            UserManager<User> userManager,
+            IUserRepository userRepository,
+            IMailService mailService,
+            INotificationRepository notificationRepository,
+            IEventCtcRepository eventCtcRepository,
+            SignInManager<User> signInManager,
+            IServiceProvider provider,
+            RoleManager<IdentityRole<int>> roleManager,
+            IJoinerRepository joinerRepository)
+            : base(environment, ctcDbContext, userManager, userRepository, mailService,
+                   eventCtcRepository, notificationRepository)
         {
-            this.usermanger = userManager;
-            this.signInManager = signInManager;
-            this._userRepository = userRepository;
-            _provider = serviceProvider;
-            _ctcDbContext = ctcDbContext;
+            _signInManager = signInManager;
+            _provider = provider;
             _roleManager = roleManager;
             _joinerRepository = joinerRepository;
-            _mailService = mailService;
-            _notificationRepository = notificationRepository;
-            _eventCtcRepository = eventCtcRepository;
-            _environment = environment;
         }
         public async Task <IActionResult> Dash()
         {
-            var userCount = await usermanger.Users.CountAsync();
+            var userCount = await _usermanger.Users.CountAsync();
             var JoinerCount = await _joinerRepository.GetUserCountAsync();
             var EventsCount = await _eventCtcRepository.GetEventCountAsync();
             ViewBag.UserCount = userCount;
             ViewBag.JoinerCount = JoinerCount;
             ViewBag.EventsCount = EventsCount;
+
             return View();
         }
+
         public override async void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var messages = _ctcDbContext.contactMessages
@@ -136,7 +138,7 @@ namespace CTC.Controllers
             var password = IdentityServiceExtensions.GenerateRandomPasswordHash();
 
             // Attempt to create the user account
-            var creationResult = await usermanger.CreateAsync(joinerUser, password);
+            var creationResult = await _usermanger.CreateAsync(joinerUser, password);
             if (!creationResult.Succeeded)
             {
                 TempData["Message"] = "Failed to create user account.";
@@ -146,8 +148,8 @@ namespace CTC.Controllers
 
             // Assign the "AcademicMemberShip" role to the new user
             var roleName = "AcademicMemberShip";
-            var joinerAccount = await usermanger.FindByNameAsync(joinerUser.UserName);
-            await usermanger.AddToRoleAsync(joinerAccount, roleName);
+            var joinerAccount = await _usermanger.FindByNameAsync(joinerUser.UserName);
+            await _usermanger.AddToRoleAsync(joinerAccount, roleName);
 
             // Send notification email
             await SendApprovalEmail(joiner, joinerUser.UserName, password);
@@ -190,7 +192,7 @@ namespace CTC.Controllers
             {
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _environment);
+                    string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
                         var achievement = new Achievement()
                         {
                             Id = model.Id,
@@ -295,19 +297,19 @@ namespace CTC.Controllers
         }
         public async Task<IActionResult> TableManager()
         {
-            var users = await usermanger.Users.ToListAsync();
+            var users = await _usermanger.Users.ToListAsync();
             return View(users);
         }
         [HttpPost]
         public async Task<IActionResult> ChangeUserRole(string id, string selectedRole)
         {
-            var user = await usermanger.FindByIdAsync(id);
+            var user = await _usermanger.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
             }
-            var currentRoles = await usermanger.GetRolesAsync(user);
-            var removeResult = await usermanger.RemoveFromRolesAsync(user, currentRoles);
+            var currentRoles = await _usermanger.GetRolesAsync(user);
+            var removeResult = await _usermanger.RemoveFromRolesAsync(user, currentRoles);
             if (!removeResult.Succeeded)
             {
                 return BadRequest("Failed to remove user roles.");
@@ -318,7 +320,7 @@ namespace CTC.Controllers
                 return BadRequest($"Role {selectedRole} does not exist.");
 
             }
-            var addResult = await usermanger.AddToRoleAsync(user, selectedRole);
+            var addResult = await _usermanger.AddToRoleAsync(user, selectedRole);
 
             if (!addResult.Succeeded)
             {
@@ -385,7 +387,7 @@ namespace CTC.Controllers
         }
         public async Task<IActionResult> ConfirmAttendance(int eventId)
         {
-            var volunteer = await usermanger.GetUserAsync(User);
+            var volunteer = await _usermanger.GetUserAsync(User);
             if (volunteer == null)
             {
                 return Unauthorized("You must be logged in to confirm attendance.");
@@ -414,7 +416,7 @@ namespace CTC.Controllers
                 volunteer.Points += 20;
             }
 
-            await usermanger.UpdateAsync(volunteer);
+            await _usermanger.UpdateAsync(volunteer);
 
             TempData["SuccessMessage"] = "Attendance confirmed and points awarded!";
             return RedirectToAction("ConfirmAttendance");
@@ -485,8 +487,8 @@ namespace CTC.Controllers
                 {
                     string roleName = manger.TypeOfUser;
 
-                    var mangerAccount = await usermanger.FindByNameAsync(newmanger.UserName);
-                    await usermanger.AddToRoleAsync(mangerAccount, roleName);
+                    var mangerAccount = await _usermanger.FindByNameAsync(newmanger.UserName);
+                    await _usermanger.AddToRoleAsync(mangerAccount, roleName);
 
                     var subject = "CTC Team";
                     var message = $"Dear {newmanger.UserName},\nI am the official spokesperson for the Computing Technology Club (CTC).\nYou have been selected to represent the:{roleName} department.\n" +
@@ -510,7 +512,7 @@ namespace CTC.Controllers
         {
             if(ModelState.IsValid)
             {
-                string uniqueFileName = FileExtensions.ConvertImageToString(founders.ImageFile, _environment);
+                string uniqueFileName = FileExtensions.ConvertImageToString(founders.ImageFile, _webHostEnvironment);
 
                 var founder = new Founders
                 { 
@@ -550,7 +552,7 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> EditFounder(int id ,Founders founders)
         {
-            string uniqueFileName = FileExtensions.ConvertImageToString(founders.ImageFile, _environment);
+            string uniqueFileName = FileExtensions.ConvertImageToString(founders.ImageFile, _webHostEnvironment);
 
             if (id !=founders.Id)
             {
@@ -644,7 +646,7 @@ namespace CTC.Controllers
             }
             foreach (var userEmail in selectedUsers)
             {
-                var user = await usermanger.FindByEmailAsync(userEmail);
+                var user = await _usermanger.FindByEmailAsync(userEmail);
                 if (user != null)
                 {
                     await _mailService.SendEmailAsync(user.Email, messageBody, subject);
@@ -657,7 +659,7 @@ namespace CTC.Controllers
             }
             TempData["SuccessMessage"] = "Messages sent successfully!";
 
-            var allUsers = usermanger.Users.ToList(); // Fetch all users
+            var allUsers = _usermanger.Users.ToList(); // Fetch all users
             return View("SendMessagesToAnyUser", allUsers);
         }
 
@@ -732,7 +734,7 @@ namespace CTC.Controllers
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
                     // Convert the image file to a unique file name
-                    string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _environment);
+                    string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
 
                     try
                     {

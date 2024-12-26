@@ -32,11 +32,13 @@ namespace CTC.Tests
             _mockVolunteerRepo = new Mock<IVolunteerRepository>();
 
             _controller = new AssociateMemberController(
-                _mockVolunteerRepo.Object,
-                _mockEventRepo.Object,
-                _dbContext,
-                _mockUserManager.Object
-            );
+      _mockEnvironment.Object,          
+      _dbContext,                       
+      _mockUserManager.Object,         
+      _mockEventRepo.Object,            
+      _mockVolunteerRepo.Object         
+  );
+
 
             SetupControllerContext(_controller);
         }
@@ -80,7 +82,7 @@ namespace CTC.Tests
             _mockEventRepo.Setup(repo => repo.GetEventByIdAsync(It.IsAny<int>())).ReturnsAsync((EventsCTC)null);
 
             // Act
-            var result = await _controller.EventsAsync(1);
+            var result = await _controller.Events(1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
@@ -93,7 +95,7 @@ namespace CTC.Tests
             _mockEventRepo.Setup(repo => repo.GetEventByIdAsync(1))
                 .ReturnsAsync(testEvent);
 
-            var result = await _controller.EventsAsync(1);
+            var result = await _controller.Events(1);
 
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             var viewResult = (ViewResult)result;

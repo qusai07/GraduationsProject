@@ -1,8 +1,15 @@
-﻿using CTC.Models;
+﻿using Castle.Core.Configuration;
+using CTC.Models;
+using CTC.Repository.IRepository;
 using CTCTest.Controllers;
+using MailKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Security.Claims;
 using System.Security.Principal;
@@ -13,21 +20,46 @@ namespace CTC.Controllers.Tests
     public class AccountControllerTests : TestBase
     {
         private AccountController _controller;
+        private Mock<ILogger<AccountController>> _mockAccountLogger;
+        private Mock<ILogger<HomeController>> _mockHomeLogger;
+        private Mock<CTC.Repository.IRepository.IMailService> _mockMailService;
+        private Mock<IDistributedCache> _mockCache;
+        // Specify the correct IConfiguration type
+        private Mock<Microsoft.Extensions.Configuration.IConfiguration> _mockConfiguration;
+
         [TestInitialize]
         public void Setup()
         {
-            base.BaseSetup();
+            BaseSetup();
+
+            _mockAccountLogger = new Mock<ILogger<AccountController>>();
+            _mockHomeLogger = new Mock<ILogger<HomeController>>();
+            _mockMailService = new Mock<CTC.Repository.IRepository.IMailService>();
+            _mockCache = new Mock<IDistributedCache>();
+            _mockConfiguration = new Mock<Microsoft.Extensions.Configuration.IConfiguration>();
+
+            // Optional: Setup any configuration values you need for testing
+            _mockConfiguration
+                .Setup(x => x.GetSection(It.IsAny<string>()))
+                .Returns(new Mock<IConfigurationSection>().Object);
+
             _controller = new AccountController(
                 _mockEnvironment.Object,
+                _dbContext,
                 _mockUserManager.Object,
+                _mockMailService.Object,
+                _mockAccountLogger.Object,
                 _mockSignInManager.Object,
                 _mockRoleManager.Object,
-                _mockDbContext.Object
+                _mockCache.Object,
+                _mockConfiguration.Object     // Now using the correct IConfiguration type
             );
+
             SetupControllerContext(_controller);
         }
+    
 
-        [TestMethod]
+    [TestMethod]
         public async Task Login_NotAuthenticated_ReturnsViewResult()
         {
             // Arrange

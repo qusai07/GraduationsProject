@@ -38,16 +38,9 @@
 
     }
 }
-
 <main id="main" class="main">
     <div class="pagetitle">
-        <h1>Profile</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a >Home</a></li>
-                <li class="breadcrumb-item active">Profile</li>
-            </ol>
-        </nav>
+        <h1>@ViewData["Title"]</h1>
     </div>
     <section class="section profile">
         <div class="row">
@@ -143,21 +136,23 @@
                                         <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                     </div>
                                     <div class=" mb-3">
-                                            <div class="mb-3">
-                                                <label asp-for="ImageFile" class="form-label">Upload Image</label>
-                                                <input asp-for="ImageFile" class="form-control" type="file" />
-                                                <span asp-validation-for="ImageFile" class="text-danger"></span>
-                                            </div>
+                                        <div class="mb-3">
+                                            <label asp-for="ImageFile" class="form-label">Upload Image</label>
+                                            <input asp-for="ImageFile" class="form-control" type="file" />
+                                            <span asp-validation-for="ImageFile" class="text-danger"></span>
+                                        </div>
                                     </div>
 
                                     @if (!User.IsInRole("Admin") && !User.IsInRole("AcademicManager") && !User.IsInRole("MediaManager") && !User.IsInRole("VolunteerManager") && !User.IsInRole("LeaderMember"))
                                     {
-                                        <div class="row">
-                                            <div class="col-lg-3 col-md-4 label">FaceBook</div>
-                                            <div class="col-lg-9 col-md-8">@Model.Facebook</div>
-                                        </div> <div class="row">
-                                            <div class="col-lg-3 col-md-4 label">LinkedIn</div>
-                                            <div class="col-lg-9 col-md-8">@Model.LinkedIn</div>
+                                        <div class="mb-3">
+                                            <label asp-for="Facebook" class="control-label">Facebook</label>
+                                            <input asp-for="Facebook" class="form-control" />
+                                            <span asp-validation-for="Facebook" class="text-danger"></span>
+                                        </div> <div class="mb-3">
+                                            <label asp-for="LinkedIn" class="control-label">Phone Number</label>
+                                            <input asp-for="LinkedIn" class="form-control" />
+                                            <span asp-validation-for="LinkedIn" class="text-danger"></span>
                                         </div>
                                     }
                                     <div class="mb-3">

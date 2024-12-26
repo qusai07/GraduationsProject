@@ -22,40 +22,41 @@ namespace CTC.Controllers.Tests
         private AdminController _controller;
         private Mock<IJoinerRepository> _mockJoinerRepository;
         private Mock<IEventCtcRepository> _mockEventRepository;
-        private Mock<IMailService> _mockMailService;
         private Mock<INotificationRepository> _mockNotificationRepository;
-        private Mock<IUserRepository> _mockUserRepository; 
+        private Mock<IMailService> _mockMailService;
+        private Mock<IUserRepository> _mockUserRepository;
 
         [TestInitialize]
-        public void Setup()
+        public override void BaseSetup()
         {
-            // Call base setup to initialize common mocks and dbContext
             base.BaseSetup();
 
             // Initialize mocks
             _mockUserRepository = new Mock<IUserRepository>();
-            _mockJoinerRepository = new Mock<IJoinerRepository>();
-            _mockEventRepository = new Mock<IEventCtcRepository>();
             _mockMailService = new Mock<IMailService>();
             _mockNotificationRepository = new Mock<INotificationRepository>();
+            _mockEventRepository = new Mock<IEventCtcRepository>();
+            _mockJoinerRepository = new Mock<IJoinerRepository>();
 
-            // Initialize controller
             _controller = new AdminController(
-                _mockEnvironment.Object,
-                _mockUserManager.Object,
-                _mockSignInManager.Object,
-                _mockUserRepository.Object,
-                _mockJoinerRepository.Object,
-                _mockEventRepository.Object,
-                _mockNotificationRepository.Object,
-                Mock.Of<IServiceProvider>(),
-                _dbContext,
-                _mockRoleManager.Object,
-                _mockMailService.Object
+                _mockEnvironment.Object,              // IWebHostEnvironment
+                _dbContext,                           // CtcDbContext
+                _mockUserManager.Object,              // UserManager<User>
+                _mockUserRepository.Object,           // IUserRepository
+                _mockMailService.Object,              // IMailService
+                _mockNotificationRepository.Object,   // INotificationRepository
+                _mockEventRepository.Object,          // IEventCtcRepository
+                _mockSignInManager.Object,            // SignInManager<User>
+                Mock.Of<IServiceProvider>(),          // IServiceProvider
+                _mockRoleManager.Object,              // RoleManager<IdentityRole<int>>
+                _mockJoinerRepository.Object          // IJoinerRepository
             );
 
+            // Set up controller context
             SetupControllerContext(_controller);
         }
+
+
         [TestMethod]
         public async Task Dash_ReturnsViewWithCorrectCounts()
         {

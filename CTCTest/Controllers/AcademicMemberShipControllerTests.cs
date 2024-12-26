@@ -28,12 +28,12 @@ namespace CTC.Tests
             _mockUserRepo = new Mock<IUserRepository>();
 
             _controller = new AcademicMemberShipController(
-                _mockEnvironment.Object,
-                _mockUserManager.Object,
-                _mockAcademicRepo.Object,
-                _dbContext,
-                _mockUserRepo.Object
-            );
+     _mockEnvironment.Object,  // IWebHostEnvironment
+     _dbContext,               // CtcDbContext
+     _mockUserManager.Object,  // UserManager<User>
+     _mockUserRepo.Object,     // IUserRepository
+     _mockAcademicRepo.Object  // IAcademicRepository
+ );
 
             SetupControllerContext(_controller);
         }

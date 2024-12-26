@@ -28,10 +28,11 @@ public class VolunteerManagerControllerTests : TestBase
 
         // Initialize controller with the _dbContext from base class
         _controller = new VolunteerManagerController(
-            _dbContext,  // Use the _dbContext from base class
-            _mockEnvironment.Object,
-            _mockVolunteerRepository.Object
-        );
+     _mockEnvironment.Object,          // IWebHostEnvironment environment
+     _dbContext,                       // CtcDbContext ctcDbContext
+     _mockUserManager.Object,          // UserManager<User> userManager
+     _mockVolunteerRepository.Object   // IVolunteerRepository volunteerRepository
+ );
 
         // Setup controller context
         SetupControllerContext(_controller);

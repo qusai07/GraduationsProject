@@ -15,7 +15,7 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllersWithViews();
 builder.Services.AddServiceExtensions(builder.Configuration);
 builder.Services.AddIdentityServiceExtensions(builder.Configuration);
-
+builder.Services.AddDistributedMemoryCache();
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

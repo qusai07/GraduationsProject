@@ -28,11 +28,11 @@ namespace CTCTest.Controllers
 
             // Initialize controller
             _controller = new MediaController(
-                _mockLogger.Object,
-                _dbContext,
-                _mockEnvironment.Object
-            );
-
+             _mockEnvironment.Object,
+             _dbContext,
+             _mockUserManager.Object,
+             _mockLogger.Object
+         );
             // Setup controller context
             SetupControllerContext(_controller);
             SetupUserWithRole("MediaManager");

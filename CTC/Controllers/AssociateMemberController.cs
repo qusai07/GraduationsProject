@@ -1,8 +1,6 @@
 ﻿using CTC.Data;
 using CTC.Models.Volunteer;
 using CTC.Models;
-using CTC.Models.Event;
-using CTC.Repository.Enum;
 using CTC.Repository.IRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,24 +11,18 @@ namespace CTC.Controllers
 
     [Authorize(Roles = "AssociateMemberShip")]
     // this controller for Students not have a role or functionallty in app
-    public class AssociateMemberController : Controller
+    public class AssociateMemberController : BaseController
     {
-        private readonly IEventCtcRepository _eventCtcRepository;
-        private readonly CtcDbContext _ctcDbContext;
-        private readonly UserManager<User> _usermanger;
         private readonly IVolunteerRepository _volunteerRepository;
-        public AssociateMemberController(IVolunteerRepository volunteerRepository ,IEventCtcRepository eventCtcRepository ,CtcDbContext ctcDbContext,UserManager<User> userManager)
+        public AssociateMemberController(IWebHostEnvironment environment,CtcDbContext ctcDbContext,UserManager<User> userManager,IEventCtcRepository eventCtcRepository,IVolunteerRepository volunteerRepository): base(environment, ctcDbContext, userManager, eventCtcRepository: eventCtcRepository)
         {
-            _eventCtcRepository = eventCtcRepository;
-            _ctcDbContext = ctcDbContext;
-            _usermanger = userManager;
             _volunteerRepository = volunteerRepository;
         }
         public IActionResult Home()
         {
             return View();
         }
-        public async Task<IActionResult> EventsAsync(int eventID)
+        public async Task<IActionResult> Events(int eventID)
         {
             var eventEntity = await _eventCtcRepository.GetEventByIdAsync(eventID);
             if (eventEntity == null)
@@ -38,7 +30,7 @@ namespace CTC.Controllers
                 return NotFound();  // Optionally redirect or return a 404 page
             }
 
-            return View(eventEntity);
+            return View("~/Views/AssociateMember/Events.cshtml", eventEntity);
         }
         public async Task <IActionResult> Tables()
         {

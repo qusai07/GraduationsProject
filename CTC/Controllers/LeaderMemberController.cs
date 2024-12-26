@@ -1,26 +1,26 @@
 ﻿using CTC.Data;
+using CTC.Models;
 using CTC.Models.Leader;
 using CTC.Repository.IRepository;
 using CTC.ViewModels.MemberShip;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTC.Controllers
 {
     [Authorize(Roles = "LeaderMember")]
-    public class LeaderMemberController : Controller
+    public class LeaderMemberController : BaseController
     {
-        private readonly CtcDbContext _context;
-        private readonly IUserRepository _userRepository;
-        private readonly IMailService _mailService;
-
-
-        public LeaderMemberController (IMailService  mailService, CtcDbContext context,IUserRepository userRepository)
+        public LeaderMemberController(
+         CtcDbContext ctcDbContext,
+         IUserRepository userRepository,
+         IMailService mailService,
+         IWebHostEnvironment environment,
+         UserManager<User> userManager)
+         : base(environment, ctcDbContext, userManager, userRepository, mailService)
         {
-            _context = context;
-            _userRepository = userRepository;
-            _mailService = mailService;
         }
         public async  Task <IActionResult> TableAppointment()
         
@@ -29,17 +29,17 @@ namespace CTC.Controllers
 
 
 
-            appointments.Waiting = await _context.Appointment
+            appointments.Waiting = await _ctcDbContext.Appointment
            .Where(j => j.Status == "Waiting")
            .OrderBy(a => a.CreatedAt)
            .ToListAsync();
 
-            appointments.Pending = await _context.Appointment
+            appointments.Pending = await _ctcDbContext.Appointment
            .Where(j => j.Status == "Pending")
            .OrderBy(a => a.CreatedAt)
            .ToListAsync();
 
-            appointments.Accepted = await _context.Appointment
+            appointments.Accepted = await _ctcDbContext.Appointment
            .Where(j => j.Status == "Accepted")
            .OrderBy(a => a.CreatedAt)
            .ToListAsync();
@@ -49,7 +49,7 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> BookAppointment(int id, DateTime appointmentDate , string linkMeeting)
         {
-            var appointment = await _context.Appointment
+            var appointment = await _ctcDbContext.Appointment
                     .Include(a => a.Joiner)  
                     .FirstOrDefaultAsync(a => a.AppointmentId == id);
 
@@ -74,10 +74,10 @@ namespace CTC.Controllers
                 await _mailService.SendEmailAsync(joiner.UniversityEmail, subject, message);
             }
             appointment.Status = "Pending";
-            appointment.AppointmentDate = appointmentDate; 
+            appointment.AppointmentDate = appointmentDate;
 
-            _context.Update(appointment);
-            await _context.SaveChangesAsync();
+            _ctcDbContext.Update(appointment);
+            await _ctcDbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(TableAppointment));
         }
@@ -85,7 +85,7 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> MarkAsBooked(int id , string action)
         {
-            var appointment = await _context.Appointment
+            var appointment = await _ctcDbContext.Appointment
                 .Include(a => a.Joiner) 
                 .FirstOrDefaultAsync(a => a.AppointmentId == id);
 
@@ -105,9 +105,9 @@ namespace CTC.Controllers
                  appointment.AppointmentDate = DateTime.Now;  
                  appointment.Joiner.Status = "Accepted"; 
 
-                _context.Appointment.Update(appointment);
-                _context.Joiners.Update(appointment.Joiner);  
-                 await _context.SaveChangesAsync(); 
+                _ctcDbContext.Appointment.Update(appointment);
+                _ctcDbContext.Joiners.Update(appointment.Joiner);  
+                 await _ctcDbContext.SaveChangesAsync(); 
                 
                 return RedirectToAction(nameof(TableAppointment));
 
@@ -116,8 +116,8 @@ namespace CTC.Controllers
             else if (action == "Reject")
             {
                 appointment.Status = "Rejected";
-                _context.Joiners.Update(appointment.Joiner);
-                await _context.SaveChangesAsync();
+                _ctcDbContext.Joiners.Update(appointment.Joiner);
+                await _ctcDbContext.SaveChangesAsync();
 
             }
             return RedirectToAction(nameof(TableAppointment));
@@ -127,12 +127,12 @@ namespace CTC.Controllers
         public async Task<IActionResult> HomeLeader()
         {
             // Fetch summary data for the leader's dashboard
-            var totalAppointments = await _context.Appointment.CountAsync();
-            var waitingAppointments = await _context.Appointment.CountAsync(a => a.Status == "Waiting");
-            var pendingAppointments = await _context.Appointment.CountAsync(a => a.Status == "Pending");
-            var scheduledAppointments = await _context.Appointment.CountAsync(a => a.Status == "Scheduled");
+            var totalAppointments = await _ctcDbContext.Appointment.CountAsync();
+            var waitingAppointments = await _ctcDbContext.Appointment.CountAsync(a => a.Status == "Waiting");
+            var pendingAppointments = await _ctcDbContext.Appointment.CountAsync(a => a.Status == "Pending");
+            var scheduledAppointments = await _ctcDbContext.Appointment.CountAsync(a => a.Status == "Scheduled");
 
-            var recentAppointments = await _context.Appointment
+            var recentAppointments = await _ctcDbContext.Appointment
                 .Include(a => a.Joiner)
                 .OrderByDescending(a => a.CreatedAt)
                 .Take(5)
@@ -152,7 +152,7 @@ namespace CTC.Controllers
 
         public async Task<IActionResult> TableAllAppointment()
         {
-            var allAppointment = await _context.Appointment
+            var allAppointment = await _ctcDbContext.Appointment
                 .Where(j => j.Status == "Accepted")
                 .Include (a => a.Joiner)
                 .OrderByDescending

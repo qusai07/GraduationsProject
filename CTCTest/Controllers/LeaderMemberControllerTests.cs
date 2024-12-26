@@ -6,9 +6,10 @@ using CTC.Data;
 using CTC.Models.Leader;
 using CTC.Repository.IRepository;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using CTCTest.Controllers;
 
 [TestClass]
-public class LeaderMemberControllerTests
+public class LeaderMemberControllerTests :TestBase
 {
     private LeaderMemberController _controller;
     private Mock<IMailService> _mockMailService;
@@ -49,10 +50,12 @@ public class LeaderMemberControllerTests
         _mockUserRepository = new Mock<IUserRepository>();
 
         _controller = new LeaderMemberController(
-            _mockMailService.Object,
-            _dbContext,
-            _mockUserRepository.Object
-        );
+           _dbContext,
+           _mockUserRepository.Object,
+           _mockMailService.Object,
+           _mockEnvironment.Object,
+           _mockUserManager.Object
+       );
     }
     [TestMethod]
     public async Task TableAppointment_ReturnsViewWithCorrectAppointments()

@@ -16,42 +16,43 @@ using Moq;
 public class HomeControllerTests : TestBase
 {
     private HomeController _controller;
-    private Mock<ILogger<HomeController>> _mockLogger;
+    private Mock<ILogger<HomeController>> _mockHomeLogger;
     private Mock<IJoinerRepository> _mockJoinerRepository;
     private Mock<IAcademicRepository> _mockAcademicRepository;
-    private Mock<IUserRepository> _mockUserRepository;
-    private Mock<IMailService> _mockMailService;
     private Mock<IEventCtcRepository> _mockEventCtcRepository;
     private Mock<INotificationRepository> _mockNotificationRepository;
-
+    private Mock<IUserRepository> _mockUserRepository;
+    private Mock<IMailService> _mockMailService;
     [TestInitialize]
-    public  void Setup()
+    public override void BaseSetup()
     {
-        // Call base setup
         base.BaseSetup();
 
         // Initialize mocks
-        _mockLogger = new Mock<ILogger<HomeController>>();
+        _mockHomeLogger = new Mock<ILogger<HomeController>>();
         _mockJoinerRepository = new Mock<IJoinerRepository>();
         _mockAcademicRepository = new Mock<IAcademicRepository>();
-        _mockUserRepository = new Mock<IUserRepository>();
-        _mockMailService = new Mock<IMailService>();
         _mockEventCtcRepository = new Mock<IEventCtcRepository>();
         _mockNotificationRepository = new Mock<INotificationRepository>();
+        _mockUserRepository = new Mock<IUserRepository>();
+        _mockMailService = new Mock<IMailService>();
 
-        // Initialize controller
+
+
+        // Make sure the parameters match exactly with your HomeController constructor
         _controller = new HomeController(
-            _mockUserManager.Object,
-            _mockLogger.Object,
-            _mockEnvironment.Object,
-            _mockJoinerRepository.Object,
-            _mockNotificationRepository.Object,
-            _mockEventCtcRepository.Object,
-            _mockAcademicRepository.Object,
-            _dbContext,
-            _mockUserRepository.Object,
-            _mockMailService.Object
-        );
+       _mockEnvironment.Object,            // IWebHostEnvironment
+       _dbContext,                         // CtcDbContext
+       _mockUserManager.Object,            // UserManager<User>
+       _mockUserRepository.Object,         // IUserRepository
+       _mockMailService.Object,            // IMailService
+       _mockEventCtcRepository.Object,     // IEventCtcRepository
+       _mockNotificationRepository.Object, // INotificationRepository
+       _mockHomeLogger.Object,             // ILogger<HomeController>
+       _mockJoinerRepository.Object,       // IJoinerRepository
+       _mockAcademicRepository.Object      // IAcademicRepository
+   );
+
 
         SetupControllerContext(_controller);
     }

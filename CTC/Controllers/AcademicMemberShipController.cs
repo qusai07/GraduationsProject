@@ -13,22 +13,21 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace CTC.Controllers
 {
     [Authorize(Roles = "AcademicMemberShip")]
-    public class AcademicMemberShipController : Controller
+    public class AcademicMemberShipController : BaseController
     {
-        private readonly IWebHostEnvironment _environment;
         private readonly IAcademicRepository _academicRepository;
-        private readonly IUserRepository _userRepository;
-        private readonly CtcDbContext _ctcDbContext;
-        private readonly UserManager<User> _usermanger;
 
-        public AcademicMemberShipController(IWebHostEnvironment environment,UserManager<User> userManager, IAcademicRepository academicRepository, CtcDbContext ctcDbContext, IUserRepository userRepository)
+        public AcademicMemberShipController(
+            IWebHostEnvironment environment,
+            CtcDbContext ctcDbContext,
+            UserManager<User> userManager,
+            IUserRepository userRepository,
+            IAcademicRepository academicRepository)
+            : base(environment, ctcDbContext, userManager, userRepository)
         {
-            _environment = environment;
             _academicRepository = academicRepository;
-            _userRepository = userRepository;
-            _ctcDbContext = ctcDbContext;
-            _usermanger = userManager;
         }
+
         public override async void OnActionExecuting(ActionExecutingContext filterContext)
         {
             var notification1 = _ctcDbContext.Duties
@@ -81,7 +80,7 @@ namespace CTC.Controllers
             ModelState.Remove("UserId");
             if (ModelState.IsValid)
             {
-                string uniqueFileName = FileExtensions.ConvertFileToString(model.pdfFile, _environment);
+                string uniqueFileName = FileExtensions.ConvertFileToString(model.pdfFile, _webHostEnvironment);
                 if (model.pdfFile != null && model.pdfFile.Length > 0)
                 {
                     var materialSummary = new MaterialSummary
@@ -211,7 +210,7 @@ namespace CTC.Controllers
             }
 
             // Assuming 'PdfUrl' contains the relative path to the PDF file
-            var filePath = Path.Combine(_environment.WebRootPath, material.PdfUrl.TrimStart('/'));
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, material.PdfUrl.TrimStart('/'));
 
             if (System.IO.File.Exists(filePath))
             {

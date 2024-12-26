@@ -15,32 +15,39 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CTC.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
         private readonly IJoinerRepository _joinerRepository;
         private readonly IAcademicRepository _academicRepository;
-        private readonly CtcDbContext _ctcDbContext;
-        private readonly IUserRepository _userRepository;
-        private readonly IMailService _mailService;
-        public readonly IEventCtcRepository _eventCtcRepository;
-        private readonly INotificationRepository _notificationRepository;
-        private readonly IWebHostEnvironment _environment;
-        private readonly UserManager<User> _usermanger;
-        public HomeController(UserManager<User> userManager, ILogger<HomeController> logger, IWebHostEnvironment environment, IJoinerRepository joinerRepository, INotificationRepository notificationRepository, IEventCtcRepository eventCtcRepository, IAcademicRepository academicRepository, CtcDbContext ctcDbContext, IUserRepository userRepository, IMailService mailService)
+        private UserManager<User> object1;
+        private ILogger<HomeController> object2;
+        private IWebHostEnvironment object3;
+        private IUserRepository object4;
+        private INotificationRepository object5;
+        private IEventCtcRepository object6;
+        private IAcademicRepository object7;
+        private CtcDbContext dbContext;
+        private IUserRepository object8;
+        private IMailService object9;
+
+        public HomeController(
+            IWebHostEnvironment environment,
+            CtcDbContext ctcDbContext,
+            UserManager<User> userManager,
+            IUserRepository userRepository,
+            IMailService mailService,
+            IEventCtcRepository eventCtcRepository,
+            INotificationRepository notificationRepository,
+            ILogger<HomeController> logger,
+            IJoinerRepository joinerRepository,
+            IAcademicRepository academicRepository)
+            : base(environment, ctcDbContext, userManager, userRepository, mailService,
+                   eventCtcRepository, notificationRepository, logger)
         {
-            _logger = logger;
             _joinerRepository = joinerRepository;
             _academicRepository = academicRepository;
-            _ctcDbContext = ctcDbContext;
-            _userRepository = userRepository;
-            _mailService = mailService;
-            _eventCtcRepository = eventCtcRepository;
-            _notificationRepository = notificationRepository;
-            _environment = environment;
-            _usermanger = userManager;
-
         }
+
         public async Task<IActionResult> Index()
         {
             var whoWeAre = await _ctcDbContext.whoWeAre.FirstOrDefaultAsync();
@@ -348,7 +355,7 @@ namespace CTC.Controllers
                 return NotFound(); // Return 404 if material is not found
             }
 
-            var filePath = Path.Combine(_environment.WebRootPath, material.PdfUrl.TrimStart('/'));
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, material.PdfUrl.TrimStart('/'));
 
             if (!System.IO.File.Exists(filePath))
             {
