@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CTC.Migrations
 {
     [DbContext(typeof(CtcDbContext))]
-    [Migration("20241226190249_CTC")]
+    [Migration("20250102164423_CTC")]
     partial class CTC
     {
         /// <inheritdoc />

@@ -19,16 +19,6 @@ namespace CTC.Controllers
     {
         private readonly IJoinerRepository _joinerRepository;
         private readonly IAcademicRepository _academicRepository;
-        private UserManager<User> object1;
-        private ILogger<HomeController> object2;
-        private IWebHostEnvironment object3;
-        private IUserRepository object4;
-        private INotificationRepository object5;
-        private IEventCtcRepository object6;
-        private IAcademicRepository object7;
-        private CtcDbContext dbContext;
-        private IUserRepository object8;
-        private IMailService object9;
 
         public HomeController(
             IWebHostEnvironment environment,
@@ -162,16 +152,17 @@ namespace CTC.Controllers
         }
         public async Task<IActionResult> Events()
         {
-            var events = await _eventCtcRepository.GetAllEventsAsync();
-            if (events == null || !events.Any())
+            try
             {
-                return View("NoEvents");  
+                var events = await _eventCtcRepository.GetAllEventsAsync();
+                events ??= new List<CTC.Models.Event.EventsCTC>();
+
+                return View("~/Views/Home/Events.cshtml", events);
             }
-
-         
-
-
-            return View("~/Views/Home/Events.cshtml",events);
+            catch (Exception ex)
+            {
+                return View("~/Views/Home/Events.cshtml", new List<CTC.Models.Event.EventsCTC>());
+            }
         }
         public async Task<IActionResult> About()
         {

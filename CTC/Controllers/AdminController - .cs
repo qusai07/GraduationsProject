@@ -347,6 +347,7 @@ namespace CTC.Controllers
             var events = await _ctcDbContext.Events.Select(m => new EventsCTC
             {
                 Id = m.Id,
+                Name = m.Name,
             }).ToListAsync();
             return View(events);
         }
@@ -730,10 +731,8 @@ namespace CTC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if an image file is provided
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    // Convert the image file to a unique file name
                     string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
 
                     try
@@ -747,37 +746,28 @@ namespace CTC.Controllers
                             EventType = model.EventType, 
                             ImageUrl = "/Pic/" + uniqueFileName  
                         };
-
-                        // Add the event to the database
                         await _eventCtcRepository.AddEventAsync(eventEntity);
-
-                        // Redirect to the events index page after successful creation
-                        return RedirectToAction("Events", "Admin");
+                        return RedirectToAction("CreateEvent", "Admin");
                     }
                     catch (Exception ex)
                     {
-                        // Handle exception (e.g., logging)
                         ModelState.AddModelError("", "An error occurred while creating the event. Please try again.");
                     }
                 }
                 else
                 {
-                    // Add a model error if ImageFile is required but not provided
                     ModelState.AddModelError("ImageFile", "Please provide an image file.");
                 }
             }
             else
             {
-                // If model state is invalid, check which fields are failing
-                // This is optional for debugging, but it will help identify any missing or invalid fields
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 foreach (var error in errors)
                 {
-                    // Log the error messages (or just view them in the debugger)
                     Console.WriteLine(error);
                 }
             }
-            return View(model);
+            return View();
         }
 
       

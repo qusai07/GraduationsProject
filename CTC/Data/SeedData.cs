@@ -18,7 +18,6 @@ namespace CTC.Data
 /*-----Done-----*/              new IdentityRole<int>{Name="AcademicManager"},                                                  
 /*-----DonX-----*/              new IdentityRole<int>{Name="VolunteerManager"},//Done 4 else Delete and upload a new image      
 /*----------------------------------------------------------------------------------------------------------------------------*/
-/*-----XXXX-----*/              new IdentityRole<int>{Name="ActivitiesManager"}, //  Same of the Events 5                       
 /*-----XXXX-----*/              new IdentityRole<int>{Name="MediaManager"}, //?? 6   Manager view layout                        
 /*----------------------------------------------------------------------------------------------------------------------------*/
 /*-----Done-----*/              new IdentityRole<int>{Name="AssociateMemberShip"},   //7                                           
@@ -31,10 +30,10 @@ namespace CTC.Data
             }
             var Admin = new User()
             {
-                UserName = "FarisMajed",
-                Email = "FarisMajed@gmail.com",
-                PhoneNumber = "+962799842558",
-                FullName = "Faris Majed Masa'deh",
+                UserName = "QusaiTahat",
+                Email = "qusaitahat4@gmail.com",
+                PhoneNumber = "+790150089",
+                FullName = "Qusai Nayel Tahat"
             };
             await userManager.CreateAsync(Admin, "Pa$$w0rd");
             await userManager.AddToRoleAsync(Admin, "Admin");
