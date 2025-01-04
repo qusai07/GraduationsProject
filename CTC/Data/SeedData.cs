@@ -13,15 +13,15 @@ namespace CTC.Data
             var roles = new List<IdentityRole<int>>()
             {
 /*----------------------------------------------------------------------------------------------------------------------------*/
-/*-----Done-----*/              new IdentityRole<int>{Name="Admin"},                                                            
-/*-----Done-----*/              new IdentityRole<int>{Name="LeaderMember"},//Administrative body                                
-/*-----Done-----*/              new IdentityRole<int>{Name="AcademicManager"},                                                  
-/*-----DonX-----*/              new IdentityRole<int>{Name="VolunteerManager"},//Done 4 else Delete and upload a new image      
+/*-----Done-----*/              new IdentityRole<int>{Name="Admin"},     // 1                                                       
+/*-----Done-----*/              new IdentityRole<int>{Name="LeaderMember"},// 2                               
+/*-----Done-----*/              new IdentityRole<int>{Name="AcademicManager"}, // 3                                                 
+/*-----DonX-----*/              new IdentityRole<int>{Name="VolunteerManager"},// 4     
 /*----------------------------------------------------------------------------------------------------------------------------*/
-/*-----XXXX-----*/              new IdentityRole<int>{Name="MediaManager"}, //?? 6   Manager view layout                        
+/*-----XXXX-----*/              new IdentityRole<int>{Name="MediaManager"}, // 5                         
 /*----------------------------------------------------------------------------------------------------------------------------*/
-/*-----Done-----*/              new IdentityRole<int>{Name="AssociateMemberShip"},   //7                                           
-/*-----Done-----*/              new IdentityRole<int>{Name="AcademicMemberShip"},    //8                                           
+/*-----Done-----*/              new IdentityRole<int>{Name="AssociateMemberShip"},   // 6                                          
+/*-----Done-----*/              new IdentityRole<int>{Name="AcademicMemberShip"},    // 7                                          
 /*----------------------------------------------------------------------------------------------------------------------------*/ 
               };
             foreach (var role in roles)
@@ -42,11 +42,8 @@ namespace CTC.Data
 }
 
 //Delete any thing after 30 days
-//Image Home with ctcData
+//logo ctcData
 //ctcData footer page
-//Forget Password With confirm Email Otp
-
-
 
 
 

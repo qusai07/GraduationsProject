@@ -4,45 +4,153 @@
     ViewData["Title"] = "Volunteer Work";
     Layout = "~/Views/Shared/_LayoutAssociateMember.cshtml";
 }
-
-<div class="container mt-5">
-    <h2 class="mb-4">Available Volunteer Opportunities</h2>
-
-    <div class="row">
-        @foreach (var item in Model)
+<main id="main" class="main">
+    <div class="container py-4">
+        <!-- Display TempData Messages -->
+        @if (TempData["Message"] != null)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="@item.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Organization</h5>
-                        <p class="card-text"><strong>Date:</strong> @item.Date.ToString("yyyy-MM-dd")</p>
-                        <p class="card-text"><strong>Location:</strong> @item.Location</p>
-                        <p class="card-text"><strong>Type:</strong> @item.Type</p>
-                        <p class="card-text">@item.Description</p>
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
 
-                        <!-- Display Max Participants and Current Participants -->
-                        <p class="card-text"><strong>Max Participants:</strong> @item.MaxParticipants</p>
-                        <p class="card-text"><strong>Current Participants:</strong> @item.CurrentParticipants</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Available Volunteer Opportunities</h2>
+            <span class="badge bg-secondary">@(Model?.Count() ?? 0) Opportunities</span>
+        </div>
 
-                        <!-- Disable the button if there are no remaining spots -->
-                        <form asp-action="SubscribeToEvent" asp-controller="AssociateMember" method="post">
-                            <input type="hidden" name="eventId" value="@item.Id" />
-                            <button type="submit" class="btn btn-primary"
-                                    @(item.CurrentParticipants >= item.MaxParticipants ? "disabled" : "")>
-                                Subscribe
-                            </button>
-                        </form>
+        @if (Model?.Any() == true)
+        {
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Organization"
+                                     style="height: 200px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                     style="height: 200px;">
+                                    <i class="bi bi-people" style="font-size: 3rem;"></i>
+                                </div>
+                            }
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-primary">@item.Organization</h5>
+                                <div class="card-text mb-3">
+                                    <div class="mb-2">
+                                        <i class="bi bi-calendar me-2"></i>
+                                        <strong>Date:</strong> @item.Date.ToString("MMMM dd, yyyy")
+                                    </div>
+                                    <div class="mb-2">
+                                        <i class="bi bi-geo-alt me-2"></i>
+                                        <strong>Location:</strong> @item.Location
+                                    </div>
+                                    <div class="mb-2">
+                                        <i class="bi bi-tag me-2"></i>
+                                        <strong>Type:</strong> @item.Type
+                                    </div>
+                                    <div class="mb-3">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        <p class="mt-1">@item.Description</p>
+                                    </div>
+
+                                    <!-- Participants Progress Bar -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span><strong>Participants:</strong> @item.CurrentParticipants/@item.MaxParticipants</span>
+                                            <span class="@(item.CurrentParticipants >= item.MaxParticipants ? "text-danger" : "text-success")">
+                                                @(item.CurrentParticipants >= item.MaxParticipants ? "Full" : "Available")
+                                            </span>
+                                        </div>
+                                        <div class="progress">
+                                            @{
+                                                var percentage = (item.CurrentParticipants * 100) / item.MaxParticipants;
+                                                var progressClass = percentage >= 100 ? "bg-danger" :
+                                                                   percentage >= 75 ? "bg-warning" : "bg-success";
+                                            }
+                                            <div class="progress-bar @progressClass" role="progressbar"
+                                                 style="width: @percentage%;"
+                                                 aria-valuenow="@percentage" aria-valuemin="0" aria-valuemax="100">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form asp-action="SubscribeToVolunteer" asp-controller="AssociateMember"
+                                      method="post" class="mt-auto">
+                                    <input type="hidden" name="eventId" value="@item.Id" />
+                                    <button type="submit" class="btn btn-secondary w-100 @(item.CurrentParticipants >= item.MaxParticipants ? "disabled" : "")"
+                                            @(item.CurrentParticipants >= item.MaxParticipants ? "disabled" : "")>
+                                        @if (item.CurrentParticipants >= item.MaxParticipants)
+                                        {
+                                            <i class="bi bi-x-circle me-2"></i>
+                                            <span>Full</span>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-check-circle me-2"></i>
+                                            <span>Subscribe</span>
+                                        }
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-calendar-x" style="font-size: 4rem; color: #6c757d;"></i>
                 </div>
+                <h3 class="text-muted mb-3">No Volunteer Opportunities Available</h3>
+                <p class="text-muted">
+                    There are currently no volunteer opportunities. Please check back later.
+                </p>
+                <a href="javascript:window.location.reload();" class="btn btn-outline-primary mt-3">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Refresh Page
+                </a>
             </div>
         }
     </div>
+</main>
 
-    @if (Model == null || !Model.Any())
+<!-- At the top of your container div -->
+<div class="container py-4">
+    <!-- Display Success Messages -->
+    @if (TempData["Message"] != null)
     {
-        <div class="alert alert-info text-center">
-            No volunteer opportunities available at the moment.
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
-</div>
+
+    <!-- Display Error Messages -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+
+    @section Scripts {
+        <script>
+            // Auto dismiss alerts after 5 seconds
+            setTimeout(function () {
+                $('.alert').alert('close');
+            }, 5000);
+        </script>
+    }

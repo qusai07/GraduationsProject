@@ -20,25 +20,22 @@ namespace CTC.Controllers
          ILogger<HomeController> logger)
          : base(environment, ctcDbContext, userManager, logger: logger)
         {
-        }  // Media Dashboard
+        } 
+        // Media Dashboard
         public IActionResult Index()
         {
 
+            ViewData["Title"] = "Media Management";
             return View("~/Views/LeaderDepartment/Media/Index.cshtml");
         }
         public async Task<IActionResult> EditVideoHome()
         {
             var videoHome = await _ctcDbContext.videohome.FirstOrDefaultAsync();
-            if (videoHome == null)
-            {
-                videoHome = new Videohome(); // Create a new instance if no record exists
-            }
-            return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml", videoHome);
+            return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml", videoHome ?? new Videohome());
         }
         [HttpPost]
         public async Task<IActionResult> EditVideoHome(Videohome model)
         {
-            // Always validate the file first if it exists
             if (model.VideoFile != null && model.VideoFile.Length > 0)
             {
                 string[] allowedExtensions = { ".mp4", ".avi", ".mov" };

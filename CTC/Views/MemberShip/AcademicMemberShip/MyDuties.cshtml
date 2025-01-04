@@ -1,7 +1,6 @@
 ﻿@model IEnumerable<CTC.Models.Academic.Duty>
-<h2>My Assigned Duties</h2>
 @{
-    ViewData["Title"] = "Faculty Member";
+    ViewData["Title"] = "Inbox";
     Layout = "~/Views/Shared/_LayoutMemberShip.cshtml";
 }
 <main id="main" class="main">
@@ -9,18 +8,17 @@
         <h1>@ViewData["Title"]</h1>
         <nav>
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a>Tables</a></li>
+                <li class="breadcrumb-item"><a>Duties</a></li>
                 <li class="breadcrumb-item active">@ViewData["Title"]</li>
             </ol>
         </nav>
-    </div><!-- End Page Title -->
+    </div>
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">All Faculty Member </h5>
-                        <!-- Make table responsive -->
+                        <h5 class="card-title">@ViewData["Title"]</h5>
                         <div class="table-responsive">
                             <table class="table datatable">
                                 <thead>

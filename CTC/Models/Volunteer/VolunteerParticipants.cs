@@ -22,6 +22,9 @@ namespace CTC.Models.Volunteer
 
         [Required]
         public string ParticipateName { get; set; }
+        [Required]
+        public string ParticipateEmail { get; set; }
+
 
         // Navigation property
         public Volunteering Volunteering { get; set; }

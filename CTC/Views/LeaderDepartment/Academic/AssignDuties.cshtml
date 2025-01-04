@@ -3,7 +3,6 @@
     ViewData["Title"] = "Assign Duties ";
     Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
 }
-<h2>@ViewData["Title"]</h2>
 <main id="main" class="main">
     <div class="pagetitle">
         <h1>Send Duties To Member</h1>
@@ -13,7 +12,7 @@
                 <li class="breadcrumb-item active">@ViewData["Title"]</li>
             </ol>
         </nav>
-    </div><!-- End Page Title -->
+    </div>
 
     <section class="section">
         <div class="row">
@@ -35,7 +34,7 @@
                                 <span asp-validation-for="SelectedUsers" class="text-danger"></span>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Assign Duties</button>
+                            <button type="submit" class="btn btn-outline-secondary">Assign Duties</button>
                         </form>
                     </div>
                 </div>

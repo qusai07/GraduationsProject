@@ -14,7 +14,6 @@
                         <h2>Edit Esports Information</h2>
                     </div>
                     <div class="card-body">
-                        <!-- Edit Form Section -->
                         <form asp-action="EditEsportInfo" method="post" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label asp-for="HeaderEsports" class="form-label">Header Esports</label>
@@ -59,8 +58,6 @@
                                 <button type="submit" class="btn btn-success">Save Changes</button>
                             </div>
                         </form>
-
-                        <!-- Separate section for deleting games -->
                         <h3>Delete Games</h3>
                         <ul id="DeleteGamesList" class="list-group mt-4">
                             @for (int i = 0; i < Model.Games.Count; i++)

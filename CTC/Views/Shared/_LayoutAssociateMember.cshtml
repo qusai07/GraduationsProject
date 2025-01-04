@@ -11,7 +11,6 @@
     </head>
 </head>
 <body>
-    <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
         <div class="d-flex align-items-center justify-content-between">
             <a asp-action="Home" asp-controller="Academic" class="logo d-flex align-items-center">
@@ -27,34 +26,39 @@
                         <i class="bi bi-search"></i>
                     </a>
                 </li>
-                    <li class="nav-item dropdown pe-3">
+                <li class="nav-item dropdown pe-3">
+                    @{
+                        var user = await userManager.GetUserAsync(User);
                         <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            @if (!string.IsNullOrEmpty(user.ImageUrl))
                             {
-                                <img src="@Model.ImageUrl" alt="Profile" class="rounded-circle" />
+                                <img src="@user.ImageUrl" alt="Profile" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;" />
                             }
                             else
                             {
-                                <p></p>
-
+                                <i class="bi bi-person-circle"></i>
                             }
-                            <span class="d-none d-md-block dropdown-toggle ps-2"></span>
+                            <span class="d-none d-md-block dropdown-toggle ps-2">@user.FullName</span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" asp-action="Profile" asp-controller="Account">
-                                    <i class="bi bi-person"></i>
-                                    <span>My Profile</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" asp-action="signout" asp-controller="Account">
-                                    <i class="bi bi-box-arrow-right"></i>
-                                    <span>Sign Out</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+                    }
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" asp-action="Profile" asp-controller="Account">
+                                <i class="bi bi-person"></i>
+                                <span>My Profile</span>
+                            </a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center" asp-action="signout" asp-controller="Account">
+                                <i class="bi bi-box-arrow-right"></i>
+                                <span>Sign Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </nav>
     </header>
@@ -64,31 +68,31 @@
         <ul class="sidebar-nav" id="sidebar-nav">
 
             <li class="nav-item">
-                <a class="nav-link " asp-action="Events" asp-controller="AssociateMember">
+                <a class="nav-link collapsed" asp-action="Events" asp-controller="AssociateMember">
                     <i class="bi bi-grid"></i>
                     <span>Events</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-action="VolunteerWork" asp-controller="AssociateMember">
+                <a class="nav-link collapsed" asp-action="VolunteerWork" asp-controller="AssociateMember">
                     <i class="bi bi-grid"></i>
                     <span>Volunteer Work</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-action="Tables" asp-controller="AssociateMember">
+                <a class="nav-link collapsed" asp-action="Tables" asp-controller="AssociateMember">
                     <i class="bi bi-grid"></i>
                     <span>Tables</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-action="Profile" asp-controller="Account">
+                <a class="nav-link collapsed" asp-action="Profile" asp-controller="Account">
                     <i class="bi bi-person"></i>
                     <span>Profile</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " asp-action="signout" asp-controller="Account">
+                <a class="nav-link collapsed" asp-action="signout" asp-controller="Account">
                     <i class="bi bi-box-arrow-in-right"></i>
                     <span>LogOut</span>
                 </a>
@@ -97,23 +101,19 @@
         </ul>
     </aside>
     <div>
-        <main role="main" class="pb-3" >
+        <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-    <!-- ======= Footer ======= -->
     <footer id="footer" class="footer">
         <div class="copyright">
             &copy; Copyright <strong><span>CTC</span></strong>. All Rights Reserved
         </div>
-
-    </footer><!-- End Footer -->
+    </footer>
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-    <!-- Vendor JS Files -->
     <script src="~/Admin/assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="~/Admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Template Main JS File -->
     <script src="~/Admin/assets/js/main.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

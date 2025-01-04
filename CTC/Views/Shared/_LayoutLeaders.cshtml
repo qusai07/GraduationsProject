@@ -11,7 +11,6 @@
 <body>
     @inject Microsoft.AspNetCore.Identity.UserManager<CTC.Models.User> Usermanager;
     @inject Microsoft.AspNetCore.Identity.SignInManager<CTC.Models.User> signInManager;
-    <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top d-flex align-items-center">
         <div class="d-flex align-items-center justify-content-between">
             <a asp-action="Home" asp-controller="Academic" class="logo d-flex align-items-center">
@@ -20,8 +19,6 @@
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
         </div>
-        
-        <!-- End Logo -->
         <nav class="header-nav ms-auto">
             <ul class="d-flex align-items-center">
                 @if (signInManager.IsSignedIn(User))
@@ -30,356 +27,336 @@
                     var user = await userManager.GetUserAsync(User);
                     if (await userManager.IsInRoleAsync(user, "AcademicManager"))
                     {
-                    <li class="nav-item dropdown">
-                        <a class="nav-link nav-icon" data-bs-toggle="dropdown">
-                            <i class="bi bi-bell"></i>
-                            <span class="badge bg-primary badge-number">
-                                @(ViewBag.Latestnotification != null ? ViewBag.Latestnotification.Count : 0)
-                            </span>
-                        </a>
-                        <!-- End Notification Icon -->
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-                            <li class="dropdown-header">
-                                You have @(ViewBag.Latestnotification != null ? ViewBag.Latestnotification.Count : 0) new notifications
-                                <a asp-action="DataTable" asp-controller="Admin"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-                            </li>
-                            <li><hr class="dropdown-divider"></li>
-                            @if (ViewBag.Latestnotification != null && ViewBag.Latestnotification.Count > 0)
-                            {
-                                foreach (var notification in ViewBag.Latestnotification)
+                        <li class="nav-item dropdown">
+                            <a class="nav-link nav-icon" data-bs-toggle="dropdown">
+                                <i class="bi bi-bell"></i>
+                                <span class="badge bg-primary badge-number">
+                                    @(ViewBag.Latestnotification != null ? ViewBag.Latestnotification.Count : 0)
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+                                <li class="dropdown-header">
+                                    You have @(ViewBag.Latestnotification != null ? ViewBag.Latestnotification.Count : 0) new notifications
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                @if (ViewBag.Latestnotification != null && ViewBag.Latestnotification.Count > 0)
                                 {
-                                    <li class="notification-item">
-                                        <i class="bi bi-exclamation-circle text-warning"></i>
-                                        <div>
-                                            <h6>@notification.Username </h6>
-                                            <br>   <small class="text-muted">@notification.Message</small>
+                                    foreach (var notification in ViewBag.Latestnotification)
+                                    {
+                                        <li class="notification-item">
+                                            <i class="bi bi-exclamation-circle text-warning"></i>
+                                            <div>
+                                                <h6>@notification.Username </h6>
+                                                <br>   <small class="text-muted">@notification.Message</small>
 
-                                        </div>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                }
-                            }
-                            else
-                            {
-                                <li class="dropdown-item text-center text-muted">You have no new notifications.</li>
-                            }
-                            <li class="dropdown-footer text-center">
-                                <a asp-action="DataTable" asp-controller="Admin">View all notifications</a>
-                            </li>
-                        </ul>
-                    </li>
-                    
-                    }
-                }
-                        
-                        <li class="nav-item dropdown pe-3">
-                            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
-                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
-                                {
-                                    <img src="@Model.ImageUrl" alt="Profile" class="rounded-circle" />
+                                            </div>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    }
                                 }
                                 else
                                 {
-                                    <p>No image</p>
-
+                                    <li class="dropdown-item text-center text-muted">You have no new notifications.</li>
                                 }
-                                <span class="d-none d-md-block dropdown-toggle ps-2"></span>
-                            </a>
+                                <li class="dropdown-footer text-center">
+                                    <div class="mb-2">
+                                        <a asp-action="ReviewMaterialRequests" asp-controller="Academic" class="btn btn-outline-light btn-sm">
+                                            View all material requests
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a asp-action="ReviewFacultyRequests" asp-controller="Academic" class="btn btn-outline-light btn-sm">
+                                            View all faculty requests
+                                        </a>
+                                    </div>
+                                </li>
 
-                            <!-- End Profile Iamge Icon -->
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center" asp-action="Profile" asp-controller="Account">
-                                        <i class="bi bi-person"></i>
-                                        <span>My Profile</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <a class="dropdown-item d-flex align-items-center" asp-action="signout" asp-controller="Account">
-                                        <i class="bi bi-box-arrow-right"></i>
-                                        <span>Sign Out</span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <!-- End Profile Dropdown Items -->
-                        </li>
-                        <!-- End Profile Nav -->
-
-                    </ul>
-        </nav>
-        <!-- End Icons Navigation -->
-        </header>
-    <!-- End Header -->
-    <!-- ======= Sidebar ======= -->
-
-    
-        <aside id="sidebar" class="sidebar">
-            <ul class="sidebar-nav" id="sidebar-nav">
-                @if (signInManager.IsSignedIn(User))
-                {
-
-                    var user = await userManager.GetUserAsync(User);
-                    if (await userManager.IsInRoleAsync(user, "AcademicManager"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link " asp-action="HomeAdmin" asp-controller="Academic">
-                                <i class="bi bi-grid"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-menu-button-wide"></i><span>Dueits</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="AssignDuties" asp-controller="Academic">
-                                        <i class="bi bi-circle"></i><span>Send Duties To Member</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="AddBachelorPrograms" asp-controller="Academic">
-                                        <i class="bi bi-circle"></i><span>Add Bachelor Programs</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="ReviewMaterialRequests" asp-controller="Academic">
-                                        <i class="bi bi-circle"></i><span>Review Material Summaries Tables</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="ReviewFacultyRequests" asp-controller="Academic">
-                                        <i class="bi bi-circle"></i><span>Review Faculty Members Tables</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-
-                                <li>
-                                    <a asp-action="AllMemberShipAcademic" asp-controller="Academic">
-                                        <i class="bi bi-circle"></i><span>Member Academic Tables</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="FacultyMembers" asp-controller="Academic">
-                                        <i class="bi bi-circle"></i><span>Faculty Members Tables</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="TableSummaryMaterial" asp-controller="Academic">
-                                        <i class="bi bi-circle"></i><span>Summary Material Tables</span>
-                                    </a>
-                                </li>
 
                             </ul>
                         </li>
-                        <!-- End Tables Nav -->
 
                     }
-                    else if (await userManager.IsInRoleAsync(user, "AcademicMemberShip"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link " asp-action="Home" asp-controller="AcademicMemberShip">
-                                <i class="bi bi-grid"></i>
-                                <span>Dashboard</span>
+                    <li class="nav-item dropdown pe-3">
+                            <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+                                @if (!string.IsNullOrEmpty(user.ImageUrl))
+                                {
+                                    <img src="@user.ImageUrl" alt="Profile" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;" />
+                                }
+                                else
+                                {
+                                    <i class="bi bi-person-circle"></i>
+                                }
+                                <span class="d-none d-md-block dropdown-toggle ps-2">@user.FullName</span>
                             </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="AddSummaryMaterial" asp-controller="AcademicMemberShip">
-                                        <i class="bi bi-circle"></i><span>Add Material Summaries</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="AddFacultymembers" asp-controller="AcademicMemberShip">
-                                        <i class="bi bi-circle"></i><span>Add Faculty Members</span>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="TableSummaryMaterial" asp-controller="AcademicMemberShip">
-                                        <i class="bi bi-circle"></i><span>Material Summaries Tables</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="FacultyMembers" asp-controller="AcademicMemberShip">
-                                        <i class="bi bi-circle"></i><span>Faculty Members Tables</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- End Tables Nav -->
-
-                    }
-                    else if (await userManager.IsInRoleAsync(user, "VolunteerManager"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link " asp-action="HomeAdmin" asp-controller="VolunteerManager">
-                                <i class="bi bi-grid"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="AddVolunteerwork" asp-controller="VolunteerManager">
-                                        <i class="bi bi-circle"></i><span>Add Volunteer Work</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="TableVolunteerWork" asp-controller="VolunteerManager">
-                                        <i class="bi bi-circle"></i><span>Volunteers Work Table</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="TableParticipation" asp-controller="VolunteerManager">
-                                        <i class="bi bi-circle"></i><span>Table Participations</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- End Tables Nav -->
-
-                    }
-                    else if (await userManager.IsInRoleAsync(user, "LeaderMember"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link " asp-action="HomeLeader" asp-controller="LeaderMember">
-                                <i class="bi bi-grid"></i>
-                                <span>Home</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="TableAppointment" asp-controller="LeaderMember">
-                                        <i class="bi bi-circle"></i><span>Appointment</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="TableAllAppointment" asp-controller="LeaderMember">
-                                        <i class="bi bi-circle"></i><span>Table Appointment</span>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                        <!-- End Tables Nav -->
-
-                    }
-                    else if (await userManager.IsInRoleAsync(user, "MediaManager"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link " asp-action="Index" asp-controller="Media">
-                                <i class="bi bi-grid"></i>
-                                <span>Home</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
-                                <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
-                            </a>
-                            <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                                <li>
-                                    <a asp-action="EditVideoHome" asp-controller="Media">
-                                        <i class="bi bi-circle"></i><span>Edit Video Home</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="EditWhoWeAre" asp-controller="Media">
-                                        <i class="bi bi-circle"></i><span>Edit Who We Are</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="EditNahnoInfo" asp-controller="Media">
-                                        <i class="bi bi-circle"></i><span>Edit Nahno Information</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="EditNahnoInfo" asp-controller="Media">
-                                        <i class="bi bi-circle"></i><span>Edit Nahno Information</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a asp-action="EditSponserInfo" asp-controller="Media">
-                                        <i class="bi bi-circle"></i><span>Edit Sponser Information</span>
-                                    </a>
-                                </li>
-
-
-                                <li>
-                                    <a asp-action="EditEsportInfo" asp-controller="Media">
-                                        <i class="bi bi-circle"></i><span>Edit Esports Information</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                        <!-- End Tables Nav -->
-
-                    }
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" asp-action="Profile" asp-controller="Account">
+                                    <i class="bi bi-person"></i>
+                                    <span>My Profile</span>
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" asp-action="signout" asp-controller="Account">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                    <span>Sign Out</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 }
-                <li class="nav-heading">Pages</li>
-
-                <li class="nav-item">
-                    <a class="nav-link collapsed" asp-action="Profile" asp-controller="Account">
-                        <i class="bi bi-person"></i>
-                        <span>Profile</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link collapsed" asp-action="signout" asp-controller="Account">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        <span>LogOut</span>
-                    </a>
-                </li>
-
             </ul>
-        </aside>
+        </nav>
+    </header>
+    <aside id="sidebar" class="sidebar">
+        <ul class="sidebar-nav" id="sidebar-nav">
+            @if (signInManager.IsSignedIn(User))
+            {
+
+                var user = await userManager.GetUserAsync(User);
+                if (await userManager.IsInRoleAsync(user, "AcademicManager"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" asp-action="HomeAdmin" asp-controller="Academic">
+                            <i class="bi bi-grid"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-menu-button-wide"></i><span>Dueits</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="AssignDuties" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Send duties to member</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="AddBachelorPrograms" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Add bachelor programs</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="ReviewMaterialRequests" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Review material summaries request</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="ReviewFacultyRequests" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Review faculty members request</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+
+                            <li>
+                                <a asp-action="AllMemberShipAcademic" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Member Academic Tables</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="FacultyMembers" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Faculty Members Tables</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="TableSummaryMaterial" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Summary Material Tables</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="BachelorPrograms" asp-controller="Academic">
+                                    <i class="bi bi-circle"></i><span>Bachelor programs tables</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                }
+                else if (await userManager.IsInRoleAsync(user, "AcademicMemberShip"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link " asp-action="Home" asp-controller="AcademicMemberShip">
+                            <i class="bi bi-grid"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="AddSummaryMaterial" asp-controller="AcademicMemberShip">
+                                    <i class="bi bi-circle"></i><span>Add Material Summaries</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="AddFacultymembers" asp-controller="AcademicMemberShip">
+                                    <i class="bi bi-circle"></i><span>Add Faculty Members</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="TableSummaryMaterial" asp-controller="AcademicMemberShip">
+                                    <i class="bi bi-circle"></i><span>Material Summaries Tables</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="FacultyMembers" asp-controller="AcademicMemberShip">
+                                    <i class="bi bi-circle"></i><span>Faculty Members Tables</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                else if (await userManager.IsInRoleAsync(user, "VolunteerManager"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" asp-action="HomeAdmin" asp-controller="VolunteerManager">
+                            <i class="bi bi-grid"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="AddVolunteerwork" asp-controller="VolunteerManager">
+                                    <i class="bi bi-circle"></i><span>Add Volunteer Work</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="TableVolunteerWork" asp-controller="VolunteerManager">
+                                    <i class="bi bi-circle"></i><span>Volunteers Work Table</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="TableParticipation" asp-controller="VolunteerManager">
+                                    <i class="bi bi-circle"></i><span>Table Participations</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                else if (await userManager.IsInRoleAsync(user, "LeaderMember"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link collapsed " asp-action="HomeLeader" asp-controller="LeaderMember">
+                            <i class="bi bi-grid"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="TableAppointment" asp-controller="LeaderMember">
+                                    <i class="bi bi-circle"></i><span>Appointment</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="TableAllAppointment" asp-controller="LeaderMember">
+                                    <i class="bi bi-circle"></i><span>Table Appointment</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                }
+                else if (await userManager.IsInRoleAsync(user, "MediaManager"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" asp-action="Index" asp-controller="Media">
+                            <i class="bi bi-grid"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse">
+                            <i class="bi bi-journal-text"></i><span>Duties</span><i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                            <li>
+                                <a asp-action="EditVideoHome" asp-controller="Media">
+                                    <i class="bi bi-circle"></i><span>Edit Video Home</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="EditWhoWeAre" asp-controller="Media">
+                                    <i class="bi bi-circle"></i><span>Edit Who We Are</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="EditNahnoInfo" asp-controller="Media">
+                                    <i class="bi bi-circle"></i><span>Edit Nahno Information</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-action="EditSponserInfo" asp-controller="Media">
+                                    <i class="bi bi-circle"></i><span>Edit Sponser Information</span>
+                                </a>
+                            </li>
 
 
+                            <li>
+                                <a asp-action="EditEsportInfo" asp-controller="Media">
+                                    <i class="bi bi-circle"></i><span>Edit Esports Information</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+            }
+            <li class="nav-heading">Pages</li>
 
-
-
+            <li class="nav-item">
+                <a class="nav-link collapsed" asp-action="Profile" asp-controller="Account">
+                    <i class="bi bi-person"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" asp-action="signout" asp-controller="Account">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    <span>LogOut</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
     <div>
         <main role="main" class="pb-3">
             @RenderBody()
@@ -391,13 +368,10 @@
             &copy; Copyright <strong><span>CTC</span></strong>. All Rights Reserved
         </div>
 
-    </footer><!-- End Footer -->
+    </footer>
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-    <!-- Vendor JS Files -->
     <script src="~/Admin/assets/vendor/apexcharts/apexcharts.min.js"></script>
     <script src="~/Admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Template Main JS File -->
     <script src="~/Admin/assets/js/main.js"></script>
     @RenderSection("Scripts", required: false)
 

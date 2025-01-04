@@ -404,6 +404,11 @@ namespace CTC.Controllers
 
             return RedirectToAction("AddBachelorPrograms");
         }
+        public async Task<IActionResult> BachelorPrograms()
+        {
+            var bachelorPrograms = await _ctcDbContext.bachelorPrograms.ToListAsync();
+            return View("~/Views/LeaderDepartment/Academic/BachelorPrograms.cshtml", bachelorPrograms);
+        }
 
     }
 

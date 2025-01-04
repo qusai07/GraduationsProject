@@ -786,6 +786,10 @@ namespace CTC.Migrations
                     b.Property<int>("EventId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ParticipateEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ParticipateName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

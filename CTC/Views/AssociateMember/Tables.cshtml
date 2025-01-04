@@ -6,36 +6,52 @@
 
 }
 
+<main id="main" class="main">
+    <div class="pagetitle">
+        <h1>@ViewData["Title"]</h1>
+    
+    </div>
 
-<div class="container mt-5">
-    <h2 class="mb-4">Your Volunteer Events</h2>
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Volunteer participated</h5>
+                        <div class="table-responsive">
+                            @if (Model == null || !Model.Any())
+                            {
+                                <div class="alert alert-info text-center">
+                                    You haven't participated in any volunteer events yet.
+                                </div>
+                            }
+                            else
+                            {
+                                <table class="table datatable">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Event </th>
+                                            <th scope="col">Status</th>
 
-    @if (Model == null || !Model.Any())
-    {
-        <div class="alert alert-info text-center">
-            You haven't participated in any volunteer events yet.
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var participation in Model)
+                                        {
+                                            <tr>
+                                                <td>@participation.Volunteering.Organization</td>
+                                                <td>@participation.Status</td>
+
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    }
-    else
-    {
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th scope="col">Event Date</th>
-                    <th scope="col">Status</th>
+    </section>
 
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var participation in Model)
-                {
-                    <tr>
-                        <td>@participation.ParticipationDate.ToString("yyyy-MM-dd")</td>
-                        <td>@participation.Status</td>
-
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-</div>
+</main>

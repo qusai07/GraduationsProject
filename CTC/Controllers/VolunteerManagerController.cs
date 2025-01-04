@@ -3,12 +3,9 @@ using CTC.Extensions;
 using CTC.Models;
 using CTC.Models.Volunteer;
 using CTC.Repository.IRepository;
-using CTC.Repository.Repository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace CTC.Controllers
@@ -17,8 +14,9 @@ namespace CTC.Controllers
     public class VolunteerManagerController : BaseController
     {
         private readonly IVolunteerRepository _volunteerRepository;
+        private readonly IMailService _mailService;
 
-        public VolunteerManagerController(
+        public VolunteerManagerController(IMailService mailService,
             IWebHostEnvironment environment,
             CtcDbContext ctcDbContext,
             UserManager<User> userManager,
@@ -26,6 +24,8 @@ namespace CTC.Controllers
             : base(environment, ctcDbContext, userManager)
         {
             _volunteerRepository = volunteerRepository;
+            _mailService = mailService;
+
         }
 
         public async Task<IActionResult> HomeAdmin()
@@ -137,5 +137,80 @@ namespace CTC.Controllers
          
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateParticipationStatus(int id, string action )
+        {
+
+            try
+            {
+                var participation = await _ctcDbContext.VolunteerParticipants
+                    .Include(v => v.Volunteering)
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (participation == null)
+                {
+                    TempData["ErrorMessage"] = "Participation record not found.";
+                    return RedirectToAction("Index");
+                }
+
+                if (action.ToLower() == "accept")
+                {
+                    // Check if event is full
+                    var currentParticipants = await _ctcDbContext.VolunteerParticipants
+                        .CountAsync(p => p.VolunteeringId == participation.VolunteeringId
+                                    && p.Status == "Accepted");
+
+                    if (currentParticipants >= participation.Volunteering.MaxParticipants)
+                    {
+                        TempData["ErrorMessage"] = "Cannot accept participant. Event is full.";
+                        return RedirectToAction("Index");
+                    }
+
+                    participation.Status = "Accepted";
+                    await SendEmail(participation.ParticipateEmail,participation.ParticipateName, true, participation.Volunteering.Organization);
+                }
+                else if (action.ToLower() == "reject")
+                {
+                    participation.Status = "Rejected";
+                    await SendEmail(participation.ParticipateEmail, participation.ParticipateName, false, participation.Volunteering.Organization);
+                }
+
+                _ctcDbContext.Update(participation);
+                await _ctcDbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = $"Successfully {participation.Status.ToLower()} {participation.ParticipateName}'s participation.";
+                return RedirectToAction("TableParticipation", "VolunteerManager");
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
+                return RedirectToAction("Index");
+            }
+        }
+
+        private async Task SendEmail(string participationEmail,string participationName, bool isAccepted ,string Organization)
+        {
+            string subject = isAccepted ? "Volunteer Participation Accepted" : "Volunteer Participation Status Update";
+            string message = isAccepted
+
+            ? $@"Dear {participationName},
+            Your participation in the volunteer event {Organization} has been accepted!
+            Event Details:
+            Organization: {Organization}
+            make sure to arrive on time and bring any necessary materials.
+
+            Best regards,
+            CTC Team"
+
+
+           : $@"Dear {participationName},
+            We regret to inform you that your participation in the volunteer event {Organization} could not be accepted at this time.
+            We encourage you to apply for other volunteer opportunities in the future.
+
+            Best regards,
+            CTC Team";
+
+            await _mailService.SendEmailAsync(participationEmail, subject, message);
+        }
     }
 }

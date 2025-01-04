@@ -3,6 +3,7 @@ using CTC.Models;
 using CTC.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CTC.Controllers
 {
@@ -17,15 +18,7 @@ namespace CTC.Controllers
         protected readonly INotificationRepository _notificationRepository;
         protected readonly ILogger _logger;
 
-        protected BaseController(
-            IWebHostEnvironment environment,
-            CtcDbContext ctcDbContext,
-            UserManager<User> userManager,
-            IUserRepository userRepository = null,
-            IMailService mailService = null,
-            IEventCtcRepository eventCtcRepository = null,
-            INotificationRepository notificationRepository = null,
-            ILogger logger = null)
+        protected BaseController(IWebHostEnvironment environment,CtcDbContext ctcDbContext,UserManager<User> userManager,IUserRepository userRepository = null,IMailService mailService = null,IEventCtcRepository eventCtcRepository = null,INotificationRepository notificationRepository = null,ILogger logger = null)
         {
             _webHostEnvironment = environment;
             _ctcDbContext = ctcDbContext;
@@ -36,5 +29,6 @@ namespace CTC.Controllers
             _notificationRepository = notificationRepository;
             _logger = logger;
         }
+    
     }
 }

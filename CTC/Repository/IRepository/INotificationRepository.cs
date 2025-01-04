@@ -14,6 +14,5 @@ namespace CTC.Repository.IRepository
         //Task<List<MaterialSummary>> GetUnreadNotificationMaterialSummariesAsync();
 
 
-
     }
 }

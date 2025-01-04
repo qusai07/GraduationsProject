@@ -27,7 +27,6 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Event ID</th>
                                         <th>Event Name</th>
                                         <th>Date</th>
                                         <th>Location</th>
@@ -41,7 +40,6 @@
                                         foreach (var ev in Model)
                                         {
                                             <tr>
-                                                <td>@ev.Id</td>
                                                 <td>@ev.Name</td>
                                                 <td>@ev.EventDate.ToString("dd MMM yyyy")</td>
                                                 <td>@ev.Location</td>

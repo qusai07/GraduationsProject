@@ -1,19 +1,26 @@
 ﻿@model List<CTC.Models.Academic.BachelorPrograms>
 @{
-    ViewData["Title"] = "Manage Bachelor Programs";
+    ViewData["Title"] = "Add Bachelor Programs";
     Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
 }
 
 <main id="main" class="main">
+    <div class="pagetitle">
+        <h1>Add Bachelor Program</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="HomeAdmin" asp-controller="Academic">Back</a></li>
+                <li class="breadcrumb-item active">@ViewData["Title"]</li>
+            </ol>
+        </nav>
+    </div>
     <section class="section">
         <div class="row">
-            <!-- Section for Adding New Bachelor Program -->
             <div class="col-lg-12">
                 <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="text-center">Add New Bachelor Program</h3>
-                    </div>
                     <div class="card-body">
+                        <h5 class="card-title">@ViewData["Title"]</h5>
+
                         <form asp-action="AddBachelorPrograms" method="post" enctype="multipart/form-data">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -44,57 +51,13 @@
                                 }
                             </div>
 
-                            <button type="submit" class="btn btn-success">Add Program</button>
+                            <button type="submit" class="btn btn-outline-secondary">Add Program</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="row">
-            <!-- Section for Displaying Existing Bachelor Programs -->
-            <div class="col-lg-12">
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h3 class="text-center">All Bachelor Programs</h3>
-                    </div><br />
-                    <div class="card-body">
-                        @if (Model != null && Model.Any())
-                        {
-                            <ul class="list-group">
-                                @foreach (var program in Model)
-                                {
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <strong>@program.Name</strong>
-                                            <p><em>@program.Description</em></p>
-                                            @if (!string.IsNullOrEmpty(program.PdfUrl))
-                                            {
-                                                <p><a href="@program.PdfUrl" target="_blank" class="btn btn-link">View PDF</a></p>
-                                            }
-                                            else
-                                            {
-                                                <p>No PDF available</p>
-                                            }
-                                        </div>
 
-                                        <!-- Delete Button -->
-                                        <form asp-action="DeleteBachelorProgram" method="post" class="d-inline-block" onsubmit="return confirm('Are you sure you want to delete this program?');">
-                                            <input type="hidden" name="Id" value="@program.Id" />
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                        </form>
-                                    </li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <p>No Bachelor Programs available.</p>
-                        }
-                    </div>
-
-                </div>
-            </div>
-        </div>
     </section>
 </main>

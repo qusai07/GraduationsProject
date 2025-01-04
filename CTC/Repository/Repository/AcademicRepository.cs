@@ -155,6 +155,10 @@ namespace CTC.Repository.Repository
                 .ToListAsync();
         }
 
-       
+        public async Task<bool> CheckFacultyMemberEmailExists(string email)
+        {
+            return await _ctcDbContext.facultymembers
+                        .AnyAsync(f => f.Email.ToLower() == email.ToLower());
+        }
     }
 }

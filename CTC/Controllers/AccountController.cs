@@ -113,7 +113,7 @@ namespace CTC.Controllers
                         var resultUser = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, false);
                         if (resultUser.Succeeded)
                         {
-                            return RedirectToAction("AddVolunteerwork", "Volunteer");
+                            return RedirectToAction("HomeAdmin", "Volunteer");
                         }
 
                     }
@@ -228,39 +228,92 @@ namespace CTC.Controllers
             {
                 ModelState.AddModelError(string.Empty, error.Description);
             }
-            return View("EditProfile", user); // You can replace "EditProfile" with your actual edit view name
+            return View("Profile", user);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword()
         {
+           
+            _logger.LogInformation($"Password change attempt for user: {User.Identity.Name}");
             var user = await _usermanger.GetUserAsync(User);
             if (user == null)
             {
+                _logger.LogError("User not found during password change");
                 return RedirectToAction("Login", "Account");
             }
-            var currentPassword = Request.Form["CurrentPassword"];
-            var newPassword = Request.Form["NewPassword"];
-            var confirmPassword = Request.Form["ConfirmPassword"];
+
+            var currentPassword = Request.Form["CurrentPassword"].ToString().Trim();
+            var newPassword = Request.Form["NewPassword"].ToString().Trim();
+            var confirmPassword = Request.Form["ConfirmPassword"].ToString().Trim();
+            bool isValid = true;
+
+            if (string.IsNullOrWhiteSpace(currentPassword))
+            {
+                ModelState.AddModelError("CurrentPassword", "Current Password is required.");
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(newPassword))
+            {
+                ModelState.AddModelError("NewPassword", "New Password is required.");
+                isValid = false;
+            }
+            else if (newPassword.Length < 6)
+            {
+                ModelState.AddModelError("NewPassword", "New Password must be at least 6 characters long.");
+                isValid = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                ModelState.AddModelError("ConfirmPassword", "Confirm Password is required.");
+                isValid = false;
+            }
 
             if (newPassword != confirmPassword)
             {
                 ModelState.AddModelError(string.Empty, "The new password and confirmation password do not match.");
-                return View(user);
-            }
-            var result = await _usermanger.ChangePasswordAsync(user, currentPassword, newPassword);
-            if (result.Succeeded)
-            {
-                await _signInManager.RefreshSignInAsync(user);
-                TempData["SuccessMessage"] = "Password changed successfully.";
-                await _signInManager.SignOutAsync();
-                return RedirectToAction("Login", "Account");
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
+                isValid = false;
             }
 
-            return View(user);
+            if (!isValid)
+            {
+                _logger.LogWarning($"Password change validation failed for user: {user.UserName}");
+
+                ViewData["ActiveTab"] = "profile-change-password";
+                return View("Profile", user);
+            }
+            try
+            {
+                var result = await _usermanger.ChangePasswordAsync(user, currentPassword, newPassword);
+
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation($"Password changed successfully for user: {user.UserName}");
+                    await _signInManager.RefreshSignInAsync(user);
+                    TempData["SuccessMessage"] = "Password changed successfully.";
+
+                    await _signInManager.SignOutAsync();
+                    return RedirectToAction("Login", "Account");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    _logger.LogWarning($"Password change error: {error.Description}");
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                ViewData["ActiveTab"] = "profile-change-password";
+                return View("Profile", user);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Unexpected error during password change for user {user.UserName}");
+                ViewData["ActiveTab"] = "profile-change-password";
+
+                ModelState.AddModelError(string.Empty, "An unexpected error occurred. Please try again.");
+                return View("Profile", user);
+            }
         }
 
         private async Task SendPasswordResetEmail(JoinerViewModel model)

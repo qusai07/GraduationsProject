@@ -214,12 +214,7 @@ namespace CTC.Controllers
                     ModelState.AddModelError("", "Please upload an image file.");
                 }
             }
-
-             
-
-            
-
-            return View(model);
+            return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using CTC.ViewModels.Academic;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CTC.Controllers
 {
@@ -78,28 +82,62 @@ namespace CTC.Controllers
             var currentUser = await _usermanger.GetUserAsync(User);
             model.UserId = currentUser.Id.ToString();
             ModelState.Remove("UserId");
-            if (ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(model.MaterialName))
+            {
+                ModelState.AddModelError("MaterialName", "Material Name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.MaterialDescription))
+            {
+                ModelState.AddModelError("MaterialDescription", "Material Description is required.");
+            }
+
+            if (model.materialsDepartment == 0) 
+            {
+                ModelState.AddModelError("materialsDepartment", "Please select a department.");
+            }
+
+            if (model.pdfFile == null || model.pdfFile.Length == 0)
+            {
+                ModelState.AddModelError("pdfFile", "Please upload a PDF file.");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.MemberName))
+            {
+                ModelState.AddModelError("MemberName", "Your Name is required.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/MemberShip/AcademicMemberShip/AddSummaryMaterial.cshtml", model);
+            }
+
+            try
             {
                 string uniqueFileName = FileExtensions.ConvertFileToString(model.pdfFile, _webHostEnvironment);
-                if (model.pdfFile != null && model.pdfFile.Length > 0)
+
+                var materialSummary = new MaterialSummary
                 {
-                    var materialSummary = new MaterialSummary
-                    {
-                        Id = model.Id,
-                        MaterialName = model.MaterialName,
-                        MaterialDescription = model.MaterialDescription,
-                        materialsDepartment = model.materialsDepartment,
-                        UploadDate = DateTime.Now,
-                        PdfUrl =  uniqueFileName,
-                        username = model.MemberName,
-                        UserId=  model.UserId,
-                        Approved=false
-                    };
-                    await _academicRepository.AddMaterialAsync(materialSummary);
-                    return RedirectToAction(nameof(AddSummaryMaterial));
-                }
+                    MaterialName = model.MaterialName,
+                    MaterialDescription = model.MaterialDescription,
+                    materialsDepartment = model.materialsDepartment,
+                    UploadDate = DateTime.Now,
+                    PdfUrl = uniqueFileName,
+                    username = model.MemberName,
+                    UserId = model.UserId,
+                    Approved = false
+                };
+
+                await _academicRepository.AddMaterialAsync(materialSummary);
+                TempData["SuccessMessage"] = "Material summary uploaded successfully!";
+
+                return RedirectToAction("AddSummaryMaterial");
             }
-            return View("~/Views/MemberShip/Academic/AddSummaryMaterial.cshtml");
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while uploading the material.");
+                return View("~/Views/MemberShip/AcademicMemberShip/AddSummaryMaterial.cshtml", model);
+            }
         }
     
         public async Task<IActionResult> FacultyMembers(int id)
@@ -142,34 +180,84 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFacultymembers(FacultymembersViewModel model)
         {
+            if (model == null)
+            {
+                return BadRequest("Invalid request data.");
+            }
+
             if (!User.Identity.IsAuthenticated)
             {
                 return Unauthorized("User is not authenticated.");
             }
-            var currentUser = await _usermanger.GetUserAsync(User);  // Get the current user
-            
+            var currentUser = await _usermanger.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                _logger.LogError("Current user is null");
+                return Unauthorized("Unable to identify current user.");
+            }
             model.UserId = currentUser.Id.ToString();
             ModelState.Remove("UserId");
 
-            if (ModelState.IsValid)
+            if (model.department == 0)
             {
-                var Facultymembers = new Facultymembers
-                {
-                    Id = model.Id,
-                    NameDoctor = model.Name,
-                    Email = model.Email,
-                    MemberName= model.MemberName,
-                    prefx = model.prefx,
-                    department = model.department,
-                    Approved = false,
-                    UserId=currentUser.Id.ToString()
-                };
-                await _academicRepository.AddFacultymembers(Facultymembers);
-                return View("~/Views/MemberShip/AcademicMemberShip/AddFacultymembers.cshtml");
-
+                ModelState.AddModelError("materialsDepartment", "Please select a department.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Name))
+            {
+                ModelState.AddModelError("Name", "Doctor's Name is required.");
             }
 
-            return View("~/Views/MemberShip/AcademicMemberShip/AddFacultymembers.cshtml");
+            if (model.department == 0)
+            {
+                ModelState.AddModelError("department", "Please select a department.");
+            }
+            if (string.IsNullOrWhiteSpace(model.Email))
+            {
+                ModelState.AddModelError("Email", "Email is required.");
+            }
+            else
+            {
+                try
+                {
+                    var emailExists = await _academicRepository.CheckFacultyMemberEmailExists(model.Email);
+                    if (emailExists)
+                    {
+                        ModelState.AddModelError("Email", "This email is already registered.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Error checking email existence");
+                    return View("~/Views/MemberShip/AcademicMemberShip/AddFacultymembers.cshtml");
+                }
+            }
+            if (!ModelState.IsValid)
+            {
+                return View("~/Views/MemberShip/AcademicMemberShip/AddFacultymembers.cshtml", model);
+            }
+            var facultyMember = new Facultymembers
+            {
+                NameDoctor = model.Name?.Trim(),
+                Email = model.Email?.Trim(),
+                MemberName = model.MemberName?.Trim(),
+                prefx = model.prefx?.Trim(),
+                department = model.department,
+                Approved = false,
+                UserId = currentUser.Id.ToString()
+            };
+
+            try
+            {
+                await _academicRepository.AddFacultymembers(facultyMember);
+                TempData["SuccessMessage"] = "Faculty member added successfully and is pending approval.";
+                return RedirectToAction("AddFacultymembers");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("","Unexpected error while adding faculty member");
+                return View("~/Views/MemberShip/AcademicMemberShip/AddFacultymembers.cshtml", model);
+            }
+
         }
         public async Task<IActionResult> TableSummaryMaterial(string selectedDepartment)
         {

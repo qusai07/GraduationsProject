@@ -3,35 +3,73 @@
     ViewData["Title"] = "Events";
     Layout = "~/Views/Shared/_LayoutAssociateMember.cshtml";
 }
-<div class="container mt-5">
-    <h2 class="mb-4">Available Events Opportunities</h2>
-    <div class="row">
-        @foreach (var item in Model)
+<main id="main" class="main">
+    <div class="container py-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Available Events Opportunities</h2>
+            <span class="badge bg-secondary">@(Model?.Count() ?? 0) Events</span>
+        </div>
+        @if (Model != null && Model.Any())
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img src="@item.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Name</h5>
-                        <p class="card-text"><strong>Date:</strong> @item.EventDate.ToString("yyyy-MM-dd")</p>
-                        <p class="card-text"><strong>Location:</strong> @item.Location</p>
-                        <p class="card-text"><strong>Type:</strong> @item.EventType</p>
-                        <p class="card-text"><strong>Description:</strong>@item.Description</p>
-                        <form asp-action="SubscribeToEvent" asp-controller="AssociateMember" method="post">
-                            <input type="hidden" name="eventId" value="@item.Id" />
-                            <button type="submit" class="btn btn-primary">
-                                Subscribe
-                            </button>
-                        </form>
+            <div class="row">
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name"
+                                     style="height: 200px; object-fit: cover;">
+                            }
+                            else
+                            {
+                                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                                     style="height: 200px;">
+                                    <i class="bi bi-calendar-event" style="font-size: 3rem;"></i>
+                                </div>
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">@item.Name</h5>
+                                <div class="card-text mb-3">
+                                    <div class="mb-2">
+                                        <i class="bi bi-calendar"></i>
+                                        <strong>Date:</strong> @item.EventDate.ToString("MMMM dd, yyyy")
+                                    </div>
+                                    <div class="mb-2">
+                                        <i class="bi bi-geo-alt"></i>
+                                        <strong>Location:</strong> @item.Location
+                                    </div>
+                                    <div class="mb-2">
+                                        <i class="bi bi-tag"></i>
+                                        <strong>Type:</strong> @item.EventType
+                                    </div>
+                                    <div class="mb-3">
+                                        <i class="bi bi-info-circle"></i>
+                                        <strong>Description:</strong>
+                                        <p class="mt-1">@item.Description</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-calendar-x" style="font-size: 4rem; color: #6c757d;"></i>
                 </div>
+                <h3 class="text-muted mb-3">No Events Available</h3>
+                <p class="text-muted">
+                    There are currently no events scheduled. Please check back later for new opportunities.
+                </p>
+                <a href="javascript:window.location.reload();" class="btn btn-outline-secondary mt-3">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh Page
+                </a>
             </div>
         }
     </div>
-    @if (Model == null || !Model.Any())
-    {
-        <div class="alert alert-info text-center">
-            No volunteer opportunities available at the moment.
-        </div>
-    }
-</div>
+</main>
+

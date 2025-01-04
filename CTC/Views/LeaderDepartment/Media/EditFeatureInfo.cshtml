@@ -3,22 +3,12 @@
     Layout = "~/Views/Shared/_LayoutLeaders.cshtml";
 }
 @model IEnumerable<CTC.Models.MediaModels.FeaturesApp>
-
-
 <main id="main" class="main">
     <div class="pagetitle">
         <h1>Edit Nahno Information</h1>
-        <nav>
-
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-action="HomeAdmin" asp-controller="Academic">Back</a></li>
-                <li class="breadcrumb-item active">@ViewData["Title"]</li>
-            </ol>
-        </nav>
-    </div><!-- End Page Title -->
+    </div>
     <section class="section mt-3">
         <div class="row">
-            <!-- Sidebar -->
             <div class="col-lg-3">
                 <div class="list-group">
                     @if (Model != null && Model.Any())
@@ -27,20 +17,19 @@
                         {
                             <a href="#features-tab-@feature.Header.Replace(" ", "-").ToLower()"
                                class="list-group-item list-group-item-action"
-                               data-bs-toggle="tab">@feature.Header
+                               data-bs-toggle="tab">
+                                @feature.Header
                             </a>
 
-                        }
                     }
-                    else
-                    {
-                        <p class="text-muted">No feature content available.</p>
-                    }
+                }
+                else
+                {
+                    <p class="text-muted">No feature content available.</p>
+                }
 
                 </div>
             </div>
-
-            <!-- Main Content -->
             <div class="col-lg-9">
                 @if (Model != null && Model.Any())
                 {
@@ -52,28 +41,20 @@
                                     <div class="card-header text-white">
                                         <h5 class="card-title mb-0">Header: @feature.Header</h5>
                                         <h6 class="card-title mb-0">Content: @feature.Content</h6>
-                                    
+
 
                                     </div>
                                     <div class="card-body">
                                         <form asp-action="EditFeatureInfo" method="post" enctype="multipart/form-data">
-                                            <!-- Include Hidden Input for ID -->
                                             <input type="hidden" name="Id" value="@feature.Id" />
-
-                                            <!-- Header Input -->
                                             <div class="mb-3">
                                                 <label class="form-label">Enter Header</label>
                                                 <input name="Header" class="form-control" value="@feature.Header" placeholder="Enter Header" />
                                             </div>
-
-
-                                            <!-- Content Input -->
                                             <div class="mb-3">
                                                 <label class="form-label">Enter Content</label>
                                                 <textarea name="Content" class="form-control" placeholder="Enter Content">@feature.Content</textarea>
                                             </div>
-
-                                            <!-- Image Input -->
                                             <div class="mb-3">
                                                 <label class="form-label">Upload Image</label>
                                                 <input name="ImageFile" class="form-control" type="file" />
@@ -81,7 +62,7 @@
                                                     <strong>Current Image:</strong>
                                                     @if (!string.IsNullOrEmpty(feature.ImageUrl))
                                                     {
-                                                        <img src="@feature.ImageUrl" class="img-fluid"  />
+                                                        <img src="@feature.ImageUrl" class="img-fluid" />
                                                     }
                                                     else
                                                     {
@@ -89,8 +70,6 @@
                                                     }
                                                 </p>
                                             </div>
-
-                                            <!-- Submit Button -->
                                             <div class="d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary">Save Changes</button>
                                             </div>
@@ -105,8 +84,5 @@
             </div>
         </div>
     </section>
-
- 
-
 </main>
 

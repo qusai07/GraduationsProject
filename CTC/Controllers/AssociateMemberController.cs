@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using CTC.Models.Event;
 namespace CTC.Controllers
 {
 
@@ -24,13 +25,19 @@ namespace CTC.Controllers
         }
         public async Task<IActionResult> Events(int eventID)
         {
-            var eventEntity = await _eventCtcRepository.GetEventByIdAsync(eventID);
-            if (eventEntity == null)
+            var events = await _ctcDbContext.Events.Select(m => new EventsCTC
             {
-                return NotFound();  // Optionally redirect or return a 404 page
-            }
+                Id = m.Id,
+                Location = m.Location,
+                EventType = m.EventType,
+                Name = m.Name,
+                Description = m.Description,
+                EventDate = m.EventDate,
+                ImageUrl = m.ImageUrl,
+            }).ToListAsync();
+          //  return View(events);
 
-            return View("~/Views/AssociateMember/Events.cshtml", eventEntity);
+            return View("~/Views/AssociateMember/Events.cshtml", events);
         }
         public async Task <IActionResult> Tables()
         {
@@ -63,52 +70,58 @@ namespace CTC.Controllers
             return View("~/Views/AssociateMember/VolunteerWork.cshtml", volunteer);
         }
         [HttpPost]
-        public async Task<IActionResult> SubscribeToEvent( int eventId)
+        public async Task<IActionResult> SubscribeToVolunteer(int eventId)
         {
-
-            var user = await _usermanger.GetUserAsync(User);
-            if (user == null)
+            try
             {
-                TempData["Message"] = "You need to be logged in to subscribe.";
-                return RedirectToAction("Login", "Account");
+                var user = await _usermanger.GetUserAsync(User);
+                if (user == null)
+                {
+                    TempData["ErrorMessage"] = "You need to be logged in to subscribe.";
+                    return RedirectToAction("Login", "Account");
+                }
+
+                var eventToSubscribe = await _volunteerRepository.GetVolunteerByIdAsync(eventId);
+                if (eventToSubscribe == null)
+                {
+                    TempData["ErrorMessage"] = "Event not found.";
+                    return RedirectToAction("VolunteerWork", "AssociateMember");
+                }
+
+                var existingSubscription = await _ctcDbContext.VolunteerParticipants
+                    .AnyAsync(vp => vp.VolunteerId == user.Id && vp.EventId == eventId);
+                if (existingSubscription)
+                {
+                    TempData["ErrorMessage"] = "You are already subscribed to this event!";
+                    return RedirectToAction("VolunteerWork", "AssociateMember");
+                }
+                if (eventToSubscribe.CurrentParticipants >= eventToSubscribe.MaxParticipants)
+                {
+                    TempData["ErrorMessage"] = "This event is already full!";
+                    return RedirectToAction("VolunteerWork", "AssociateMember");
+                }
+                var participation = new VolunteerParticipants
+                {
+                    VolunteerId = user.Id,
+                    EventId = eventId,
+                    ParticipationDate = DateTime.Now,
+                    Status = "Subscribed",
+                    ParticipateName = user.UserName,
+                    ParticipateEmail=user.Email
+                };
+
+                _ctcDbContext.VolunteerParticipants.Add(participation);
+                eventToSubscribe.CurrentParticipants++;
+                await _ctcDbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "You have successfully subscribed to the event!";
+                return RedirectToAction("Tables", "AssociateMember");
             }
-
-            // Get the volunteerId from the user
-            int volunteerId = user.Id;  // Assuming user.Id is the volunteerId
-
-            // Get the event details
-            var eventToSubscribe = await _volunteerRepository.GetVolunteerByIdAsync(eventId);
-            if (eventToSubscribe == null)
+            catch (Exception)
             {
-                TempData["Message"] = "Event not found.";
-                return View("~/Views/AssociateMember/VolunteerWork.cshtml");
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
+                return RedirectToAction("VolunteerWork", "AssociateMember");
             }
-
-            // Check if the volunteer is already subscribed to the event
-            var existingSubscription = await _ctcDbContext.VolunteerParticipants
-                .FirstOrDefaultAsync(vp => vp.VolunteerId == volunteerId && vp.EventId == eventId);
-            if (existingSubscription != null)
-            {
-                TempData["Message"] = "You are already subscribed to this event.";
-                return RedirectToAction("~/Views/AssociateMember/VolunteerWork.cshtm", new { id = eventId });
-            }
-            var participation = new VolunteerParticipants
-            {
-                VolunteerId = volunteerId,
-                EventId = eventId,
-                ParticipationDate = DateTime.Now,
-                Status = "Subscribed",
-                ParticipateName=user.UserName,
-            };
-
-            // Step 4: Save to the database
-            _ctcDbContext.VolunteerParticipants.Add(participation);
-            eventToSubscribe.CurrentParticipants++;
-            await _ctcDbContext.SaveChangesAsync();
-
-            // Step 5: Provide feedback to the user
-            TempData["Message"] = "You have successfully subscribed to the event!";
-            return View("~/Views/AssociateMember/VolunteerWork.cshtml");
         }
 
 

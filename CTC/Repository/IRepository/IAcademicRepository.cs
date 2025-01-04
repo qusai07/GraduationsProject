@@ -32,6 +32,8 @@ namespace CTC.Repository.IRepository
         Task<List<Duty>> GetDutiesForMemberAsync(int memberId);
 
 
+        Task<bool> CheckFacultyMemberEmailExists(string email);
+
 
 
     }

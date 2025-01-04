@@ -176,7 +176,7 @@ namespace CTC.Tests
                 .ReturnsAsync((User)null);
 
             // Act
-            var result = await _controller.SubscribeToEvent(1);
+            var result = await _controller.SubscribeToVolunteer(1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -203,7 +203,7 @@ namespace CTC.Tests
                 .ReturnsAsync(volunteering);
 
             // Act
-            var result = await _controller.SubscribeToEvent(1);
+            var result = await _controller.SubscribeToVolunteer(1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -245,7 +245,7 @@ namespace CTC.Tests
            Mock.Of<ITempDataProvider>()
        );
             // Act
-            var result = await _controller.SubscribeToEvent(1);
+            var result = await _controller.SubscribeToVolunteer(1);
 
             // Assert
             Assert.IsNotNull(result);
