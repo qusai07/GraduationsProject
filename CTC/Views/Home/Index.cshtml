@@ -8,38 +8,229 @@
 @inject Microsoft.AspNetCore.Identity.SignInManager<CTC.Models.User> signInManager;
 <link href="https://cdn.jsdelivr.net/npm/glightbox@3.0.0/dist/css/glightbox.min.css" rel="stylesheet">
 <style>
-    /* Adjust size of client logos */
+    
+    .more-features {
+        background-color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .separator {
+        width: 50px;
+        height: 3px;
+        background-color: #388da8;
+        margin-left: 0;
+    }
+
+    .subjects-container {
+        border-left: 4px solid var(--bs-primary);
+        transition: transform 0.3s ease;
+    }
+
+    .subjects-container:hover {
+        transform: translateX(10px);
+    }
+
+    .image-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    .shape-decoration {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background-color: silver;
+        border-radius: 50%;
+        top: -20px;
+        right: -20px;
+        z-index: -1;
+    }
+
+    .image-wrapper img {
+        transition: transform 0.3s ease;
+    }
+
+    .image-wrapper:hover img {
+        transform: scale(1.05);
+    }
+
+        .section-header {
+            text-align: center;
+        }
+
+        .separator {
+            margin: 0 auto;
+        }
+
+        .subjects-container {
+            border-left: none;
+            border-top: 4px solid ;
+        }
+    }
+</style>
+<style>
     .client-img {
         width: 100%;
         height: auto;
-        max-width: 180px; /* Adjust the maximum width of the image */
+        max-width: 180px; 
         transition: transform 0.3s ease-in-out;
     }
-
-    /* Hover effect to enlarge image */
     .client-logo-wrapper:hover .client-img {
-        transform: scale(1.1); /* Make the image slightly bigger on hover */
+        transform: scale(1.1); 
     }
 
-    /* Style for the client name */
     .client-name {
         text-align: center;
         font-weight: bold;
         margin-bottom: 10px;
         font-size: 1.2rem;
-        color: #333;
+        color: black;
     }
-
-    /* Center the modal vertically and horizontally */
     .modal-dialog-centered {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 100vh; /* Make sure modal is vertically centered */
+        height: 100vh;
     }
 
     .modal-dialog {
-        max-width: 500px; /* Adjust modal size */
+        max-width: 500px; 
+    }
+</style>
+<style>
+    .sponsors-section {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .section-divider {
+        width: 60px;
+        height: 3px;
+        background: var(--bs-primary);
+        margin-bottom: 2rem;
+    }
+
+    .sponsor-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .sponsor-wrapper {
+        position: relative;
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .sponsor-img {
+        max-width: 100%;
+        height: auto;
+        transition: transform 0.3s ease;
+        filter: grayscale(100%);
+    }
+
+    .sponsor-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #388da8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: all 0.3s ease;
+        padding: 1rem;
+    }
+
+    .sponsor-name {
+        color: white;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 0.5rem;
+        transform: translateY(20px);
+        transition: transform 0.3s ease;
+    }
+
+    .sponsor-overlay i {
+        color: black;
+        font-size: 1.5rem;
+        transform: translateY(20px);
+        transition: transform 0.3s ease 0.1s;
+    }
+
+    .sponsor-wrapper:hover .sponsor-overlay {
+        opacity: 1;
+    }
+
+    .sponsor-wrapper:hover .sponsor-name,
+    .sponsor-wrapper:hover .sponsor-overlay i {
+        transform: translateY(0);
+    }
+
+    .sponsor-wrapper:hover .sponsor-img {
+        transform: scale(1.1);
+        filter: grayscale(0%);
+    }
+
+    .placeholder-img {
+        width: 100%;
+        height: 100%;
+        background: #f8f9fa;
+        font-size: 2rem;
+    }
+
+    /* Modal Styles */
+    .modal-content {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .sponsor-modal-img {
+        max-height: 200px;
+        object-fit: contain;
+    }
+
+    .modal .btn-primary {
+        padding: 0.5rem 1.5rem;
+        border-radius: 8px;
+    }
+
+    /* Animation */
+     fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .sponsor-card {
+        animation: fadeInUp 0.5s ease forwards;
+        animation-delay: calc(var(--animation-order) * 0.1s);
+    }
+
+    /* Responsive Adjustments */
+     (max-width: 767.98px) {
+        .sponsor-wrapper {
+            padding: 1rem;
+        }
+
+        .sponsor-name {
+            font-size: 0.9rem;
+        }
     }
 </style>
 <main class="main">
@@ -52,7 +243,7 @@
             <div class="d-flex flex-column justify-content-center align-items-center">
                 <h1 data-aos="fade-up">Welcome to <span>CTC</span></h1>
                 <p data-aos="fade-up" data-aos-delay="100">
-                    Empowering Innovation Through Tech || Join us to enrich your knowledge, explore and have fun!
+                    @Model.CtcData.CaptionHome
                     <br>
                 </p>
 
@@ -82,7 +273,15 @@
                     }
                 }
                 <hr>
-                <img src="~/assets/img/logo-png.png" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
+                @if (!string.IsNullOrEmpty(Model.CtcData.LogoUrl))
+                {
+                    <img src="@Model.CtcData.LogoUrl" data-aos="zoom-out" data-aos-delay="300" />
+                }
+                else
+                {
+                    <img src="~/assets/img/logo-png.png" class="img-fluid hero-img" alt="" data-aos="zoom-out" data-aos-delay="300">
+
+                }
             </div>
         </div>
     </section>
@@ -115,7 +314,7 @@
                     <div class="service-item d-flex">
                         <div class="icon flex-shrink-0"><i class="bi bi-bar-chart"></i></div>
                         <div>
-                            <h4 class="title"><a asp-action="AdminstrationDepartment"asp-controller="Home" class="stretched-link">Administration Department</a></h4>
+                            <h4 class="title"><a asp-action="AdminstrationDepartment" asp-controller="Home" class="stretched-link">Administration Department</a></h4>
                             <p class="description">Join the Administration Department and help drive our success. Be part of a team that values efficiency and innovation—your skills can make a real impact!</p>
                         </div>
                     </div>
@@ -125,37 +324,75 @@
     </section>
     <!-- /Header  -->
     <!-- Who We Are Section -->
-    <section id="about" class="about section">
+    <section id="about" class="about-section py-5">
         <div class="container">
-            <div class="row gy-4">
-                <div class="col-lg-6 content" data-aos="fade-up" data-aos-delay="100">
-                    <p class="who-we-are">Who We Are</p>
-                    <h3>@Model.WhoWeAre.Header</h3>
-                    <p class="fst-italic">@Model.WhoWeAre.Content</p>
-                    <ul>
-                        <li><i class="bi bi-check-circle"></i> <span>@Model.WhoWeAre.CountStudent</span></li>
-                        <li>
-                            <i class="bi bi-check-circle"></i>
-                            <span>@Model.WhoWeAre.Footer</span>
-                        </li>
-                    </ul>
-                    <a href="#" class="read-more"><span>Read More</span><i class="bi bi-arrow-right"></i></a>
-                    @if (signInManager.IsSignedIn(User))
-                    {
-                        var user = await userManager.GetUserAsync(User);
-                        if (await userManager.IsInRoleAsync(user, "MediaManager"))
-                        {
-                            <a asp-action="EditWhoWeAre" asp-controller="Media" class="btn btn-outline-secondary">
-                                <span>Edit</span>
-                            </a>
-                        }
-                    }
-                </div>
-                <div class="col-lg-6 about-images" data-aos="fade-up" data-aos-delay="200">
-                    <div class="row gy-4">
-                        <div class="col-lg-12">
-                            <img src="@Model.WhoWeAre.ImageUrl" class="img-fluid" alt="">
+            <div class="row gy-4 align-items-center">
+                <div class="col-lg-6 content pe-lg-5" data-aos="fade-right" data-aos-delay="100">
+                    <h2 class="display-6 fw-bold mb-4">@Model.WhoWeAre.Header</h2>
+                    <div class="content-wrapper mb-4">
+                        <p class="lead text-muted fst-italic">@Model.WhoWeAre.Content</p>
+                    </div>
+                    <div class="features-list mb-4">
+                        <div class="feature-item d-flex align-items-center mb-3 p-3 bg-light rounded-3 hover-card">
+                            <div class="icon-wrapper me-3">
+                                <i class="bi bi-people-fill text-secondary fs-4"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4 class="h6 mb-1">Student Count</h4>
+                                <p class="mb-0 text-muted">@Model.WhoWeAre.CountStudent</p>
+                            </div>
                         </div>
+
+                        <div class="feature-item d-flex align-items-center p-3 bg-light rounded-3 hover-card">
+                            <div class="icon-wrapper me-3">
+                                <i class="bi bi-trophy-fill text-secondary fs-4"></i>
+                            </div>
+                            <div class="feature-content">
+                                <h4 class="h6 mb-1">Achievement</h4>
+                                <p class="mb-0 text-muted">@Model.WhoWeAre.Footer</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons d-flex align-items-center gap-3">
+                        <a asp-action="About" asp-controller="Home" class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                            Read More
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            var user = await userManager.GetUserAsync(User);
+                            if (await userManager.IsInRoleAsync(user, "MediaManager"))
+                            {
+                                <a asp-action="EditWhoWeAre" asp-controller="Media"
+                                   class="btn btn-outline-secondary d-flex align-items-center gap-2">
+                                    <i class="bi bi-pencil-square"></i>
+                                    Edit Content
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <!-- Image Column -->
+                <div class="col-lg-6" data-aos="fade-left" data-aos-delay="200">
+                    <div class="image-wrapper position-relative">
+                        @if (!string.IsNullOrEmpty(Model.WhoWeAre.ImageUrl))
+                        {
+                            <img src="@Model.WhoWeAre.ImageUrl"
+                                 class="img-fluid rounded-4 shadow-lg hover-zoom"
+                                 alt="Who We Are">
+                            <div class="image-decoration"></div>
+                        }
+                        else
+                        {
+                            <div class="placeholder-image bg-light d-flex align-items-center justify-content-center rounded-4"
+                                 style="height: 400px;">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        }
                     </div>
                 </div>
             </div>
@@ -163,36 +400,78 @@
     </section>
     <!-- /Who We Are Section -->
     <!-- Sponser Section -->
-
-    <section id="clients" class="clients section bg-light py-5">
-
+    <section id="clients" class="sponsors-section bg-light py-5">
         <div class="container" data-aos="fade-up">
-
             <!-- Section Header -->
-            <div class="row justify-content-center mb-4">
-                <div class="col-12 text-center">
-                    <h2 class="section-title">Our Sponsors</h2>
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-6 text-center">
+                    <div class="container section-title" data-aos="fade-up">
+                        <h2>Our Sponsors</h2>
+                    </div>
                 </div>
             </div>
 
-            <!-- Client Logos Section -->
-            <div class="row gy-4 justify-content-center">
-
-                @foreach (var sponser in Model.sponsers)
+            <!-- Sponsors Grid -->
+            <div class="row g-4 justify-content-center">
+                @foreach (var sponsor in Model.sponsers)
                 {
-                    <div class="col-xl-2 col-lg-3 col-md-4 col-6 client-logo">
-                        <div class="client-logo-wrapper" data-bs-toggle="modal" data-bs-target="#clientModal@Model.sponsers.IndexOf(sponser)">
-                            <div class="client-name">@sponser.Name</div>
-                            <img src="@sponser.ImageUrl" class="img-fluid client-img" alt="@sponser.Name">
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-6"
+                         data-aos="zoom-in"
+                         data-aos-delay="@(Model.sponsers.IndexOf(sponsor) * 100)">
+                        <div class="sponsor-card"
+                             data-bs-toggle="modal"
+                             data-bs-target="#sponsorModal@(Model.sponsers.IndexOf(sponsor))">
+                            <div class="sponsor-wrapper">
+                                <div class="sponsor-overlay">
+                                    <span class="sponsor-name">@sponsor.Name</span>
+                                    <i class="bi bi-plus-circle"></i>
+                                </div>
+                                @if (!string.IsNullOrEmpty(sponsor.ImageUrl))
+                                {
+                                    <img src="@sponsor.ImageUrl"
+                                         class="img-fluid sponsor-img"
+                                         alt="@sponsor.Name"
+                                         loading="lazy">
+                                }
+                                else
+                                {
+                                    <div class="placeholder-img d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-building text-muted"></i>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal for each sponsor -->
+                    <div class="modal fade" id="sponsorModal@(Model.sponsers.IndexOf(sponsor))" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header border-0">
+                                    <h5 class="modal-title fw-bold">@sponsor.Name</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body text-center">
+                                    <img src="@sponsor.ImageUrl"
+                                         class="img-fluid mb-3 sponsor-modal-img"
+                                         alt="@sponsor.Name">
+                                    <p class="text-muted">@sponsor.Description</p>
+                                </div>
+                                <div class="modal-footer border-0">
+                                    <a href="@sponsor.Description"
+                                       class="btn btn-outline-secondary"
+                                       target="_blank">
+                                        <i class="bi bi-globe me-2"></i>
+                                        Visit Website
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
             </div>
         </div>
     </section>
-
-    <!-- Modal structure for Client 1 -->
-
     @foreach (var sponser in Model.sponsers)
     {
         <div class="modal fade" id="clientModal@Model.sponsers.IndexOf(sponser)" tabindex="-1" aria-labelledby="clientModalLabel@Model.sponsers.IndexOf(sponser)" aria-hidden="true">
@@ -209,9 +488,6 @@
             </div>
         </div>
     }
-
-
-    <!-- Repeat for other clients similarly -->
     <!-- /Sponser Section -->
     <!-- Features Section -->
     <section id="features" class="features section">
@@ -276,21 +552,15 @@
     <!-- /Features Section -->
     <!-- Services Section -->
     <section id="services" class="services section light-background">
-
-        <!-- Section Title -->
         <div class="container section-title" data-aos="fade-up">
             <h2>Services</h2>
             <p>
                 Here are some the services offered by the Computing Technology Club (CTC):
             </p>
-        </div><!-- End Section Title -->
+        </div>
 
         <div class="container">
-
             <div class="row g-5">
-
-
-
                 <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
                     <div class="service-item item-cyan position-relative">
                         <i class="bi bi-activity icon"></i>
@@ -375,35 +645,134 @@
     </section>
     <!-- /Services Section -->
     <!-- Ea Sport Section -->
-    <section id="more-features" class="more-features section">
+    <section id="more-features" class="more-features section py-5">
         <div class="container">
-            <div class="row justify-content-around gy-4">
-                <div class="col-lg-6 d-flex flex-column justify-content-center order-2 order-lg-1" data-aos="fade-up" data-aos-delay="100">
-                    <h3>@Model.esports.HeaderEsports</h3>
-                    <p>@Model.esports.ContentEsports</p>
-                    <div class="row">
+            <div class="row justify-content-around align-items-center gy-4">
+                <!-- Content Column -->
+                <div class="col-lg-6 d-flex flex-column justify-content-center order-2 order-lg-1"
+                     data-aos="fade-up" data-aos-delay="100">
+
+                    <!-- Header -->  
+                    <div class="container section-title" data-aos="fade-up">
+                        <h2>@Model.esports.HeaderEsports</h2>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="content-wrapper mb-4">
+                        <p class="lead text-muted">@Model.esports.ContentEsports</p>
+                    </div>
+
+                    <!-- Games Grid -->
+                    <div class="row g-4">
                         @for (int i = 0; i < Model.esports.Games.Count; i++)
                         {
-                            <div class="col-lg-6 icon-box d-flex">
-                                <i class="bi bi-easel flex-shrink-0"></i>
-                                <div>
-                                    <h4>@Model.esports.Games[i]</h4>
-                                    <p>@Model.esports.ContentGames[i]</p>
+                            <div class="col-md-6">
+                                <div class="game-card h-100 p-4 bg-light rounded-4 shadow-sm hover-card">
+                                    <div class="d-flex align-items-start">
+                                        <div class="icon-wrapper me-3">
+                                            <i class="bi bi-controller text-primary" style="font-size: 2rem;"></i>
+                                        </div>
+                                        <div class="game-content">
+                                            <h4 class="h5 fw-bold mb-2">@Model.esports.Games[i]</h4>
+                                            <p class="text-muted mb-0">@Model.esports.ContentGames[i]</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         }
                     </div>
                 </div>
-                <div class="features-image col-lg-5 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="200">
-                    <img src="assets/img/features-3.jpg" alt="">
-                    <img src="@Model.esports.ImageFile" alt="">
 
+                <!-- Image Column -->
+                <div class="col-lg-5 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="200">
+                    <div class="image-wrapper position-relative">
+                        @if (!string.IsNullOrEmpty(Model.esports.ImageUrl))
+                        {
+                            <img src="@Model.esports.ImageUrl"
+                                 alt="eSports Feature Image"
+                                 class="img-fluid rounded-4 shadow-lg hover-zoom"
+                                 style="object-fit: cover; width: 100%;">
+                            <div class="image-overlay"></div>
+                        }
+                        else
+                        {
+                            <div class="placeholder-image bg-light d-flex align-items-center justify-content-center rounded-4"
+                                 style="height: 400px;">
+                                <i class="bi bi-controller text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        }
+                        <div class="decoration-circle"></div>
+                    </div>
                 </div>
             </div>
         </div>
-
     </section>
     <!-- /Ea Sport Section -->
+    <!-- Nahno Section -->
+    <section id="more-features" class="more-features section py-8">
+        <div class="container">
+            <div class="row justify-content-around align-items-center gy-4">
+                <!-- Content Column -->
+                <div class="col-lg-6 d-flex flex-column justify-content-center order-2 order-lg-1"
+                     data-aos="fade-up" data-aos-delay="100">
+
+                    <!-- Header -->
+                    <div class="container section-title" data-aos="fade-up">
+                        <h2>Nahno</h2>
+                    </div>
+
+                    <!-- Main Content -->
+                    <div class="content-wrapper mb-4">
+                        <p class="lead text-muted">@Model.Nahno.Content</p>
+                    </div>
+
+                    <!-- Subjects Box -->
+                    <div class="subjects-container bg-light p-4 rounded-3 shadow-sm">
+                        <div class="row">
+                            <div class="col-12">
+                                <ul class="list-unstyled ">
+                                    <li class="mb-3 d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill text-secondary me-3"></i>
+                                        <span class="fw-semibold">@Model.Nahno.subjectone</span>
+                                    </li>
+                                    <li class="mb-3 d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill text-secondary me-3"></i>
+                                        <span class="fw-semibold">@Model.Nahno.subjecttwo</span>
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <i class="bi bi-check-circle-fill text-secondary me-3"></i>
+                                        <span class="fw-semibold">@Model.Nahno.subjectThree</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Column -->
+                <div class="col-lg-5 order-1 order-lg-2" data-aos="fade-up" data-aos-delay="200">
+                    <div class="image-wrapper position-relative">
+                        @if (!string.IsNullOrEmpty(Model.Nahno.ImageUrl))
+                        {
+                            <img src="@Model.Nahno.ImageUrl"
+                                 alt="Nahno Feature Image"
+                                 class="img-fluid rounded-4 shadow-lg"
+                                 style="object-fit: cover; width: 100%; height: 100%;">
+                        }
+                        else
+                        {
+                            <div class="placeholder-image bg-light d-flex align-items-center justify-content-center rounded-4"
+                                 style="height: 400px;">
+                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                            </div>
+                        }
+                        <div class="shape-decoration position-absolute"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Nahno Section -->
     <!-- Founders Section -->
     <section id="testimonials" class="testimonials section light-background">
         <div class="container section-title" data-aos="fade-up">
@@ -493,7 +862,7 @@
                     <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
                         <i class="bi bi-geo-alt"></i>
                         <h3>Address</h3>
-                        <p>@Model.CtcData.City , @Model.CtcData.PostalCode</p>
+                        <p>@Model.CtcData.City , @Model.CtcData.CaptionHome</p>
                     </div>
                 </div><!-- End Info Item -->
 
@@ -556,7 +925,7 @@
                                     <div class="loading" style="display:none;">Loading</div>
                                 }
 
-                                <input type="submit" value="Send Message" class="btn btn-primary" />
+                                <input type="submit" value="Send Message" class="btn btn-outline-secondary" />
                             </div>
                         </div>
                     </form>
@@ -571,18 +940,7 @@
     <!-- /Contact Section -->
     <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 </main>
-
-
-
-
-
 <script src="https://cdn.jsdelivr.net/npm/glightbox@3.0.0/dist/js/glightbox.min.js"></script>
-
-
-
-
-
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const lightbox = GLightbox({

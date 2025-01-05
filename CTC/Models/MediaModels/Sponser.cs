@@ -18,5 +18,7 @@ namespace CTC.Models.MediaModels
         public IFormFile ImageFile { get; set; }
         public List<string>? sponsers { get; set; }
 
+        public string Website { get; set; }
+
     }
 }

@@ -244,10 +244,10 @@ namespace CTC.Controllers
                     }
                 }
                 await _ctcDbContext.SaveChangesAsync();
-                return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml");
+                return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml", model);
             }
 
-            return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml",model);
+            return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml");
         }
         public async Task<IActionResult> EditEsportInfo()
         {
@@ -275,48 +275,38 @@ namespace CTC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Retrieve the existing esport record
                 var esport = await _ctcDbContext.esports.FirstOrDefaultAsync();
 
-                // Handle image file upload if provided
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    // Generate the unique file name for the image
                     string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
 
                     if (esport == null)
                     {
-                        // Add new record if esport doesn't exist
-                        model.ImageUrl = "/Pic/" + uniqueFileName; // Set the image URL
-                        _ctcDbContext.esports.Add(model); // Add the new esport record
+                        model.ImageUrl = "/Pic/" + uniqueFileName; 
+                        _ctcDbContext.esports.Add(model);
                     }
                     else
                     {
-                        // Update existing esport record
                         esport.HeaderEsports = model.HeaderEsports;
                         esport.ContentEsports = model.ContentEsports;
                         esport.ContentGames = model.ContentGames;
                         esport.Games = model.Games;
-                        esport.ImageUrl = "/Pic/" + uniqueFileName; // Set the image URL
+                        esport.ImageUrl = "/Pic/" + uniqueFileName; 
                     }
                 }
                 else if (esport != null)
                 {
-                    // If no image file is provided, update other properties only
                     esport.HeaderEsports = model.HeaderEsports;
                     esport.ContentEsports = model.ContentEsports;
                     esport.ContentGames = model.ContentGames;
                     esport.Games = model.Games;
                 }
 
-                // Save changes to the database
                 await _ctcDbContext.SaveChangesAsync();
 
-                // Return to the same view with the updated model
                 return View("~/Views/LeaderDepartment/Media/EditEsportInfo.cshtml", esport);
             }
-
-            // In case of validation failure, return the view with the current model and errors
             return View("~/Views/LeaderDepartment/Media/EditEsportInfo.cshtml", model);
         }
 
@@ -353,11 +343,11 @@ namespace CTC.Controllers
             {
                 var DefaultSponser = new List<Sponser>
                 {
-                    new Sponser{Name="Client 1" ,Description="Client description",ImageUrl=""},
-                    new Sponser{Name="Client 2" ,Description="Client description",ImageUrl=""},
-                    new Sponser{Name="Client 3" ,Description="Client description",ImageUrl=""},
-                    new Sponser{Name="Client 4" ,Description="Client description",ImageUrl=""},
-                    new Sponser{Name="Client 5" ,Description="Client description",ImageUrl=""}
+                    new Sponser{Name="Client 1" ,Description="Client description",ImageUrl="", Website = ""},
+                    new Sponser{Name="Client 2" ,Description="Client description",ImageUrl="", Website = ""},
+                    new Sponser{Name="Client 3" ,Description="Client description",ImageUrl="", Website = ""},
+                    new Sponser{Name="Client 4" ,Description="Client description",ImageUrl="", Website = ""},
+                    new Sponser{Name="Client 5" ,Description="Client description",ImageUrl="", Website = ""}
 
                 };
                 _ctcDbContext.sponsers.AddRange(DefaultSponser);
@@ -371,34 +361,26 @@ namespace CTC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Check if the sponsor already exists in the database
                 var sponser = await _ctcDbContext.sponsers.FirstOrDefaultAsync(s => s.Id == model.Id);
-
                 if (sponser == null)
                 {
-                    // If not, create a new sponsor entry
                     _ctcDbContext.sponsers.Add(model);
                 }
                 else
                 {
-                    // If sponsor exists, update the existing one
                     sponser.Name = model.Name;
                     sponser.Description = model.Description;
+                    sponser.Website = model.Website;    
                     sponser.sponsers = model.sponsers ?? new List<string>();
 
-                    // Handle image file upload, if a new file is uploaded
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
-                        // Generate unique file name and save the image
                         string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
                         sponser.ImageUrl = "/Pic/" + uniqueFileName;  // Update the image URL in the sponsor object
                     }
                 }
 
-                // Save changes to the database
                 await _ctcDbContext.SaveChangesAsync();
-
-                // Redirect to the same page with the updated sponsor object
                 return RedirectToAction("EditSponserInfo", new { id = model.Id });
             }
             else

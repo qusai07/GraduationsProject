@@ -42,7 +42,7 @@ namespace CTC.Data
 }
 
 //Delete any thing after 30 days
-//logo ctcData
+//Edit FeatureInfo Check
 //ctcData footer page
 
 

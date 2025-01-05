@@ -14,24 +14,25 @@ public class VolunteerManagerControllerTests : TestBase
     private VolunteerManagerController _controller;
     private Mock<IVolunteerRepository> _mockVolunteerRepository;
     private Mock<IWebHostEnvironment> _mockEnvironment;
+    private Mock<IMailService> _mockMailService;
 
     [TestInitialize]
     public  void Setup()
     {
-        // Call base setup first
         base.BaseSetup();
 
         // Setup mocks
         _mockVolunteerRepository = new Mock<IVolunteerRepository>();
         _mockEnvironment = new Mock<IWebHostEnvironment>();
+        _mockMailService = new Mock<IMailService>();
         _mockEnvironment.Setup(x => x.WebRootPath).Returns("wwwroot");
 
-        // Initialize controller with the _dbContext from base class
         _controller = new VolunteerManagerController(
-     _mockEnvironment.Object,          // IWebHostEnvironment environment
-     _dbContext,                       // CtcDbContext ctcDbContext
-     _mockUserManager.Object,          // UserManager<User> userManager
-     _mockVolunteerRepository.Object   // IVolunteerRepository volunteerRepository
+            _mockMailService.Object,
+     _mockEnvironment.Object,         
+     _dbContext,                     
+     _mockUserManager.Object,         
+     _mockVolunteerRepository.Object 
  );
 
         // Setup controller context

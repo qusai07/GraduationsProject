@@ -674,7 +674,7 @@ namespace CTC.Controllers
                     FaceBook = "https://www.facebook.com/profile.php?id=61552529775957",
                     Instagram = "https://www.instagram.com/ctc_just/",
                     LinedIn = "https://www.linkedin.com/company/computing-technology-club-ctc/posts/?feedView=all",
-                    PostalCode = "21118",
+                    CaptionHome = " Empowering Innovation Through Tech || Join us to enrich your knowledge, explore and have fun!",
                     PhoneNumber = "+962 7 9984 2558",
                     Nahno = "https://www.nahno.org/ngo/%D9%86%D8%A7%D8%AF%D9%8A-%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7-%D8%A7%D9%84%D8%AD%D9%88%D8%B3%D8%A8%D8%A9-CTC-73508",
                 };
@@ -704,9 +704,11 @@ namespace CTC.Controllers
                     ctcdata.FaceBook = model.FaceBook;
                     ctcdata.Instagram = model.Instagram;
                     ctcdata.LinedIn = model.LinedIn;
-                    ctcdata.PostalCode = model.PostalCode;
                     ctcdata.PhoneNumber = model.PhoneNumber;
                     ctcdata.Nahno = model.Nahno;
+                    ctcdata.CaptionHome = model.CaptionHome;
+
+                    
 
 
                 }

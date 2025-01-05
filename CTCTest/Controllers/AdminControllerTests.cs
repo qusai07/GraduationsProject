@@ -230,7 +230,7 @@ namespace CTC.Controllers.Tests
                 Instagram = "https://instagram.com/ctc",
                 LinedIn = "https://linkedin.com/ctc",
                 Nahno = "https://nahno.org/ctc",
-                PostalCode = "12345"
+                CaptionHome = "Empowering Innovation Through Tech || Join us to enrich your knowledge, explore and have fun!"
             };
 
             // Act
@@ -251,7 +251,7 @@ namespace CTC.Controllers.Tests
             Assert.AreEqual(model.Instagram, savedData.Instagram);
             Assert.AreEqual(model.LinedIn, savedData.LinedIn);
             Assert.AreEqual(model.Nahno, savedData.Nahno);
-            Assert.AreEqual(model.PostalCode, savedData.PostalCode);
+            Assert.AreEqual(model.CaptionHome, savedData.CaptionHome);
         }
         // Helper methods
         private Joiner CreateTestJoiner(int id, string status)

@@ -35,7 +35,7 @@ public class TestCtcDbContext : CtcDbContext
             entity.Property(e => e.Instagram).IsRequired(false);
             entity.Property(e => e.LinedIn).IsRequired(false);
             entity.Property(e => e.Nahno).IsRequired(false);
-            entity.Property(e => e.PostalCode).IsRequired(false);
+            entity.Property(e => e.CaptionHome).IsRequired(false);
         });
     }
 }
