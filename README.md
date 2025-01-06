@@ -1,4 +1,4 @@
-# Project Name
+# CTC
 
 **IMPORTANT NOTICE:**
 This project is publicly visible for demonstration purposes only.
