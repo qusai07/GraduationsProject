@@ -304,6 +304,35 @@ namespace CTC.Migrations
                     b.ToTable("founders");
                 });
 
+            modelBuilder.Entity("CTC.Models.Admin.JoinFormSetting", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DisabledMessage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FormEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FormStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IsJoinFormEnabled")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsJoinFormEnabledBool")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("joinFormSetting");
+                });
+
             modelBuilder.Entity("CTC.Models.Admin.QRCodeModel", b =>
                 {
                     b.Property<int>("Id")

@@ -211,6 +211,23 @@ namespace CTC.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "joinFormSetting",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IsJoinFormEnabledBool = table.Column<bool>(type: "bit", nullable: false),
+                    IsJoinFormEnabled = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FormStartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FormEndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DisabledMessage = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_joinFormSetting", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "materialSummaries",
                 columns: table => new
                 {
@@ -718,6 +735,9 @@ namespace CTC.Migrations
 
             migrationBuilder.DropTable(
                 name: "founders");
+
+            migrationBuilder.DropTable(
+                name: "joinFormSetting");
 
             migrationBuilder.DropTable(
                 name: "materialSummaries");

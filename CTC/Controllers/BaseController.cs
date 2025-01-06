@@ -4,6 +4,7 @@ using CTC.Repository.IRepository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace CTC.Controllers
 {
@@ -29,6 +30,7 @@ namespace CTC.Controllers
             _notificationRepository = notificationRepository;
             _logger = logger;
         }
-    
+
+
     }
 }

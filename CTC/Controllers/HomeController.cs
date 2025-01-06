@@ -185,11 +185,9 @@ namespace CTC.Controllers
         }
         public async Task<IActionResult> Facultymembers(string selectedDepartment)
         {
-            // Retrieve all faculty members from the database
             var facultyMembers = await _academicRepository.GetAllFactualMemberAsync();
             facultyMembers = facultyMembers.Where(e => e.Approved).ToList();
 
-            // Apply department filter if provided
             if (!string.IsNullOrEmpty(selectedDepartment))
             {
                 Department departmentEnum;
@@ -208,9 +206,7 @@ namespace CTC.Controllers
                 department = member.department,
             }).ToList();
 
-            // Pass selected department back to the view
             ViewBag.SelectedDepartment = selectedDepartment;
-
             return View(viewModel);
         }
         public IActionResult BachelorPrograms()
@@ -226,9 +222,22 @@ namespace CTC.Controllers
             }
             return View(bachelorPrograms);
         }
-        public IActionResult Join()
+        public async Task<IActionResult> Join()
         {
+            var formSettings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
+
+            if (formSettings == null)
+            {
+                formSettings = new JoinFormSetting
+                {
+                    IsJoinFormEnabled = "false",
+                    DisabledMessage = "The Join Member form is not currently open."
+                };
+                _ctcDbContext.Add(formSettings);
+                await _ctcDbContext.SaveChangesAsync();
+            }
             var model = new JoinerViewModel();
+            ViewBag.FormSettings = formSettings;
 
             return View(model);
         }
@@ -236,20 +245,33 @@ namespace CTC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(JoinerViewModel model)
         {
+            var formSettings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
+            if (formSettings == null)
+            {
+                formSettings = new JoinFormSetting
+                {
+                    IsJoinFormEnabled = "false",
+                    DisabledMessage = "The Join Member form is not currently open."
+                };
+            }
+
+            if (formSettings.IsJoinFormEnabled == "false")
+            {
+                TempData["ErrorMessage"] = formSettings.DisabledMessage;
+                return View(model);
+            }
+
             if (!ModelState.IsValid)
             {
-                return View(model); // Return view if model validation fails
+                return View(model);
             }
 
             var joiner = MapJoinerViewModelToEntity(model);
             await _joinerRepository.JoinMemberAsync(joiner);
 
-            // Send email to the joiner confirming their request was received
             await SendJoinConfirmationEmail(model);
-
-            // Notify admin of the new join request via notification and email
             await NotifyAdminOfJoinRequest(model);
-
+            TempData["SuccessMessage"] = "Your join request has been submitted successfully!";
             return View(model);
         }
         private Joiner MapJoinerViewModelToEntity(JoinerViewModel model)
@@ -308,8 +330,6 @@ namespace CTC.Controllers
         {
             var material = await _academicRepository.GetAllMaterialsAsync();
             material = material.Where(e => e.Approved).ToList();
-
-            // Filter by selected department if provided
             if (!string.IsNullOrEmpty(selectedDepartment))
             {
                 Department departmentEnum;
@@ -327,10 +347,7 @@ namespace CTC.Controllers
                 materialsDepartment = e.materialsDepartment,
                 UploadDate = e.UploadDate,
             });
-
-            // Pass selected department back to the view
             ViewBag.SelectedDepartment = selectedDepartment;
-
             return View(model);
         }
         public async Task<IActionResult> Download(int id)
@@ -349,7 +366,7 @@ namespace CTC.Controllers
             if (!System.IO.File.Exists(filePath))
             {
                 _logger.LogWarning("File not found at path: {filePath}", filePath);
-                return NotFound(); // Return 404 if the file doesn't exist
+                return NotFound(); 
             }
 
             var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
@@ -357,7 +374,6 @@ namespace CTC.Controllers
         }
         public IActionResult DownloadPdf(string department)
         {
-            // Construct the file path based on department name
             var fileName = department + ".pdf";
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "PDF", fileName);
 

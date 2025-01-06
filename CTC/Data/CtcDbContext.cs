@@ -65,6 +65,7 @@ namespace CTC.Data
 
         public DbSet<BachelorPrograms> bachelorPrograms { get; set; }
         public DbSet<CtcData> ctcData { get; set; }
+        public DbSet<JoinFormSetting> joinFormSetting { get; set; }
 
 
 

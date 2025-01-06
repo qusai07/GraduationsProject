@@ -14,7 +14,6 @@ using Microsoft.AspNetCore.Authorization;
 using CTC.Models.Admin;
 using CTC.Models.Leader;
 using CTC.Models.Event;
-using Microsoft.AspNetCore.Mvc.Rendering;
 namespace CTC.Controllers
 
 {
@@ -78,7 +77,6 @@ namespace CTC.Controllers
         public async Task<IActionResult> Table()
         {
             var users = await _joinerRepository.GetAllRequestsJoinerAsync();
-            // Prepare view model
             var viewModel = new JoinerViewModel
             {
                 PendingUsers = users.Where(u => u.Status == "Pending").ToList(),
@@ -116,7 +114,6 @@ namespace CTC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AcceptRequest(int id)
         {
-            // Find the joiner in the database
             var joiner = await _ctcDbContext.Joiners.FindAsync(id);
             if (joiner == null)
             {
@@ -125,7 +122,6 @@ namespace CTC.Controllers
                 return RedirectToAction("DataTable");
             }
 
-            // Create a new user account based on joiner details
             var joinerUser = new User
             {
                 UserName = $"{joiner.FirstName}{joiner.LastName}",
@@ -134,10 +130,8 @@ namespace CTC.Controllers
                 NormalizedUserName = $"{joiner.FirstName}{joiner.LastName}".ToUpper()
             };
 
-            // Generate a random password
             var password = IdentityServiceExtensions.GenerateRandomPasswordHash();
 
-            // Attempt to create the user account
             var creationResult = await _usermanger.CreateAsync(joinerUser, password);
             if (!creationResult.Succeeded)
             {
@@ -421,11 +415,10 @@ namespace CTC.Controllers
         {
 
             var attendanceRecords = await _ctcDbContext.attendanceAtEveryEvents
-      .Include(a => a.Student) // Include related Student data if needed
-      .Include(a => a.Event)   // Include related Event data if needed
+      .Include(a => a.Student) 
+      .Include(a => a.Event)  
       .ToListAsync();
 
-            // Pass the attendance records to the view
             return View(attendanceRecords);
         }
         [HttpPost]
@@ -443,15 +436,13 @@ namespace CTC.Controllers
                 {
                     UserId = user.Id,
                     Name = user.FirstName + " " + user.LastName,
-                    AppointmentDate = DateTime.Now, // Or get this value from the form if needed
+                    AppointmentDate = DateTime.Now, 
                     Status = "Waiting",
                     CreatedAt = DateTime.Now,
                     LinkMeeting=""
                 };
                 user.Status = "Waiting";
                 _ctcDbContext.Appointment.Add(appointment);
-
-                // Attempt to save the changes
                 await _ctcDbContext.SaveChangesAsync();
 
                 return View("DataTable");
@@ -655,7 +646,7 @@ namespace CTC.Controllers
             }
             TempData["SuccessMessage"] = "Messages sent successfully!";
 
-            var allUsers = _usermanger.Users.ToList(); // Fetch all users
+            var allUsers = _usermanger.Users.ToList(); 
             return View("SendMessagesToAnyUser", allUsers);
         }
 
@@ -767,7 +758,36 @@ namespace CTC.Controllers
             return View();
         }
 
-      
+        public async Task<IActionResult> JoinFormSettings()
+        {
+            var settings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
+            return View(settings ?? new JoinFormSetting());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> JoinFormSettings(JoinFormSetting formSettings)
+        {
+            if (ModelState.IsValid)
+            {
+                var existingSettings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
+                if (existingSettings != null)
+                {
+                    existingSettings.IsJoinFormEnabled = formSettings.IsJoinFormEnabledBool ? "open" : "closed";
+                    _ctcDbContext.Update(existingSettings);
+                }
+                else
+                {
+                    formSettings.IsJoinFormEnabled = formSettings.IsJoinFormEnabledBool ? "open" : "closed";
+                    _ctcDbContext.Add(formSettings);
+                }
+                await _ctcDbContext.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Join form settings saved successfully.";
+                return RedirectToAction("JoinFormSettings");
+            }
+            return View(formSettings);
+        }
+
 
     }
     public static class BitmapExtensions
