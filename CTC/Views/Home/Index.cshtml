@@ -8,7 +8,7 @@
 @inject Microsoft.AspNetCore.Identity.SignInManager<CTC.Models.User> signInManager;
 <link href="https://cdn.jsdelivr.net/npm/glightbox@3.0.0/dist/css/glightbox.min.css" rel="stylesheet">
 <style>
-    
+
     .more-features {
         background-color: white;
         position: relative;
@@ -27,9 +27,9 @@
         transition: transform 0.3s ease;
     }
 
-    .subjects-container:hover {
-        transform: translateX(10px);
-    }
+        .subjects-container:hover {
+            transform: translateX(10px);
+        }
 
     .image-wrapper {
         position: relative;
@@ -55,29 +55,30 @@
         transform: scale(1.05);
     }
 
-        .section-header {
-            text-align: center;
-        }
+    .section-header {
+        text-align: center;
+    }
 
-        .separator {
-            margin: 0 auto;
-        }
+    .separator {
+        margin: 0 auto;
+    }
 
-        .subjects-container {
-            border-left: none;
-            border-top: 4px solid ;
-        }
+    .subjects-container {
+        border-left: none;
+        border-top: 4px solid;
+    }
     }
 </style>
 <style>
     .client-img {
         width: 100%;
         height: auto;
-        max-width: 180px; 
+        max-width: 180px;
         transition: transform 0.3s ease-in-out;
     }
+
     .client-logo-wrapper:hover .client-img {
-        transform: scale(1.1); 
+        transform: scale(1.1);
     }
 
     .client-name {
@@ -87,6 +88,7 @@
         font-size: 1.2rem;
         color: black;
     }
+
     .modal-dialog-centered {
         display: flex;
         justify-content: center;
@@ -95,7 +97,7 @@
     }
 
     .modal-dialog {
-        max-width: 500px; 
+        max-width: 500px;
     }
 </style>
 <style>
@@ -172,10 +174,10 @@
         opacity: 1;
     }
 
-    .sponsor-wrapper:hover .sponsor-name,
-    .sponsor-wrapper:hover .sponsor-overlay i {
-        transform: translateY(0);
-    }
+        .sponsor-wrapper:hover .sponsor-name,
+        .sponsor-wrapper:hover .sponsor-overlay i {
+            transform: translateY(0);
+        }
 
     .sponsor-wrapper:hover .sponsor-img {
         transform: scale(1.1);
@@ -206,15 +208,19 @@
     }
 
     /* Animation */
-     fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    fadeInUp {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
     }
 
     .sponsor-card {
@@ -223,14 +229,16 @@
     }
 
     /* Responsive Adjustments */
-     (max-width: 767.98px) {
-        .sponsor-wrapper {
-            padding: 1rem;
-        }
+    (max-width: 767.98px) {
+        .sponsor-wrapper
 
-        .sponsor-name {
-            font-size: 0.9rem;
-        }
+    {
+        padding: 1rem;
+    }
+
+    .sponsor-name {
+        font-size: 0.9rem;
+    }
     }
 </style>
 <main class="main">
@@ -652,7 +660,7 @@
                 <div class="col-lg-6 d-flex flex-column justify-content-center order-2 order-lg-1"
                      data-aos="fade-up" data-aos-delay="100">
 
-                    <!-- Header -->  
+                    <!-- Header -->
                     <div class="container section-title" data-aos="fade-up">
                         <h2>@Model.esports.HeaderEsports</h2>
                     </div>
@@ -862,7 +870,7 @@
                     <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
                         <i class="bi bi-geo-alt"></i>
                         <h3>Address</h3>
-                        <p>@Model.CtcData.City , @Model.CtcData.CaptionHome</p>
+                        <p>@Model.CtcData.City , @Model.CtcData.Address</p>
                     </div>
                 </div><!-- End Info Item -->
 

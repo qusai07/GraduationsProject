@@ -145,7 +145,6 @@ namespace CTC.Controllers
                 BachelorPrograms = _ctcDbContext.bachelorPrograms.ToList(),
 
             };
-
             return View(model);
         }
         public async Task<IActionResult> Events()
@@ -451,6 +450,6 @@ namespace CTC.Controllers
             var users = await _usermanger.Users.ToListAsync();
             return View(users);
         }
-
+      
     }
 }
