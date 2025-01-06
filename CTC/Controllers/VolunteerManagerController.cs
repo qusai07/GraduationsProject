@@ -115,19 +115,18 @@ namespace CTC.Controllers
             {
                 if (updatevolunteering.ImageFile != null && updatevolunteering.ImageFile.Length > 0)
                 {
-                    // If an old image exists, delete it
                     if (!string.IsNullOrEmpty(updatevolunteering.ImageUrl))
                     {
                         string oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "Pic", updatevolunteering.ImageUrl);
                         if (System.IO.File.Exists(oldFilePath))
                         {
-                            System.IO.File.Delete(oldFilePath); // Delete the old image
+                            System.IO.File.Delete(oldFilePath);
                         }
                     }
 
                     // Save the new image
                     string uniqueFileName = FileExtensions.ConvertImageToString(updatevolunteering.ImageFile, _webHostEnvironment);
-                    updatevolunteering.ImageUrl = $"/Pic/{uniqueFileName}"; // Update the ImageUrl with the new image's path
+                    updatevolunteering.ImageUrl = $"/Pic/{uniqueFileName}"; 
                 }
                 await _volunteerRepository.UpdateVolunteer(updatevolunteering);
                 return RedirectToAction("EditVolunteer");
@@ -155,7 +154,6 @@ namespace CTC.Controllers
 
                 if (action.ToLower() == "accept")
                 {
-                    // Check if event is full
                     var currentParticipants = await _ctcDbContext.VolunteerParticipants
                         .CountAsync(p => p.VolunteeringId == participation.VolunteeringId
                                     && p.Status == "Accepted");

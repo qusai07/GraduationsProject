@@ -119,9 +119,8 @@ namespace CTC.Controllers
             var filePath = Path.Combine(_webHostEnvironment.WebRootPath, material.PdfUrl.TrimStart('/'));
             if (System.IO.File.Exists(filePath))
             {
-                System.IO.File.Delete(filePath); // Delete the file
+                System.IO.File.Delete(filePath); 
             }
-            // Delete the record from the database
             await _academicRepository.DeleteMaterialAsync(id);
             return RedirectToAction(nameof(TableSummaryMaterial));
         }
@@ -145,7 +144,7 @@ namespace CTC.Controllers
                 Name = m.NameDoctor,
                 department = m.department,
                 Email = m.Email,
-                MemberName = m.MemberName // Assuming Username is a property in your model
+                MemberName = m.MemberName 
             }).ToList();
         }
         public async Task<IActionResult> ReviewFacultyRequests()
@@ -154,13 +153,13 @@ namespace CTC.Controllers
             pendingRequests = pendingRequests.Where(f => !f.Approved).ToList();
             var viewModel = pendingRequests.Select(member => new FacultymembersViewModel
             {
-                Id = member.Id, // Ensure to map Id here
+                Id = member.Id, 
                 Name = member.NameDoctor,
                 Email = member.Email,
                 prefx = member.prefx,
                 department = member.department,
                 MemberName=member.MemberName,
-                Approved = member.Approved // Ensure to map the IsApproved property
+                Approved = member.Approved 
             }).ToList();
 
              viewModel = MapToViewModel(pendingRequests);
@@ -236,7 +235,7 @@ namespace CTC.Controllers
             var request = await _academicRepository.GetPendingFacultyRequestById(Id);
             if (request != null)
             {
-                await _academicRepository.DeletePendingFacultyRequest(Id);  // Remove the request
+                await _academicRepository.DeletePendingFacultyRequest(Id);  
                 return Json(new { success = true });
             }
 
@@ -249,7 +248,7 @@ namespace CTC.Controllers
             var request = await _academicRepository.GetPendingMaterialRequestById(Id);
             if (request != null)
             {
-                await _academicRepository.DeleteMaterialAsync(Id);  // Remove the request
+                await _academicRepository.DeleteMaterialAsync(Id);  
                 return Json(new { success = true });
             }
 
@@ -261,7 +260,7 @@ namespace CTC.Controllers
             pendingRequests = pendingRequests.Where(f => !f.Approved).ToList();
             var viewModel = pendingRequests.Select(material => new MaterialSummary
             {
-                Id = material.Id, // Ensure to map Id here
+                Id = material.Id, 
                 MaterialName= material.MaterialName,
                 MaterialDescription= material.MaterialDescription,
                 materialsDepartment=material.materialsDepartment,
@@ -342,10 +341,7 @@ namespace CTC.Controllers
 
         public async Task<IActionResult> AddBachelorPrograms()
         {
-            // Fetch bachelor programs from the database
             var bachelorPrograms = await _ctcDbContext.bachelorPrograms.ToListAsync();
-
-            // If no programs are found, create default programs
             if (bachelorPrograms == null || bachelorPrograms.Count == 0)
             {
                 bachelorPrograms = new List<BachelorPrograms>
@@ -362,7 +358,6 @@ namespace CTC.Controllers
                 Description = "Software Engineering program offers students the skills to design, develop, and maintain software systems.",
                 PdfUrl = ""
             }
-            // Add more default programs as needed
         };
             }
 
@@ -374,14 +369,10 @@ namespace CTC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Handle file upload
                 if (model.pdfFile != null && model.pdfFile.Length > 0)
                 {
-                    // Call ConvertFileToString to save the file and get its URL
                     model.PdfUrl = FileExtensions.ConvertFileToString(model.pdfFile, _webHostEnvironment);
                 }
-
-                // Save the Bachelor Program to the database
                 _ctcDbContext.Add(model);
                 await _ctcDbContext.SaveChangesAsync();
                 var bachelorPrograms = await _ctcDbContext.bachelorPrograms.ToListAsync();

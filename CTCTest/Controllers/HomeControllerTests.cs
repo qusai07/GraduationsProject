@@ -41,16 +41,16 @@ public class HomeControllerTests : TestBase
 
         // Make sure the parameters match exactly with your HomeController constructor
         _controller = new HomeController(
-       _mockEnvironment.Object,            // IWebHostEnvironment
-       _dbContext,                         // CtcDbContext
-       _mockUserManager.Object,            // UserManager<User>
-       _mockUserRepository.Object,         // IUserRepository
-       _mockMailService.Object,            // IMailService
-       _mockEventCtcRepository.Object,     // IEventCtcRepository
-       _mockNotificationRepository.Object, // INotificationRepository
-       _mockHomeLogger.Object,             // ILogger<HomeController>
-       _mockJoinerRepository.Object,       // IJoinerRepository
-       _mockAcademicRepository.Object      // IAcademicRepository
+       _mockEnvironment.Object,            
+       _dbContext,                        
+       _mockUserManager.Object,            
+       _mockUserRepository.Object,         
+       _mockMailService.Object,          
+       _mockEventCtcRepository.Object,    
+       _mockNotificationRepository.Object, 
+       _mockHomeLogger.Object,             
+       _mockJoinerRepository.Object,      
+       _mockAcademicRepository.Object      
    );
 
 

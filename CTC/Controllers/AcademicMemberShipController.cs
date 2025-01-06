@@ -9,10 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using CTC.ViewModels.Academic;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Plugins;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CTC.Controllers
 {
@@ -142,7 +138,7 @@ namespace CTC.Controllers
     
         public async Task<IActionResult> FacultyMembers(int id)
         {
-            var user = await _usermanger.GetUserAsync(User); // Get the current logged-in user
+            var user = await _usermanger.GetUserAsync(User); 
             var facultyUser = await _academicRepository.GetFacultyForUserAsync(user.Id);
             var faculty = _ctcDbContext.facultymembers.Select(j => new FacultymembersViewModel
             {
@@ -261,7 +257,7 @@ namespace CTC.Controllers
         }
         public async Task<IActionResult> TableSummaryMaterial(string selectedDepartment)
         {
-            var user = await _usermanger.GetUserAsync(User); // Get the current logged-in user
+            var user = await _usermanger.GetUserAsync(User); 
             var academic = await _academicRepository.GetMaterialsForUserAsync(user.Id);
 
             if (!string.IsNullOrEmpty(selectedDepartment))
@@ -297,15 +293,12 @@ namespace CTC.Controllers
                 return NotFound();
             }
 
-            // Assuming 'PdfUrl' contains the relative path to the PDF file
             var filePath = Path.Combine(_webHostEnvironment.WebRootPath, material.PdfUrl.TrimStart('/'));
 
             if (System.IO.File.Exists(filePath))
             {
-                System.IO.File.Delete(filePath); // Delete the file
+                System.IO.File.Delete(filePath); 
             }
-
-            // Delete the record from the database
             await _academicRepository.DeleteMaterialAsync(id);
 
             return RedirectToAction(nameof(TableSummaryMaterial));
@@ -313,12 +306,12 @@ namespace CTC.Controllers
 
         public async Task<IActionResult> MyDuties()
         {
-            var user = await _usermanger.GetUserAsync(User); // Get the current logged-in user
+            var user = await _usermanger.GetUserAsync(User); 
             if (user == null)
             {
                 return RedirectToAction("Login", "Account");
             }
-            var duties = await _academicRepository.GetDutiesForMemberAsync(user.Id); // Fetch duties for the current user
+            var duties = await _academicRepository.GetDutiesForMemberAsync(user.Id); 
             return View("~/Views/MemberShip/AcademicMemberShip/MyDuties.cshtml", duties);
         }
 

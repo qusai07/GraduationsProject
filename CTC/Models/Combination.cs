@@ -21,6 +21,7 @@ namespace CTC.Models
         public List<BachelorPrograms> BachelorPrograms { get; set; }
 
         public CtcData CtcData { get; set; }
+        public FormJoinsSettings FormJoinsSettings { get; set; }  
 
     }
 }

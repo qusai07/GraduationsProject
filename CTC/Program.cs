@@ -37,17 +37,25 @@ app.MapControllerRoute(
 
 var scope = app.Services.CreateScope();
 var service = scope.ServiceProvider;
-try
+using (scope = app.Services.CreateScope())
 {
-    var context = service.GetRequiredService<CtcDbContext>();
-    await context.Database.MigrateAsync();
-    var userManager = service.GetRequiredService<UserManager<User>>();
-    var roleManager = service.GetRequiredService<RoleManager<IdentityRole<int>>>();
-    await SeedData.InitializeUser(userManager, roleManager);
-}
-catch (Exception ex)
-{
-    var logger = service.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "An error occurred during migration");
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<CtcDbContext>();
+        var logger = services.GetRequiredService<ILogger<Program>>();
+
+        logger.LogInformation("Ensuring database exists...");
+        context.Database.EnsureCreated();
+        logger.LogInformation("Database check completed"); await context.Database.MigrateAsync();
+        var userManager = service.GetRequiredService<UserManager<User>>();
+        var roleManager = service.GetRequiredService<RoleManager<IdentityRole<int>>>();
+        await SeedData.InitializeUser(userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        var logger = service.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred during migration");
+    }
 }
 app.Run();

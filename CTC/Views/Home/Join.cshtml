@@ -18,6 +18,14 @@
     <section class="d-flex justify-content-center align-items-center" style="min-height: 70vh;">
         <div class="card shadow-sm p-4" style="max-width: 600px; width: 100%;">
             <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+                }
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                }
                 <h5 class="card-title text-center mb-4">Enter Your Information</h5>
                 <form asp-action="join" asp-controller="Home" id="wizard" method="post">
                     <div class="mb-3">

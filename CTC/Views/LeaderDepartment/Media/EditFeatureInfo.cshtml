@@ -56,13 +56,11 @@
                                                 <textarea name="Content" class="form-control" placeholder="Enter Content">@feature.Content</textarea>
                                             </div>
                                             <div class="mb-3">
-                                                <label class="form-label">Upload Image</label>
-                                                <input name="ImageUrl" class="form-control" type="file" />
                                                 <p>
                                                     <strong>Current Image:</strong>
                                                     @if (!string.IsNullOrEmpty(feature.ImageUrl))
                                                     {
-                                                        <img src="@feature.ImageUrl" class="img-fluid" />
+                                                        <img src="@feature.ImageUrl" style="width:25%" class="img-fluid" />
                                                     }
                                                     else
                                                     {
@@ -71,9 +69,8 @@
                                                 </p>
                                             </div>
                                             <div class="mb-3">
-                                                <label asp-for="@feature.ImageFile" class="form-label">Upload Image</label>
-                                                <input asp-for="@feature.ImageFile" type="file" class="form-control" />
-                                                <span asp-validation-for="@feature.ImageFile" class="text-danger"></span>
+                                                <label class="form-label">Upload Image</label>
+                                                <input type="file" name="ImageFile" class="form-control" />
                                             </div>
                                             <div class="d-flex justify-content-end">
                                                 <button type="submit" class="btn btn-primary">Save Changes</button>

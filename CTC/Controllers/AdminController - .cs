@@ -78,7 +78,6 @@ namespace CTC.Controllers
         public async Task<IActionResult> Table()
         {
             var users = await _joinerRepository.GetAllRequestsJoinerAsync();
-            // Prepare view model
             var viewModel = new JoinerViewModel
             {
                 PendingUsers = users.Where(u => u.Status == "Pending").ToList(),
@@ -116,7 +115,6 @@ namespace CTC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AcceptRequest(int id)
         {
-            // Find the joiner in the database
             var joiner = await _ctcDbContext.Joiners.FindAsync(id);
             if (joiner == null)
             {
@@ -125,7 +123,6 @@ namespace CTC.Controllers
                 return RedirectToAction("DataTable");
             }
 
-            // Create a new user account based on joiner details
             var joinerUser = new User
             {
                 UserName = $"{joiner.FirstName}{joiner.LastName}",
@@ -137,7 +134,6 @@ namespace CTC.Controllers
             // Generate a random password
             var password = IdentityServiceExtensions.GenerateRandomPasswordHash();
 
-            // Attempt to create the user account
             var creationResult = await _usermanger.CreateAsync(joinerUser, password);
             if (!creationResult.Succeeded)
             {
@@ -146,15 +142,12 @@ namespace CTC.Controllers
                 return RedirectToAction("DataTable");
             }
 
-            // Assign the "AcademicMemberShip" role to the new user
             var roleName = "AcademicMemberShip";
             var joinerAccount = await _usermanger.FindByNameAsync(joinerUser.UserName);
             await _usermanger.AddToRoleAsync(joinerAccount, roleName);
 
-            // Send notification email
             await SendApprovalEmail(joiner, joinerUser.UserName, password);
 
-            // Update the joiner’s status in the database
             joiner.Status = "Accepted";
             _ctcDbContext.Update(joiner);
             await _ctcDbContext.SaveChangesAsync();
@@ -359,10 +352,7 @@ namespace CTC.Controllers
             {
                 return View("Error");
             }
-
-        
-
-            //await _eventCtcRepository.UpdateEventAsync(selectedEvent); // Save the QR code text
+            //await _eventCtcRepository.UpdateEventAsync(selectedEvent); 
             var attendanceUrl = Url.Action("ConfirmAttendance", "Admin", new { eventId = eventId }, Request.Scheme);
 
 
@@ -377,7 +367,6 @@ namespace CTC.Controllers
             byte[] bitmapArray = qrBitmap.BitmapToByteArray();
             string qrUri = $"data:image/png;base64,{Convert.ToBase64String(bitmapArray)}";
 
-            // Pass QR code URI to the view to display it
             ViewBag.QrCodeUri = qrUri;
             return View();
         }
@@ -421,11 +410,9 @@ namespace CTC.Controllers
         {
 
             var attendanceRecords = await _ctcDbContext.attendanceAtEveryEvents
-      .Include(a => a.Student) // Include related Student data if needed
-      .Include(a => a.Event)   // Include related Event data if needed
+      .Include(a => a.Student) 
+      .Include(a => a.Event)   
       .ToListAsync();
-
-            // Pass the attendance records to the view
             return View(attendanceRecords);
         }
         [HttpPost]
@@ -443,15 +430,13 @@ namespace CTC.Controllers
                 {
                     UserId = user.Id,
                     Name = user.FirstName + " " + user.LastName,
-                    AppointmentDate = DateTime.Now, // Or get this value from the form if needed
+                    AppointmentDate = DateTime.Now, 
                     Status = "Waiting",
                     CreatedAt = DateTime.Now,
                     LinkMeeting=""
                 };
                 user.Status = "Waiting";
                 _ctcDbContext.Appointment.Add(appointment);
-
-                // Attempt to save the changes
                 await _ctcDbContext.SaveChangesAsync();
 
                 return View("DataTable");
@@ -611,13 +596,12 @@ namespace CTC.Controllers
                     await _userRepository.DeleteAsync(user);
                     return RedirectToAction("AddManager");
                 
-                return RedirectToAction("TableManager"); 
+                //return RedirectToAction("TableManager"); 
             }
             catch (Exception ex)
             {
-                // Handle any errors that may occur during deletion.
                 ModelState.AddModelError(string.Empty, $"Error deleting user: {ex.Message}");
-                return View(user); // Return to the delete confirmation page
+                return View(user); 
             }
         }
 
@@ -655,7 +639,7 @@ namespace CTC.Controllers
             }
             TempData["SuccessMessage"] = "Messages sent successfully!";
 
-            var allUsers = _usermanger.Users.ToList(); // Fetch all users
+            var allUsers = _usermanger.Users.ToList(); 
             return View("SendMessagesToAnyUser", allUsers);
         }
 
@@ -767,7 +751,35 @@ namespace CTC.Controllers
             return View();
         }
 
-      
+        [HttpGet]
+        public async Task<IActionResult> JoinFormSettings()
+        {
+            var settings = await _ctcDbContext.FormJoinsSettings.FirstOrDefaultAsync();
+            return View(settings ?? new FormJoinsSettings());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> JoinFormSettings(FormJoinsSettings model)
+        {
+            var settings = await _ctcDbContext.FormJoinsSettings.FirstOrDefaultAsync();
+
+            if (settings == null)
+            {
+                _ctcDbContext.FormJoinsSettings.Add(model);
+            }
+            else
+            {
+                settings.IsJoinFormEnabled = model.IsJoinFormEnabled;
+                settings.DisabledMessage = model.DisabledMessage;
+                settings.FormStartDate = model.FormStartDate;
+                settings.FormEndDate = model.FormEndDate;
+            }
+
+            await _ctcDbContext.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Form settings updated successfully.";
+            return RedirectToAction("JoinFormSettings");
+        }
 
     }
     public static class BitmapExtensions

@@ -1,0 +1,40 @@
+﻿@model CTC.ViewModels.ErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main id="main" class="main">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body text-center p-5">
+                        <h1 class="text-danger mb-4">Error</h1>
+
+                        @if (Model?.ShowRequestId ?? false)
+                        {
+                            <p class="text-muted">
+                                <strong>Request ID:</strong> <code>@Model.RequestId</code>
+                            </p>
+                        }
+
+                        <div class="alert alert-danger">
+                            <h3>An error occurred while processing your request.</h3>
+                            @if (Model?.Message != null)
+                            {
+                                <p>@Model.Message</p>
+                            }
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-primary">
+                                <i class="bi bi-house-door"></i> Return to Home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

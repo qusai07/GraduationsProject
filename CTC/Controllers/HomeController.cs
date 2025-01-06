@@ -11,12 +11,15 @@ using CTC.Models.Academic;
 using CTC.Models.Admin;
 using CTC.Models.Leader;
 using Microsoft.AspNetCore.Identity;
+using CTC.ViewModels;
+using System.Diagnostics;
 namespace CTC.Controllers
 {
     public class HomeController : BaseController
     {
         private readonly IJoinerRepository _joinerRepository;
         private readonly IAcademicRepository _academicRepository;
+        private readonly CtcDbContext _ctcDbContext;
 
         public HomeController(
             IWebHostEnvironment environment,
@@ -32,96 +35,108 @@ namespace CTC.Controllers
             : base(environment, ctcDbContext, userManager, userRepository, mailService,
                    eventCtcRepository, notificationRepository, logger)
         {
-            _joinerRepository = joinerRepository;
-            _academicRepository = academicRepository;
+            _joinerRepository = joinerRepository ?? throw new ArgumentNullException(nameof(joinerRepository));
+            _academicRepository = academicRepository ?? throw new ArgumentNullException(nameof(academicRepository));
         }
 
         public async Task<IActionResult> Index()
         {
-            var whoWeAre = await _ctcDbContext.whoWeAre.FirstOrDefaultAsync();
-            var nahno = await _ctcDbContext.nahno.FirstOrDefaultAsync();
-            var contactMessage = await _ctcDbContext.contactMessages.FirstOrDefaultAsync();
-            var features = _ctcDbContext.featuresApp.ToList();
-            var media = await _ctcDbContext.videohome.FirstOrDefaultAsync();
-            var founderlist = await _ctcDbContext.founders.ToListAsync();
-            var esportsEntry = await _ctcDbContext.esports.FirstOrDefaultAsync();
-            var sponser = _ctcDbContext.sponsers.ToList();
-            var ctcdata = await _ctcDbContext.ctcData.FirstOrDefaultAsync();
-            if (ctcdata == null)
+            _logger.LogInformation("Starting Index action");
+
+            if (_ctcDbContext == null)
             {
-                ctcdata = new CtcData
-                {
-                    Email = "CTC@Gmail.com",
-                    City = "Jordan",
-                    Address = "AL-Ramtha",
-                    FaceBook = "https://www.facebook.com/profile.php?id=61552529775957",
-                    Instagram = "https://www.instagram.com/ctc_just/",
-                    LinedIn = "https://www.linkedin.com/company/computing-technology-club-ctc/posts/?feedView=all",
-                    CaptionHome = "Empowering Innovation Through Tech || Join us to enrich your knowledge, explore and have fun!",
-                    PhoneNumber = "+962 7 9984 2558",
-                    Nahno = "https://www.nahno.org/ngo/%D9%86%D8%A7%D8%AF%D9%8A-%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7-%D8%A7%D9%84%D8%AD%D9%88%D8%B3%D8%A8%D8%A9-CTC-73508",
-                };
+                _logger.LogError("_ctcDbContext is null");
+                throw new InvalidOperationException("Database context is not initialized");
             }
-
-            if (whoWeAre == null)
+            try
             {
-                whoWeAre = new WhoWeAre
+
+
+                var whoWeAre = await _ctcDbContext.whoWeAre.FirstOrDefaultAsync();
+                var nahno = await _ctcDbContext.nahno.FirstOrDefaultAsync();
+                var contactMessage = await _ctcDbContext.contactMessages.FirstOrDefaultAsync();
+                var features = _ctcDbContext.featuresApp.ToList();
+                var media = await _ctcDbContext.videohome.FirstOrDefaultAsync();
+                var founderlist = await _ctcDbContext.founders.ToListAsync();
+                var esportsEntry = await _ctcDbContext.esports.FirstOrDefaultAsync();
+                var sponser = _ctcDbContext.sponsers.ToList();
+                var ctcdata = await _ctcDbContext.ctcData.FirstOrDefaultAsync();
+                var formJoinsSettings = await _ctcDbContext.FormJoinsSettings.FirstOrDefaultAsync();
+                if (ctcdata == null)
                 {
-                    Header = "Unleash the capabilities with the creative strategy",
-                    Content = "It is a non-profit student organization that aims to provide an educational and developmental environment for university students interested in the fields of information technology and computer science.",
-                    CountStudent = 200,
-                    Footer = "Join CTC to explore new technologies, engage in exciting projects, and excel in your academic and professional journey in IT and computer science."
+                    ctcdata = new CtcData
+                    {
+                        Email = "CTC@Gmail.com",
+                        City = "Jordan",
+                        Address = "AL-Ramtha",
+                        FaceBook = "https://www.facebook.com/profile.php?id=61552529775957",
+                        Instagram = "https://www.instagram.com/ctc_just/",
+                        LinedIn = "https://www.linkedin.com/company/computing-technology-club-ctc/posts/?feedView=all",
+                        CaptionHome = "Empowering Innovation Through Tech || Join us to enrich your knowledge, explore and have fun!",
+                        PhoneNumber = "+962 7 9984 2558",
+                        Nahno = "https://www.nahno.org/ngo/%D9%86%D8%A7%D8%AF%D9%8A-%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7-%D8%A7%D9%84%D8%AD%D9%88%D8%B3%D8%A8%D8%A9-CTC-73508",
+                    };
+                }
 
-                };
-            }
-
-            if (nahno == null)
-            {
-                nahno = new Nahno
+                if (whoWeAre == null)
                 {
-                    Content = "We are pleased to provide you with our documented achievements on the Nahu platform since the club’s opening. We aspire to achieve more achievements with you.",
-                    subjectone = "1603 hours of teaching.",
-                    subjecttwo = "273 hours of assistance.",
-                    subjectThree = "720 hours of leadership.",
-                    Link = "https://www.nahno.org/ngo/%D9%86%D8%A7%D8%AF%D9%8A-%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7-%D8%A7%D9%84%D8%AD%D9%88%D8%B3%D8%A8%D8%A9-CTC-73508"
-                };
-            }
+                    whoWeAre = new WhoWeAre
+                    {
+                        Header = "Unleash the capabilities with the creative strategy",
+                        Content = "It is a non-profit student organization that aims to provide an educational and developmental environment for university students interested in the fields of information technology and computer science.",
+                        CountStudent = 200,
+                        Footer = "Join CTC to explore new technologies, engage in exciting projects, and excel in your academic and professional journey in IT and computer science."
 
-            if (features == null)
-            {
-                features = new List<FeaturesApp>
+                    };
+                }
+
+                if (nahno == null)
+                {
+                    nahno = new Nahno
+                    {
+                        Content = "We are pleased to provide you with our documented achievements on the Nahu platform since the club’s opening. We aspire to achieve more achievements with you.",
+                        subjectone = "1603 hours of teaching.",
+                        subjecttwo = "273 hours of assistance.",
+                        subjectThree = "720 hours of leadership.",
+                        Link = "https://www.nahno.org/ngo/%D9%86%D8%A7%D8%AF%D9%8A-%D8%AA%D9%83%D9%86%D9%88%D9%84%D9%88%D8%AC%D9%8A%D8%A7-%D8%A7%D9%84%D8%AD%D9%88%D8%B3%D8%A8%D8%A9-CTC-73508"
+                    };
+                }
+
+                if (features == null)
+                {
+                    features = new List<FeaturesApp>
             {
                 new FeaturesApp{Header="Up Coming Event",Content="Stay updated with our constantly evolving events calendar, packed with workshops, seminars, and hackathons designed to sharpen your tech skills.",ImageUrl=""},
                 new FeaturesApp{Header="Up Coming Volunteering Work",Content="This topic could explore how volunteering helps individuals develop essential life skills, such as leadership, communication, and teamwork.",ImageUrl=""},
             };
-            }
+                }
 
-            if (media == null)
-            {
-                media = new Videohome();
-            }
-
-            if (esportsEntry == null)
-            {
-                esportsEntry = new Esports
+                if (media == null)
                 {
-                    HeaderEsports = "CTC Esports Team",
-                    ContentEsports = "CTC Esports is the competitive gaming arm , dedicated to fostering a community of passionate gamers and esports enthusiasts. Our goal is to create a platform where students can excel in the world of competitive gaming while developing skills in teamwork, strategy, and communication.",
-                    Games = new List<string> { "Valorant", "EA FC 25" },
-                    ContentGames = new List<string>
+                    media = new Videohome();
+                }
+
+                if (esportsEntry == null)
+                {
+                    esportsEntry = new Esports
+                    {
+                        HeaderEsports = "CTC Esports Team",
+                        ContentEsports = "CTC Esports is the competitive gaming arm , dedicated to fostering a community of passionate gamers and esports enthusiasts. Our goal is to create a platform where students can excel in the world of competitive gaming while developing skills in teamwork, strategy, and communication.",
+                        Games = new List<string> { "Valorant", "EA FC 25" },
+                        ContentGames = new List<string>
                     {
                             "Valorant is a tactical FPS Teams of five compete in strategic rounds, either attacking or defending objectives.",
                             "EA Sports FC 25 is the new football game offering realistic gameplay, enhanced graphics, and various game modes.",
                     },
-                    ImageUrl = ""
-                };
+                        ImageUrl = ""
+                    };
 
 
-            }
+                }
 
-            if (sponser == null)
-            {
-                sponser = new List<Sponser>
+                if (sponser == null)
+                {
+                    sponser = new List<Sponser>
                 {
                     new Sponser{Name="Client 1" ,Description="Client description",ImageUrl="",Website=""},
                     new Sponser{Name="Client 2" ,Description="Client description",ImageUrl="",Website=""},
@@ -130,23 +145,57 @@ namespace CTC.Controllers
                     new Sponser{Name="Client 5" ,Description="Client description",ImageUrl="", Website = ""}
 
                 };
+                }
+
+                if (formJoinsSettings == null)
+                {
+                    formJoinsSettings = new FormJoinsSettings
+                    {
+                        IsJoinFormEnabled = true,
+                        FormStartDate = DateTime.Now,
+                        FormEndDate = DateTime.Now.AddMonths(1),
+                        DisabledMessage = "The join form is currently not available."
+                    };
+                }
+                var model = new Combination
+                {
+                    WhoWeAre = whoWeAre,
+                    Nahno = nahno,
+                    FeatureApp = features,
+                    VideoHome = media,
+                    Founders = founderlist,
+                    esports = esportsEntry,
+                    sponsers = sponser,
+                    CtcData = ctcdata,
+                    BachelorPrograms = _ctcDbContext.bachelorPrograms.ToList(),
+                    FormJoinsSettings = formJoinsSettings
+
+
+                };  
+                return View(model);
+
+
             }
-
-            var model = new Combination
+        
+            catch (Exception ex)
             {
-                WhoWeAre = whoWeAre,
-                Nahno = nahno,
-                FeatureApp = features,
-                VideoHome = media,
-                Founders = founderlist,
-                esports = esportsEntry,
-                sponsers = sponser,
-                CtcData = ctcdata,
-                BachelorPrograms = _ctcDbContext.bachelorPrograms.ToList(),
+                _logger.LogError(ex, "Error in Index action");
+                throw;
+               // return View("Error");
 
-            };
+            }
+        }
+     
+           
+        
 
-            return View(model);
+
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            });
         }
         public async Task<IActionResult> Events()
         {
@@ -226,31 +275,43 @@ namespace CTC.Controllers
             }
             return View(bachelorPrograms);
         }
-        public IActionResult Join()
+        public async Task<IActionResult> Join()
         {
-            var model = new JoinerViewModel();
+            var formSettings = await _ctcDbContext.FormJoinsSettings.FirstOrDefaultAsync();
+            if (formSettings == null || !formSettings.IsJoinFormEnabled)
+            {
+                ViewBag.DisabledMessage = formSettings?.DisabledMessage ?? "The Join Member form is not currently open.";
+                return View("JoinFormDisabled"); 
+            }
 
+            var model = new JoinerViewModel();
             return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(JoinerViewModel model)
         {
+            var formSettings = await _ctcDbContext.FormJoinsSettings.FirstOrDefaultAsync();
+            if (formSettings == null || !formSettings.IsJoinFormEnabled)
+            {
+                TempData["ErrorMessage"] = formSettings?.DisabledMessage ?? "The Join Member form is not currently open.";
+                return RedirectToAction("Join");
+            }
+
             if (!ModelState.IsValid)
             {
-                return View(model); // Return view if model validation fails
+                return View(model); 
             }
 
             var joiner = MapJoinerViewModelToEntity(model);
             await _joinerRepository.JoinMemberAsync(joiner);
 
-            // Send email to the joiner confirming their request was received
             await SendJoinConfirmationEmail(model);
 
-            // Notify admin of the new join request via notification and email
             await NotifyAdminOfJoinRequest(model);
+            TempData["SuccessMessage"] = "Your join request has been submitted successfully!";
 
-            return View(model);
+            return RedirectToAction("Join");
         }
         private Joiner MapJoinerViewModelToEntity(JoinerViewModel model)
         {

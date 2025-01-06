@@ -273,6 +273,32 @@ namespace CTC.Migrations
                     b.ToTable("ctcData");
                 });
 
+            modelBuilder.Entity("CTC.Models.Admin.FormJoinsSettings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DisabledMessage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FormEndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("FormStartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsJoinFormEnabled")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FormJoinsSettings");
+                });
+
             modelBuilder.Entity("CTC.Models.Admin.Founders", b =>
                 {
                     b.Property<int>("Id")

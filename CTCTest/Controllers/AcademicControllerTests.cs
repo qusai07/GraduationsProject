@@ -15,19 +15,19 @@ public class AcademicControllerTests : TestBase
     private Mock<IUserRepository> _mockUserRepository;
 
     [TestInitialize]
-    public void Setup()  // Remove override since BaseSetup is different method
+    public void Setup() 
     {
-        BaseSetup();    // Call the base class initialization
+        BaseSetup();    
 
         _mockAcademicRepository = new Mock<IAcademicRepository>();
         _mockUserRepository = new Mock<IUserRepository>();
 
         _controller = new AcademicController(
-       _mockEnvironment.Object,         // IWebHostEnvironment
-       _dbContext,                      // CtcDbContext
-       _mockUserManager.Object,         // UserManager<User>
-       _mockUserRepository.Object,      // IUserRepository
-       _mockAcademicRepository.Object   // IAcademicRepository
+       _mockEnvironment.Object,        
+       _dbContext,                     
+       _mockUserManager.Object,         
+       _mockUserRepository.Object,      
+       _mockAcademicRepository.Object   
    );
 
 

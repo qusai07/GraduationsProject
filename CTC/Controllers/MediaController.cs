@@ -120,12 +120,10 @@ namespace CTC.Controllers
 
                     if (whoWeAre == null)
                     {
-                        // Add new record
                         await _ctcDbContext.whoWeAre.AddAsync(model);
                     }
                     else
                     {
-                        // Update existing record
                         whoWeAre.Header = model.Header;
                         whoWeAre.Content = model.Content;
                         whoWeAre.CountStudent = model.CountStudent;
@@ -177,7 +175,6 @@ namespace CTC.Controllers
 
                     if (nahno == null)
                     {
-                        // Add a new record if not found
                         model.ImageUrl = "/Pic/" + uniqueFileName;
                         await _ctcDbContext.nahno.AddAsync(model);
                     }
@@ -222,32 +219,45 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> EditFeatureInfo(FeaturesApp model)
         {
-            if (ModelState.IsValid)
+            try
             {
-
                 var featureApp = await _ctcDbContext.featuresApp.FirstOrDefaultAsync(f => f.Id == model.Id);
-                string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
+                if (featureApp == null)
+                {
+                    return NotFound();
+                }
+
+                featureApp.Header = model.Header;
+                featureApp.Content = model.Content;
+                featureApp.Features = model.Features ?? new List<string>();
+
                 if (model.ImageFile != null && model.ImageFile.Length > 0)
                 {
-                    if (featureApp == null)
+                    if (!string.IsNullOrEmpty(featureApp.ImageUrl))
                     {
-                        // Add new record if it doesn't exist
-                        _ctcDbContext.featuresApp.Add(model);
+                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "Pic",
+                            Path.GetFileName(featureApp.ImageUrl.Replace("/Pic/", "")));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
                     }
-                    else
-                    {
-                        // Update existing record
-                        featureApp.Header = model.Header;
-                        featureApp.Content = model.Content;
-                        featureApp.Features = model.Features ?? new List<string>();
-                        featureApp.ImageUrl = model.ImageUrl = "/Pic/" + uniqueFileName;
-                    }
-                }
-                await _ctcDbContext.SaveChangesAsync();
-                return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml", model);
-            }
 
-            return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml");
+                    string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
+                    featureApp.ImageUrl = "/Pic/" + uniqueFileName;
+                }
+
+                await _ctcDbContext.SaveChangesAsync();
+
+                var allFeatures = await _ctcDbContext.featuresApp.ToListAsync();
+                return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml", allFeatures);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "An error occurred while saving the changes.");
+                var features = await _ctcDbContext.featuresApp.ToListAsync();
+                return View("~/Views/LeaderDepartment/Media/EditFeatureInfo.cshtml", features);
+            }
         }
         public async Task<IActionResult> EditEsportInfo()
         {
@@ -314,24 +324,17 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteGame(int esportId, int gameIndex)
         {
-            // Retrieve the specific esport record by Id
             var esport = await _ctcDbContext.esports.FirstOrDefaultAsync(e => e.Id == esportId);
 
             if (esport != null)
             {
-                // Check if the index is valid
                 if (gameIndex >= 0 && gameIndex < esport.Games.Count)
                 {
-                    // Remove the game and content at the specified index
                     esport.Games.RemoveAt(gameIndex);
                     esport.ContentGames.RemoveAt(gameIndex);
-
-                    // Save the changes to the database
                     await _ctcDbContext.SaveChangesAsync();
                 }
             }
-
-            // Return a partial view or updated model after deletion
             return RedirectToAction("EditEsportInfo");
         }
 
@@ -376,7 +379,7 @@ namespace CTC.Controllers
                     if (model.ImageFile != null && model.ImageFile.Length > 0)
                     {
                         string uniqueFileName = FileExtensions.ConvertImageToString(model.ImageFile, _webHostEnvironment);
-                        sponser.ImageUrl = "/Pic/" + uniqueFileName;  // Update the image URL in the sponsor object
+                        sponser.ImageUrl = "/Pic/" + uniqueFileName;  
                     }
                 }
 
@@ -385,7 +388,6 @@ namespace CTC.Controllers
             }
             else
             {
-                // If model is invalid, return the same view with the model to show validation errors
                 return View("~/Views/LeaderDepartment/Media/EditSponserInfo.cshtml", model);
             }
         }
