@@ -131,7 +131,6 @@ namespace CTC.Controllers
             {
                 return NotFound();
             }
-            // Delete the record from the database
             await _academicRepository.DeleteFacultyMemberAsync(id);
             return RedirectToAction(nameof(TableSummaryMaterial));
         }
