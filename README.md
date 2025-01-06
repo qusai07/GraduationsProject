@@ -1,11 +1,6 @@
-# CTC
+CTC
+Important Notice: This project is available to the public for demonstration and assistance purposes. All rights reserved. You may not:
 
-**IMPORTANT NOTICE:**
-This project is publicly visible for demonstration purposes only.
-All rights reserved. No permission is granted to:
-- Download the source code
-- Create derivative works
-- Use the code commercially
-- Redistribute the code
-
-Copyright © [Qusai Tahat] [2025]
+Use the code commercially
+Redistribute the code
+Copyright © [Qusay Taht] [2025]
