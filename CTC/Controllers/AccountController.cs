@@ -342,9 +342,6 @@ namespace CTC.Controllers
             }
             try
             {
-            
-
-                // Rate limiting check
                 if (!await CheckRateLimit(model.Email))
                 {
                     ModelState.AddModelError(string.Empty, "Too many attempts. Please try again later.");
@@ -354,13 +351,11 @@ namespace CTC.Controllers
                 var user = await _usermanger.FindByEmailAsync(model.Email);
                 if (user == null)
                 {
-                    // Log the attempt but don't reveal user existence
                     _logger.LogWarning($"Password reset attempted for non-existent email: {model.Email}");
                     ModelState.AddModelError(string.Empty, "your email not exists in our system, make sure your email is true");
                     return View(model);
                 }
 
-                // Check if the account is locked
                 if (await _usermanger.IsLockedOutAsync(user))
                 {
                     ModelState.AddModelError(string.Empty, "This account is temporarily locked. Please try again later.");
@@ -378,10 +373,8 @@ namespace CTC.Controllers
                  new { email = model.Email, token = encodedToken },
                  protocol: HttpContext.Request.Scheme);
 
-                // Send email
                 await SendPasswordResetEmail(user.Email, callbackUrl);
 
-                // Log success
                 _logger.LogInformation($"Password reset token generated for user: {user.Email}");
                 TempData["SuccessMessage"] = "Password reset instructions have been sent to your email.";
                 return RedirectToAction("ForgotPasswordConfirmation");
@@ -430,7 +423,7 @@ namespace CTC.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error checking rate limit: {ex.Message}");
-                return true; // In case of cache error, allow the operation
+                return true; 
             }
         }
         private async Task SendPasswordResetEmail(string email, string resetUrl)
@@ -495,7 +488,6 @@ namespace CTC.Controllers
             var user = await _usermanger.FindByEmailAsync(model.Email);
             if (user == null)
             {
-                // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation");
             }
 

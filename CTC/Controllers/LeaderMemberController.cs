@@ -126,7 +126,7 @@ namespace CTC.Controllers
         }
         public async Task<IActionResult> HomeLeader()
         {
-            // Fetch summary data for the leader's dashboard
+            // Fetch  data for the leader's dashboard
             var totalAppointments = await _ctcDbContext.Appointment.CountAsync();
             var waitingAppointments = await _ctcDbContext.Appointment.CountAsync(a => a.Status == "Waiting");
             var pendingAppointments = await _ctcDbContext.Appointment.CountAsync(a => a.Status == "Pending");

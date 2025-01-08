@@ -11,7 +11,7 @@ namespace CTC.Controllers
 {
 
     [Authorize(Roles = "AssociateMemberShip")]
-    // this controller for Students not have a role or functionallty in app
+    // this controller for Students 
     public class AssociateMemberController : BaseController
     {
         private readonly IVolunteerRepository _volunteerRepository;
