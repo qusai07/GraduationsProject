@@ -315,7 +315,7 @@ namespace CTC.Controllers
             };
             await _notificationRepository.AddNotification(notification);
 
-            // Optionally, send an email to the admin
+            //  send an email to the admin
             var adminEmailSubject = "New Join Request Submitted";
             var adminEmailMessage = $@"Dear Admin,
 

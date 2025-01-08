@@ -79,8 +79,6 @@ namespace CTC.Controllers
                     ModelState.AddModelError("", "Error saving to database: " + ex.Message);
                 }
             }
-
-            // If we get here, something went wrong
             return View("~/Views/LeaderDepartment/Media/EditVideoHome.cshtml", model);
         }
 
@@ -120,12 +118,11 @@ namespace CTC.Controllers
 
                     if (whoWeAre == null)
                     {
-                        // Add new record
                         await _ctcDbContext.whoWeAre.AddAsync(model);
                     }
                     else
                     {
-                        // Update existing record
+                        // Update existing data
                         whoWeAre.Header = model.Header;
                         whoWeAre.Content = model.Content;
                         whoWeAre.CountStudent = model.CountStudent;
@@ -177,13 +174,11 @@ namespace CTC.Controllers
 
                     if (nahno == null)
                     {
-                        // Add a new record if not found
                         model.ImageUrl = "/Pic/" + uniqueFileName;
                         await _ctcDbContext.nahno.AddAsync(model);
                     }
                     else
                     {
-                        // Update existing record
                         nahno.Content = model.Content;
                         nahno.subjectone = model.subjectone;
                         nahno.subjecttwo = model.subjecttwo;
@@ -231,12 +226,10 @@ namespace CTC.Controllers
                 {
                     if (featureApp == null)
                     {
-                        // Add new record if it doesn't exist
                         _ctcDbContext.featuresApp.Add(model);
                     }
                     else
                     {
-                        // Update existing record
                         featureApp.Header = model.Header;
                         featureApp.Content = model.Content;
                         featureApp.Features = model.Features ?? new List<string>();
@@ -314,24 +307,18 @@ namespace CTC.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteGame(int esportId, int gameIndex)
         {
-            // Retrieve the specific esport record by Id
             var esport = await _ctcDbContext.esports.FirstOrDefaultAsync(e => e.Id == esportId);
 
             if (esport != null)
             {
-                // Check if the index is valid
                 if (gameIndex >= 0 && gameIndex < esport.Games.Count)
                 {
-                    // Remove the game and content at the specified index
                     esport.Games.RemoveAt(gameIndex);
                     esport.ContentGames.RemoveAt(gameIndex);
-
-                    // Save the changes to the database
                     await _ctcDbContext.SaveChangesAsync();
                 }
             }
 
-            // Return a partial view or updated model after deletion
             return RedirectToAction("EditEsportInfo");
         }
 
@@ -385,7 +372,6 @@ namespace CTC.Controllers
             }
             else
             {
-                // If model is invalid, return the same view with the model to show validation errors
                 return View("~/Views/LeaderDepartment/Media/EditSponserInfo.cshtml", model);
             }
         }

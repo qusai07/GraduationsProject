@@ -6,38 +6,39 @@
 <link href="~/css/StyleSheet.css" rel="stylesheet" />
 <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet" />
 
-@inject Microsoft.AspNetCore.Identity.UserManager<CTC.Models.User> Usermanager;
+@inject Microsoft.AspNetCore.Identity.UserManager<CTC.Models.User> userManager;
 
-<section class="container p-1">
+<section class="container p-2">
     <div class="container section-title" data-aos="fade-up">
         <h2>Administration Department</h2>
     </div>
 
-    @* Academic Manager Section *@
     <div class="row">
         @foreach (var user in Model)
         {
+            // Skip AssociateMember users
+            if (await userManager.IsInRoleAsync(user, "AssociateMemberShip"))
+            {
+                continue;
+            }
+
             <div class="col-lg-4 col-md-6 mb-4">
                 <a href="mailto:@user.Email" class="card-link">
-                    <!-- Make card clickable to send email -->
                     <div class="card shadow-sm mb-2">
                         <div class="card-image text-center">
-                            <!-- Center image inside the card -->
                             @if (!string.IsNullOrEmpty(user.ImageUrl))
                             {
                                 <img src="@user.ImageUrl" class="card-img-top rounded-circle mx-auto" alt="User Image" style="width: 150px; height: 150px;" />
                             }
                             else
                             {
-                                <img src="https://images.pexels.com/photos/381843/pexels-photo-381843.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
-                                     class="card-img-top rounded-circle mx-auto" alt="Default User Image" style="width: 150px; height: 150px;" />
+                                <i class="bi bi-person-circle"></i>
                             }
                         </div>
                         <div class="card-body text-center">
                             <h5 class="card-title">@user.FullName</h5>
                             <p class="card-text">@user.Email</p>
 
-                            @* Role-based user titles *@
                             @if (await userManager.IsInRoleAsync(user, "Admin"))
                             {
                                 <p class="card-text">CEO</p>

@@ -121,7 +121,6 @@ namespace CTC.Controllers
             {
                 System.IO.File.Delete(filePath); // Delete the file
             }
-            // Delete the record from the database
             await _academicRepository.DeleteMaterialAsync(id);
             return RedirectToAction(nameof(TableSummaryMaterial));
         }
@@ -132,7 +131,6 @@ namespace CTC.Controllers
             {
                 return NotFound();
             }
-            // Delete the record from the database
             await _academicRepository.DeleteFacultyMemberAsync(id);
             return RedirectToAction(nameof(TableSummaryMaterial));
         }
@@ -145,7 +143,7 @@ namespace CTC.Controllers
                 Name = m.NameDoctor,
                 department = m.department,
                 Email = m.Email,
-                MemberName = m.MemberName // Assuming Username is a property in your model
+                MemberName = m.MemberName 
             }).ToList();
         }
         public async Task<IActionResult> ReviewFacultyRequests()
@@ -160,7 +158,7 @@ namespace CTC.Controllers
                 prefx = member.prefx,
                 department = member.department,
                 MemberName=member.MemberName,
-                Approved = member.Approved // Ensure to map the IsApproved property
+                Approved = member.Approved 
             }).ToList();
 
              viewModel = MapToViewModel(pendingRequests);
@@ -342,10 +340,8 @@ namespace CTC.Controllers
 
         public async Task<IActionResult> AddBachelorPrograms()
         {
-            // Fetch bachelor programs from the database
             var bachelorPrograms = await _ctcDbContext.bachelorPrograms.ToListAsync();
 
-            // If no programs are found, create default programs
             if (bachelorPrograms == null || bachelorPrograms.Count == 0)
             {
                 bachelorPrograms = new List<BachelorPrograms>
@@ -362,7 +358,6 @@ namespace CTC.Controllers
                 Description = "Software Engineering program offers students the skills to design, develop, and maintain software systems.",
                 PdfUrl = ""
             }
-            // Add more default programs as needed
         };
             }
 
@@ -374,14 +369,11 @@ namespace CTC.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Handle file upload
                 if (model.pdfFile != null && model.pdfFile.Length > 0)
                 {
-                    // Call ConvertFileToString to save the file and get its URL
                     model.PdfUrl = FileExtensions.ConvertFileToString(model.pdfFile, _webHostEnvironment);
                 }
 
-                // Save the Bachelor Program to the database
                 _ctcDbContext.Add(model);
                 await _ctcDbContext.SaveChangesAsync();
                 var bachelorPrograms = await _ctcDbContext.bachelorPrograms.ToListAsync();

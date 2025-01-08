@@ -140,15 +140,12 @@ namespace CTC.Controllers
                 return RedirectToAction("DataTable");
             }
 
-            // Assign the "AcademicMemberShip" role to the new user
             var roleName = "AcademicMemberShip";
             var joinerAccount = await _usermanger.FindByNameAsync(joinerUser.UserName);
             await _usermanger.AddToRoleAsync(joinerAccount, roleName);
 
-            // Send notification email
             await SendApprovalEmail(joiner, joinerUser.UserName, password);
 
-            // Update the joiner’s status in the database
             joiner.Status = "Accepted";
             _ctcDbContext.Update(joiner);
             await _ctcDbContext.SaveChangesAsync();
@@ -602,13 +599,12 @@ namespace CTC.Controllers
                     await _userRepository.DeleteAsync(user);
                     return RedirectToAction("AddManager");
                 
-                return RedirectToAction("TableManager"); 
+               // return RedirectToAction("TableManager"); 
             }
             catch (Exception ex)
             {
-                // Handle any errors that may occur during deletion.
                 ModelState.AddModelError(string.Empty, $"Error deleting user: {ex.Message}");
-                return View(user); // Return to the delete confirmation page
+                return View(user); 
             }
         }
 
