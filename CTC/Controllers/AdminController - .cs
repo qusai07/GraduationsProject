@@ -486,13 +486,13 @@ namespace CTC.Controllers
             }
             return View();
         }
-        public IActionResult AddFounder()
+        public IActionResult AddBoardMember()
         {
             var model = new Founders();
             return View(model);
         }
         [HttpPost]
-        public async Task <IActionResult>AddFounder(Founders founders)
+        public async Task <IActionResult> AddBoardMember(Founders founders)
         {
             if(ModelState.IsValid)
             {
@@ -508,10 +508,10 @@ namespace CTC.Controllers
                 };
                  _ctcDbContext.founders.AddAsync(founder);
                 await _ctcDbContext.SaveChangesAsync();
-                TempData["SuccessMessage"] = "Founder added successfully!";
-                return RedirectToAction("AddFounder");
+                TempData["SuccessMessage"] = "Board Member added successfully!";
+                return RedirectToAction("AddBoardMember");
             }
-            return View("AddFounder");
+            return View("AddBoardMember");
         }
         public async Task <IActionResult> TableOfFounders()
         {

@@ -244,34 +244,38 @@ namespace CTC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Join(JoinerViewModel model)
         {
-            var formSettings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
-            if (formSettings == null)
+            try 
             {
-                formSettings = new JoinFormSetting
+                if (!ModelState.IsValid)
                 {
-                    IsJoinFormEnabled = "false",
-                    DisabledMessage = "The Join Member form is not currently open."
-                };
-            }
+                    ViewBag.FormSettings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
+                    return View(model);
+                }
 
-            if (formSettings.IsJoinFormEnabled == "false")
+                var formSettings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
+                if (formSettings != null && !formSettings.IsJoinFormEnabledBool)
+                {
+                    TempData["ErrorMessage"] = formSettings.DisabledMessage;
+                    ViewBag.FormSettings = formSettings;
+                    return View(model);
+                }
+
+                var joiner = MapJoinerViewModelToEntity(model);
+                await _joinerRepository.JoinMemberAsync(joiner);
+
+                await SendJoinConfirmationEmail(model);
+                await NotifyAdminOfJoinRequest(model);
+
+                TempData["SuccessMessage"] = "Your join request has been submitted successfully!";
+                return RedirectToAction("Join","Home"); // 
+            }
+            catch (Exception ex)
             {
-                TempData["ErrorMessage"] = formSettings.DisabledMessage;
+                _logger.LogError(ex, "Error in Join action");
+                TempData["ErrorMessage"] = "An error occurred while processing your request.";
+                ViewBag.FormSettings = await _ctcDbContext.joinFormSetting.FirstOrDefaultAsync();
                 return View(model);
             }
-
-            if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
-            var joiner = MapJoinerViewModelToEntity(model);
-            await _joinerRepository.JoinMemberAsync(joiner);
-
-            await SendJoinConfirmationEmail(model);
-            await NotifyAdminOfJoinRequest(model);
-            TempData["SuccessMessage"] = "Your join request has been submitted successfully!";
-            return View(model);
         }
         private Joiner MapJoinerViewModelToEntity(JoinerViewModel model)
         {

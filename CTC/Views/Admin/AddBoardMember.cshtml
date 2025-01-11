@@ -1,17 +1,17 @@
 ﻿@model CTC.Models.Admin.Founders
 @{
-    ViewData["Title"] = "Add Manager";
+    ViewData["Title"] = "Add Board Member";
     Layout = "~/Views/Shared/_LayoutDahsBoard.cshtml";
 }
-<h1>Add New Founder </h1>
+
 <div class="container py-4" style="margin-top: 50px;">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form asp-action="AddFounder" method="post" enctype="multipart/form-data">
+                    <form asp-action="AddBoardMember" method="post" enctype="multipart/form-data">
                         <div class="card-header">
-                            <h2>Add Founder</h2>
+                            <h2>Add Board Member</h2>
                         </div>
                         <div class="mb-3">
                             <label asp-for="Name" class="form-label"></label>
